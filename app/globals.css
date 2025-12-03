@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+:root {
+  /* Colors from Figma design */
+  --color-primary: #8A33FD;
+  --color-primary-dark: #7229d6;
+  --color-dark: #3C4242;
+  --color-dark-gray: #323232;
+  --color-gray: #807D7E;
+  --color-light-gray: #F6F6F6;
+  --color-background: #FFFFFF;
+  --color-foreground: #171717;
+  --color-yellow: #FBD103;
+  
+  /* Typography */
+  --font-sans: var(--font-poppins), system-ui, sans-serif;
+  
+  /* Spacing */
+  --container-padding: 100px;
+  --section-gap: 80px;
+}
+
+@theme inline {
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-primary: var(--color-primary);
+  --color-dark: var(--color-dark);
+  --color-gray: var(--color-gray);
+  --color-light-gray: var(--color-light-gray);
+  --font-sans: var(--font-sans);
+}
+
+/* Base styles */
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+/* Container utility */
+.container-main {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* Section header with purple accent bar */
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.section-header::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 30px;
+  background: var(--color-primary);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+/* Button base styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 44px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+}
+
+.btn-white {
+  background: white;
+  color: var(--color-dark);
+}
+
+.btn-white:hover {
+  background: var(--color-light-gray);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Card styles */
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Product card hover effect */
+.product-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Category card */
+.category-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.category-card img {
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles for accessibility */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
