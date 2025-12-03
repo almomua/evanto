@@ -12,7 +12,7 @@ interface OrderReviewProps {
 export function OrderReview({ onPlaceOrder, isProcessing = false }: OrderReviewProps) {
   const { items, getTotal } = useCartStore();
   const subtotal = getTotal();
-  const shipping = 0; // Free shipping
+  const shipping: number = 0; // Free shipping
   const tax = subtotal * 0.08; // 8% tax
   const total = subtotal + shipping + tax;
 

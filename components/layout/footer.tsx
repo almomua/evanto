@@ -102,7 +102,7 @@ export function Footer() {
             <h3 className="text-[28px] leading-relaxed mb-6">{footerLinks.location.title}</h3>
             <ul className="space-y-3">
               {footerLinks.location.links.map((link) => (
-                <li key={link.href}>
+                <li key={link.label}>
                   <Link href={link.href} className="text-lg hover:text-white transition-colors">
                     {link.label}
                   </Link>
