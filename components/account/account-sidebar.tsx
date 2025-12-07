@@ -8,7 +8,7 @@ import { clsx } from 'clsx';
 const menuItems = [
   { href: '/account/orders', icon: Package, label: 'My orders' },
   { href: '/account/wishlist', icon: Heart, label: 'Wishlist' },
-  { href: '/account', icon: User, label: 'My Info' },
+  { href: '/account', icon: User, label: 'My Info', exact: true },
 ];
 
 interface AccountSidebarProps {
@@ -21,6 +21,13 @@ export function AccountSidebar({ user }: AccountSidebarProps) {
   const pathname = usePathname();
 
   const userName = user?.name || 'Ibrahim';
+
+  const isItemActive = (item: typeof menuItems[0]) => {
+    if (item.exact) {
+      return pathname === item.href;
+    }
+    return pathname === item.href || pathname?.startsWith(item.href + '/');
+  };
 
   return (
     <aside className="w-[200px] flex-shrink-0">
@@ -37,10 +44,9 @@ export function AccountSidebar({ user }: AccountSidebarProps) {
       <p className="text-[#807D7E] text-sm mb-8">Welcome to your Account</p>
 
       {/* Navigation Menu */}
-      <nav className="space-y-0">
+      <nav className="space-y-1">
         {menuItems.map((item) => {
-          const isActive = pathname === item.href || 
-            (item.href === '/account/orders' && pathname?.startsWith('/account/orders'));
+          const isActive = isItemActive(item);
           const Icon = item.icon;
 
           return (
@@ -48,10 +54,10 @@ export function AccountSidebar({ user }: AccountSidebarProps) {
               key={item.href}
               href={item.href}
               className={clsx(
-                'flex items-center gap-3 py-3 transition-colors',
+                'flex items-center gap-3 py-3 px-3 rounded-r-lg transition-colors relative',
                 isActive
-                  ? 'text-[#8A33FD]'
-                  : 'text-[#807D7E] hover:text-[#3C4242]'
+                  ? 'bg-[#F6F6F6] text-[#3C4242] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-[#8A33FD] before:rounded-full'
+                  : 'text-[#807D7E] hover:text-[#3C4242] hover:bg-[#F6F6F6]/50'
               )}
             >
               <Icon className="w-5 h-5" />
@@ -65,7 +71,7 @@ export function AccountSidebar({ user }: AccountSidebarProps) {
           onClick={() => {
             console.log('Sign out');
           }}
-          className="flex items-center gap-3 py-3 text-[#807D7E] hover:text-[#3C4242] transition-colors w-full"
+          className="flex items-center gap-3 py-3 px-3 rounded-lg text-[#807D7E] hover:text-[#3C4242] hover:bg-[#F6F6F6]/50 transition-colors w-full"
         >
           <LogOut className="w-5 h-5" />
           <span className="text-base">Sign out</span>

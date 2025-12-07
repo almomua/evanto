@@ -6,11 +6,11 @@ import { useCartStore } from '@/lib/store/cart-store';
 import { useWishlistStore } from '@/lib/store/wishlist-store';
 
 const navLinks = [
-  { href: '/', label: 'Shop' },
-  { href: '/makeup', label: 'Makeup' },
-  { href: '/perfumes', label: 'Perfumes' },
-  { href: '/health', label: 'Health' },
-  { href: '/brands', label: 'Brands' },
+  { href: '/products', label: 'Shop' },
+  { href: '/products', label: 'Makeup' },
+  { href: '/products', label: 'Perfumes' },
+  { href: '/products', label: 'Health' },
+  { href: '/products', label: 'Brands' },
 ];
 
 export function Header() {
@@ -22,7 +22,11 @@ export function Header() {
       <div className="max-w-[1440px] mx-auto px-[65px] py-5">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="text-[48px] font-normal text-black" style={{ fontFamily: "'Anton SC', sans-serif" }}>
+          <Link 
+            href="/" 
+            className="text-[48px] text-black leading-[100%] tracking-[0%]"
+            style={{ fontFamily: "var(--font-anton-sc), sans-serif", fontWeight: 400 }}
+          >
             Evora
           </Link>
 
@@ -32,9 +36,10 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-[22px] transition-colors ${
+                className={`text-[18px] font-medium transition-colors ${
                   index === 0 ? 'text-[#3C4242]' : 'text-[#807D7E] hover:text-[#3C4242]'
                 }`}
+                style={{ fontFamily: "var(--font-poppins), sans-serif" }}
               >
                 {link.label}
               </Link>
@@ -55,7 +60,7 @@ export function Header() {
 
             {/* Wishlist */}
             <Link
-              href="/wishlist"
+              href="/account/wishlist"
               className="relative flex items-center justify-center w-11 h-11 bg-[#F6F6F6] rounded-lg hover:bg-[#EBEBEB] transition-colors"
             >
               <Heart className="w-5 h-5 text-[#807D7E]" />

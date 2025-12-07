@@ -1,174 +1,204 @@
 'use client';
 
 import { useState } from 'react';
-import { Camera, Edit2 } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
+
+interface Address {
+  id: string;
+  name: string;
+  phone: string;
+  address: string;
+  tags: string[];
+  isDefault?: boolean;
+}
+
+const mockAddresses: Address[] = [
+  {
+    id: '1',
+    name: 'Jhanvi shah',
+    phone: '8980252445',
+    address: '1/4 Pragatinagar Flats, opp. jain derasar , near Jain derasar, Vijaynagar road',
+    tags: ['Home', 'Default billing address'],
+    isDefault: true,
+  },
+  {
+    id: '2',
+    name: 'Jhanvi shah',
+    phone: '8980252445',
+    address: '1/4 Pragatinagar Flats, opp. jain derasar , near Jain derasar, Vijaynagar road',
+    tags: ['Home', 'Default shipping address'],
+  },
+  {
+    id: '3',
+    name: 'Jhanvi shah',
+    phone: '8980252445',
+    address: '1/4 Pragatinagar Flats, opp. jain derasar , near Jain derasar, Vijaynagar road',
+    tags: ['Office'],
+  },
+  {
+    id: '4',
+    name: 'Jhanvi shah',
+    phone: '8980252445',
+    address: '1/4 Pragatinagar Flats, opp. jain derasar , near Jain derasar, Vijaynagar road',
+    tags: ['Home2'],
+  },
+];
 
 interface ProfileInfoProps {
   user?: {
-    firstName: string;
-    lastName: string;
+    name: string;
     email: string;
     phone: string;
-    avatar?: string;
+    password?: string;
   };
 }
 
 export function ProfileInfo({ user }: ProfileInfoProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: user?.firstName || 'John',
-    lastName: user?.lastName || 'Doe',
-    email: user?.email || 'john.doe@example.com',
-    phone: user?.phone || '+1 234 567 8900',
+  const [userData] = useState({
+    name: user?.name || 'Jhanvi Shah',
+    email: user?.email || 'Jhanvi@gmail.com',
+    phone: user?.phone || '8980252445',
+    password: '••••••••',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSave = () => {
-    // Save profile data
-    console.log('Saving profile:', formData);
-    setIsEditing(false);
-  };
+  const [addresses] = useState<Address[]>(mockAddresses);
 
   return (
-    <div className="bg-white rounded-xl border border-[#BEBCBD]/30 p-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-[#3C4242] text-2xl font-bold">My Info</h2>
-        {!isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2 text-[#8A33FD] hover:text-[#7229D6] transition-colors"
+    <div className="flex-1">
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-sm mb-6">
+        <Link href="/" className="text-[#807D7E] hover:text-[#3C4242]">
+          Home
+        </Link>
+        <ChevronRight className="w-4 h-4 text-[#807D7E]" />
+        <Link href="/account" className="text-[#807D7E] hover:text-[#3C4242]">
+          My Account
+        </Link>
+        <ChevronRight className="w-4 h-4 text-[#807D7E]" />
+        <span className="text-[#3C4242]">Personal Info</span>
+      </nav>
+
+      {/* My Info Heading */}
+      <h1 className="text-[#3C4242] text-2xl font-semibold mb-6">My Info</h1>
+
+      {/* Contact Details Section */}
+      <div className="mb-10">
+        <h2 className="text-[#3C4242] text-lg font-medium mb-6">Contact Details</h2>
+
+        {/* Form Fields */}
+        <div className="space-y-6">
+          {/* Your Name */}
+          <div className="flex items-center justify-between pb-4 border-b border-[#BEBCBD]/30">
+            <div>
+              <label className="block text-[#807D7E] text-sm mb-1">Your Name</label>
+              <p className="text-[#3C4242] text-base">{userData.name}</p>
+            </div>
+            <button className="text-[#807D7E] hover:text-[#3C4242] text-sm transition-colors">
+              Change
+            </button>
+          </div>
+
+          {/* Email Address */}
+          <div className="flex items-center justify-between pb-4 border-b border-[#BEBCBD]/30">
+            <div>
+              <label className="block text-[#807D7E] text-sm mb-1">Email Address</label>
+              <p className="text-[#3C4242] text-base">{userData.email}</p>
+            </div>
+            <button className="text-[#807D7E] hover:text-[#3C4242] text-sm transition-colors">
+              Change
+            </button>
+          </div>
+
+          {/* Phone Number */}
+          <div className="flex items-center justify-between pb-4 border-b border-[#BEBCBD]/30">
+            <div>
+              <label className="block text-[#807D7E] text-sm mb-1">Phone Number</label>
+              <p className="text-[#3C4242] text-base">{userData.phone}</p>
+            </div>
+            <button className="text-[#807D7E] hover:text-[#3C4242] text-sm transition-colors">
+              Change
+            </button>
+          </div>
+
+          {/* Password */}
+          <div className="flex items-center justify-between pb-4 border-b border-[#BEBCBD]/30">
+            <div>
+              <label className="block text-[#807D7E] text-sm mb-1">Password</label>
+              <p className="text-[#3C4242] text-base">{userData.password}</p>
+            </div>
+            <button className="text-[#807D7E] hover:text-[#3C4242] text-sm transition-colors">
+              Change
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Address Section */}
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-[#3C4242] text-xl font-medium">Address</h2>
+          <Link
+            href="/account/addresses/new"
+            className="text-[#807D7E] hover:text-[#3C4242] text-sm transition-colors"
           >
-            <Edit2 className="w-4 h-4" />
-            <span>Edit</span>
-          </button>
-        )}
-      </div>
-
-      {/* Avatar Section */}
-      <div className="flex items-center gap-6 mb-8 pb-8 border-b border-[#BEBCBD]/30">
-        <div className="relative">
-          <div className="w-24 h-24 rounded-full overflow-hidden bg-[#8A33FD] flex items-center justify-center">
-            <span className="text-white text-3xl font-bold">
-              {formData.firstName.charAt(0).toUpperCase()}
-            </span>
-          </div>
-          {isEditing && (
-            <button className="absolute bottom-0 right-0 w-8 h-8 bg-[#8A33FD] rounded-full flex items-center justify-center text-white hover:bg-[#7229D6] transition-colors">
-              <Camera className="w-4 h-4" />
-            </button>
-          )}
+            Add New
+          </Link>
         </div>
-        <div>
-          <h3 className="text-[#3C4242] text-xl font-semibold">
-            {formData.firstName} {formData.lastName}
-          </h3>
-          <p className="text-[#807D7E]">{formData.email}</p>
-        </div>
-      </div>
 
-      {/* Form Fields */}
-      <div className="space-y-6">
+        {/* Address Cards Grid */}
         <div className="grid grid-cols-2 gap-6">
-          <div>
-            <label className="block text-[#3C4242] text-sm font-medium mb-2">
-              First Name
-            </label>
-            {isEditing ? (
-              <input
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] focus:outline-none focus:border-[#8A33FD]"
-              />
-            ) : (
-              <p className="text-[#3C4242] text-lg">{formData.firstName}</p>
-            )}
-          </div>
-          <div>
-            <label className="block text-[#3C4242] text-sm font-medium mb-2">
-              Last Name
-            </label>
-            {isEditing ? (
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] focus:outline-none focus:border-[#8A33FD]"
-              />
-            ) : (
-              <p className="text-[#3C4242] text-lg">{formData.lastName}</p>
-            )}
-          </div>
+          {addresses.map((address) => (
+            <AddressCard key={address.id} address={address} />
+          ))}
         </div>
-
-        <div>
-          <label className="block text-[#3C4242] text-sm font-medium mb-2">
-            Email Address
-          </label>
-          {isEditing ? (
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] focus:outline-none focus:border-[#8A33FD]"
-            />
-          ) : (
-            <p className="text-[#3C4242] text-lg">{formData.email}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-[#3C4242] text-sm font-medium mb-2">
-            Phone Number
-          </label>
-          {isEditing ? (
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] focus:outline-none focus:border-[#8A33FD]"
-            />
-          ) : (
-            <p className="text-[#3C4242] text-lg">{formData.phone}</p>
-          )}
-        </div>
-
-        {/* Action Buttons */}
-        {isEditing && (
-          <div className="flex gap-4 pt-4">
-            <button
-              onClick={handleSave}
-              className="px-8 py-3 bg-[#8A33FD] text-white rounded-lg hover:bg-[#7229D6] transition-colors"
-            >
-              Save Changes
-            </button>
-            <button
-              onClick={() => setIsEditing(false)}
-              className="px-8 py-3 border border-[#3C4242] text-[#3C4242] rounded-lg hover:bg-[#3C4242] hover:text-white transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Password Section */}
-      <div className="mt-8 pt-8 border-t border-[#BEBCBD]/30">
-        <h3 className="text-[#3C4242] text-lg font-semibold mb-4">Password</h3>
-        <button className="text-[#8A33FD] hover:text-[#7229D6] transition-colors">
-          Change Password
-        </button>
       </div>
     </div>
   );
 }
 
+function AddressCard({ address }: { address: Address }) {
+  const hasDefaultTag = address.tags.some(tag => 
+    tag.includes('Default billing') || tag.includes('Default shipping')
+  );
+
+  return (
+    <div className="border border-[#BEBCBD]/50 rounded-xl p-5">
+      {/* Name */}
+      <h3 className="text-[#3C4242] font-medium mb-2">{address.name}</h3>
+      
+      {/* Phone */}
+      <p className="text-[#807D7E] text-sm mb-3">{address.phone}</p>
+      
+      {/* Address */}
+      <p className="text-[#807D7E] text-sm mb-4 leading-relaxed">{address.address}</p>
+      
+      {/* Tags */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {address.tags.map((tag, index) => (
+          <span
+            key={index}
+            className="px-3 py-1 border border-[#BEBCBD] rounded-md text-[#3C4242] text-xs"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+      
+      {/* Actions */}
+      <div className="flex items-center gap-4 text-sm">
+        <button className="text-[#807D7E] hover:text-red-500 transition-colors">
+          Remove
+        </button>
+        <button className="text-[#807D7E] hover:text-[#3C4242] transition-colors">
+          Edit
+        </button>
+        {!hasDefaultTag && (
+          <button className="text-[#807D7E] hover:text-[#3C4242] transition-colors">
+            Set as default.
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
