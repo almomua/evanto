@@ -41,7 +41,7 @@ export default function CartPage() {
   }
 
   const subtotal = getTotal();
-  const shipping = 0; // Calculated at checkout
+  const shipping: number = 0; // Calculated at checkout
   const grandTotal = subtotal - discount + shipping;
 
   const handleApplyCoupon = async () => {
