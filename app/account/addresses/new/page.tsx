@@ -47,7 +47,6 @@ export default function AddAddressPage() {
         lastName: formData.lastName,
         country: formData.country,
         address1: formData.streetAddress, // backend expects 'address1'
-        address: formData.streetAddress, // keep for type compatibility if needed
         address2: formData.apt,
         city: formData.city,
         state: formData.state,
