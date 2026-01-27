@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -20,7 +20,7 @@ type CheckoutStep = 1 | 2 | 3;
 
 import { useSearchParams } from 'next/navigation';
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { items, clearCart } = useCartStore();
@@ -278,5 +278,17 @@ export default function CheckoutPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="h-screen w-full flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-[#8A33FD]" />
+      </div>
+    }>
+      <CheckoutContent />
+    </Suspense>
   );
 }
