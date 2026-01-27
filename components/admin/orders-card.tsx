@@ -100,11 +100,11 @@ export function RecentOrdersTable({ orders = [] }: RecentOrdersTableProps) {
             {orders.map((order) => (
               <tr key={order._id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4 text-sm font-medium text-[#3C4242]">#{order._id.slice(-6).toUpperCase()}</td>
-                <td className="px-6 py-4 text-sm text-[#3C4242]">User {order.user?.toString().slice(-4)}</td>
+                <td className="px-6 py-4 text-sm text-[#3C4242]">{order.customer?.name}</td>
                 <td className="px-6 py-4">
                   <span className={`text-sm ${order.status === 'delivered' ? 'text-green-500' :
-                      order.status === 'cancelled' ? 'text-red-500' :
-                        'text-orange-500'
+                    order.status === 'cancelled' ? 'text-red-500' :
+                      'text-orange-500'
                     } capitalize`}>
                     {order.status}
                   </span>
