@@ -4,18 +4,13 @@ import { useState } from 'react';
 import { ChevronUp } from 'lucide-react';
 import { clsx } from 'clsx';
 
-const sizes = [
-  ['XXS', 'XL', 'XS'],
-  ['S', 'M', 'L'],
-  ['XXL', '3XL', '4XL'],
-];
-
 interface SizeFilterProps {
   selectedSizes: string[];
   onSizeChange: (sizes: string[]) => void;
+  sizes?: string[];
 }
 
-export function SizeFilter({ selectedSizes, onSizeChange }: SizeFilterProps) {
+export function SizeFilter({ selectedSizes, onSizeChange, sizes = [] }: SizeFilterProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const toggleSize = (size: string) => {
@@ -25,6 +20,9 @@ export function SizeFilter({ selectedSizes, onSizeChange }: SizeFilterProps) {
       onSizeChange([...selectedSizes, size]);
     }
   };
+
+  // Default sizes if none provided
+  const displaySizes = sizes.length > 0 ? sizes : ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
   return (
     <div className="px-[30px] py-5">
@@ -40,28 +38,26 @@ export function SizeFilter({ selectedSizes, onSizeChange }: SizeFilterProps) {
       </button>
 
       {isExpanded && (
-        <div className="space-y-[18px]">
-          {sizes.map((row, rowIndex) => (
-            <div key={rowIndex} className="flex gap-5">
-              {row.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => toggleSize(size)}
-                  className={clsx(
-                    'w-[61px] h-8 rounded-lg border text-sm transition-all',
-                    selectedSizes.includes(size)
-                      ? 'border-[#8A33FD] bg-[#8A33FD]/10 text-[#8A33FD]'
-                      : 'border-[#BEBCBD]/80 text-[#3C4242] hover:border-[#8A33FD]'
-                  )}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
+        <div className="flex flex-wrap gap-4">
+          {displaySizes.map((size) => (
+            <button
+              key={size}
+              onClick={() => toggleSize(size)}
+              className={clsx(
+                'min-w-[50px] px-3 h-8 rounded-lg border text-sm transition-all',
+                selectedSizes.includes(size)
+                  ? 'border-[#8A33FD] bg-[#8A33FD]/10 text-[#8A33FD]'
+                  : 'border-[#BEBCBD]/80 text-[#3C4242] hover:border-[#8A33FD]'
+              )}
+            >
+              {size}
+            </button>
           ))}
         </div>
       )}
     </div>
   );
 }
+
+
 

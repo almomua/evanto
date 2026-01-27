@@ -3,6 +3,7 @@ import { ProductCard } from './product-card';
 
 interface Product {
   id: string;
+  slug?: string;
   name: string;
   brand: string;
   price: number;
@@ -23,15 +24,18 @@ export function SimilarProducts({ products }: SimilarProductsProps) {
           <ProductCard
             key={product.id}
             id={product.id}
+            slug={product.slug}
             name={product.name}
             brand={product.brand}
             price={product.price}
             image={product.image}
-            href={`/products/${product.id}`}
+            href={`/products/${product.slug || product.id}`}
           />
         ))}
       </div>
     </section>
   );
 }
+
+
 

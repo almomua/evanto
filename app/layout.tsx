@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins, Anton, Anton_SC } from "next/font/google";
 import { Providers } from "./providers";
+import { AuthProvider } from "@/lib/context/auth-context";
+import { FloatingChat } from "@/components/layout/floating-chat";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -22,7 +24,7 @@ const antonSC = Anton_SC({
 });
 
 export const metadata: Metadata = {
-  title: "Evora - Beauty & Cosmetics",
+  title: "ProBerry - Beauty & Cosmetics",
   description: "Luxury Beauty at Smart Prices - Shop skincare, makeup, perfumes and more",
 };
 
@@ -32,10 +34,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.variable} ${anton.variable} ${antonSC.variable} font-sans antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${poppins.variable} ${anton.variable} ${antonSC.variable} font-sans antialiased`} suppressHydrationWarning>
         <Providers>
-          {children}
+          <AuthProvider>
+            {children}
+            <FloatingChat />
+          </AuthProvider>
         </Providers>
       </body>
     </html>

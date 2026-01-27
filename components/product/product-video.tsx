@@ -7,11 +7,21 @@ interface ProductVideoProps {
   thumbnail: string;
   productName: string;
   duration?: string;
+  videoUrl?: string;
 }
 
-export function ProductVideo({ thumbnail, productName, duration = '1:00' }: ProductVideoProps) {
+export function ProductVideo({ thumbnail, productName, duration = '1:00', videoUrl }: ProductVideoProps) {
+  const handleClick = () => {
+    if (videoUrl) {
+      window.open(videoUrl, '_blank');
+    }
+  };
+
   return (
-    <div className="relative w-[532px] h-[328px] rounded-[20px] overflow-hidden group cursor-pointer">
+    <div
+      className="relative w-[532px] h-[328px] rounded-[20px] overflow-hidden group cursor-pointer"
+      onClick={handleClick}
+    >
       {/* Thumbnail */}
       <Image
         src={thumbnail}
@@ -43,4 +53,3 @@ export function ProductVideo({ thumbnail, productName, duration = '1:00' }: Prod
     </div>
   );
 }
-

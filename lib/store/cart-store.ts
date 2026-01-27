@@ -49,8 +49,8 @@ export const useCartStore = create<CartState>()(
             quantity <= 0
               ? state.items.filter((i) => i.id !== id)
               : state.items.map((i) =>
-                  i.id === id ? { ...i, quantity } : i
-                ),
+                i.id === id ? { ...i, quantity } : i
+              ),
         })),
 
       clearCart: () => set({ items: [] }),
@@ -66,8 +66,10 @@ export const useCartStore = create<CartState>()(
       },
     }),
     {
-      name: 'evora-cart',
+      name: 'ProBerry-cart',
     }
   )
 );
+
+
 

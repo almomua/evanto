@@ -1,26 +1,27 @@
-// Figma Asset URLs for Product Detail Page - Valid for 7 days
+// Local asset paths for Product Detail Page
+// All assets are stored in public/images/
 
 export const PRODUCT_DETAIL_ASSETS = {
   // Main product image
-  mainProduct: "https://www.figma.com/api/mcp/asset/3db4813e-e366-49ed-a960-b349016e1e5c",
+  mainProduct: "/images/products/product-1.png",
   
   // Similar products
-  similar1: "https://www.figma.com/api/mcp/asset/509cfe84-8820-4157-b0fe-29e948788770",
-  similar2: "https://www.figma.com/api/mcp/asset/36f8b8a7-a663-4609-bc92-c0738bab2e7d",
-  similar3: "https://www.figma.com/api/mcp/asset/0c646701-ffc2-44f1-b668-b98861db2a38",
-  similar4: "https://www.figma.com/api/mcp/asset/240c9804-a2d6-4230-962a-2746487d5a42",
-  similar5: "https://www.figma.com/api/mcp/asset/127de2a3-867f-41ff-ab77-586a6cae8b8e",
-  similar6: "https://www.figma.com/api/mcp/asset/b35b3036-91c4-444b-be8e-e460fed982d2",
-  similar7: "https://www.figma.com/api/mcp/asset/0dade310-d7b8-47d9-be6e-db2e2fabbd7e",
+  similar1: "/images/products/product-1.png",
+  similar2: "/images/products/product-2.png",
+  similar3: "/images/products/product-3.png",
+  similar4: "/images/products/product-4.png",
+  similar5: "/images/products/product-1.png", // Reusing product1
+  similar6: "/images/products/product-2.png", // Reusing product2
+  similar7: "/images/products/product-3.png", // Reusing product3
   
-  // Feature icons
-  securePayment: "https://www.figma.com/api/mcp/asset/f6371df6-158c-4aad-b544-041ef3bcda6b",
-  sizeFit: "https://www.figma.com/api/mcp/asset/a78c33c0-0793-4a8c-9f9c-faa805d47390",
-  freeShipping: "https://www.figma.com/api/mcp/asset/614b7d9c-a832-4832-bf04-ccc19aa48628",
-  freeReturns: "https://www.figma.com/api/mcp/asset/4e3d3d97-6353-4d60-888e-6233a33f91c7",
+  // Feature icons (downloaded from product detail page design - SVG format)
+  securePayment: "/images/icons/features/secure-payment.svg",
+  sizeFit: "/images/icons/features/size-fit.svg",
+  freeShipping: "/images/icons/features/free-shipping.svg",
+  freeReturns: "/images/icons/features/free-returns.svg",
   
-  // Play button
-  playButton: "https://www.figma.com/api/mcp/asset/50020330-d37c-468b-8687-7bed5de65a16",
+  // Play button (downloaded from product detail page design - SVG format)
+  playButton: "/images/icons/features/play-button.svg",
 };
 
 // Mock similar products
@@ -34,4 +35,6 @@ export const similarProducts = [
   { id: 'sim-7', name: 'Item', brand: "Nike's Brand", price: 123.00, image: PRODUCT_DETAIL_ASSETS.similar7 },
   { id: 'sim-8', name: 'Item', brand: "MOMO's Brand", price: 38.00, image: PRODUCT_DETAIL_ASSETS.similar1 },
 ];
+
+
 

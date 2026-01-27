@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { PRODUCT_DETAIL_ASSETS } from '@/lib/assets-product-detail';
 
 const features = [
@@ -13,13 +12,11 @@ export function ProductFeatures() {
     <div className="grid grid-cols-2 gap-x-20 gap-y-5 pt-10 border-t border-[#BEBCBD]">
       {features.map((feature, index) => (
         <div key={index} className="flex items-center gap-4">
-          <div className="relative w-11 h-11">
-            <Image
+          <div className="w-11 h-11 flex-shrink-0 flex items-center justify-center">
+            <img
               src={feature.icon}
               alt={feature.label}
-              fill
-              className="object-contain"
-              unoptimized
+              className="w-full h-full object-contain"
             />
           </div>
           <span className="text-[#3C4242] text-lg">{feature.label}</span>
@@ -28,4 +25,6 @@ export function ProductFeatures() {
     </div>
   );
 }
+
+
 

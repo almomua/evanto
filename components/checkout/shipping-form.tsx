@@ -18,17 +18,17 @@ interface ShippingFormProps {
   onSubmit: (data: ShippingFormData) => void;
 }
 
-export function ShippingForm({ onSubmit }: ShippingFormProps) {
+export function ShippingForm({ onSubmit, initialData }: { onSubmit: (data: ShippingFormData) => void, initialData?: Partial<ShippingFormData> }) {
   const [formData, setFormData] = useState<ShippingFormData>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: 'United States',
+    firstName: initialData?.firstName || '',
+    lastName: initialData?.lastName || '',
+    email: initialData?.email || '',
+    phone: initialData?.phone || '',
+    address: initialData?.address || '',
+    city: initialData?.city || '',
+    state: initialData?.state || '',
+    zipCode: initialData?.zipCode || '', // This component uses zipCode locally, might need mapping if initialData comes from Address
+    country: 'Egypt',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -185,11 +185,8 @@ export function ShippingForm({ onSubmit }: ShippingFormProps) {
               required
               className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] focus:outline-none focus:border-[#8A33FD] bg-white"
             >
-              <option value="United States">United States</option>
-              <option value="Canada">Canada</option>
-              <option value="United Kingdom">United Kingdom</option>
-              <option value="Australia">Australia</option>
-              <option value="India">India</option>
+              <option value="Egypt">Egypt</option>
+              <option value="Iraq">Iraq</option>
             </select>
           </div>
         </div>
@@ -197,4 +194,6 @@ export function ShippingForm({ onSubmit }: ShippingFormProps) {
     </div>
   );
 }
+
+
 

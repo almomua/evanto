@@ -7,14 +7,14 @@ import { useCartStore, CartItem } from '@/lib/store/cart-store';
 interface OrderReviewProps {
   onPlaceOrder: () => void;
   isProcessing?: boolean;
+  discount?: number;
 }
 
-export function OrderReview({ onPlaceOrder, isProcessing = false }: OrderReviewProps) {
+export function OrderReview({ onPlaceOrder, isProcessing = false, discount = 0 }: OrderReviewProps) {
   const { items, getTotal } = useCartStore();
   const subtotal = getTotal();
   const shipping: number = 0; // Free shipping
-  const tax = subtotal * 0.08; // 8% tax
-  const total = subtotal + shipping + tax;
+  const total = subtotal - discount + shipping;
 
   return (
     <div className="bg-[#F6F6F6] rounded-xl p-8 sticky top-8">
@@ -39,10 +39,12 @@ export function OrderReview({ onPlaceOrder, isProcessing = false }: OrderReviewP
             {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
           </span>
         </div>
-        <div className="flex items-center justify-between">
-          <span className="text-[#807D7E] text-base">Tax (8%)</span>
-          <span className="text-[#3C4242] text-base font-medium">${tax.toFixed(2)}</span>
-        </div>
+        {discount > 0 && (
+          <div className="flex items-center justify-between text-green-600">
+            <span className="text-base">Discount</span>
+            <span className="text-base font-medium">-${discount.toFixed(2)}</span>
+          </div>
+        )}
       </div>
 
       {/* Total */}

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { clsx } from 'clsx';
 
 interface ProductGalleryProps {
@@ -23,20 +23,20 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
   };
 
   return (
-    <div className="flex gap-6">
-      {/* Thumbnails */}
-      <div className="flex flex-col items-center gap-6">
+    <div className="flex flex-col-reverse lg:flex-row gap-4 lg:gap-6">
+      {/* Thumbnails - Horizontal on mobile, vertical on desktop */}
+      <div className="flex lg:flex-col items-center gap-4 lg:gap-6">
         {/* Thumbnail Images */}
-        <div className="flex flex-col gap-6">
+        <div className="flex lg:flex-col gap-3 lg:gap-6">
           {displayImages.slice(0, 3).map((image, index) => (
             <button
               key={index}
               onClick={() => setSelectedIndex(index)}
               className={clsx(
-                'relative w-[68px] h-[68px] rounded-xl overflow-hidden transition-all',
+                'relative rounded-lg lg:rounded-xl overflow-hidden transition-all',
                 selectedIndex === index
-                  ? 'ring-2 ring-[#3C4242] w-[76px] h-[76px]'
-                  : 'opacity-70 hover:opacity-100'
+                  ? 'ring-2 ring-[#3C4242] w-[52px] h-[52px] lg:w-[76px] lg:h-[76px]'
+                  : 'opacity-70 hover:opacity-100 w-[48px] h-[48px] lg:w-[68px] lg:h-[68px]'
               )}
             >
               <Image
@@ -50,8 +50,8 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
           ))}
         </div>
 
-        {/* Navigation Arrows */}
-        <div className="flex flex-col gap-3">
+        {/* Navigation Arrows - Hidden on mobile */}
+        <div className="hidden lg:flex flex-col gap-3">
           <button
             onClick={handlePrevious}
             className="w-[21px] h-[21px] rounded-full bg-[#F6F6F6] flex items-center justify-center hover:bg-[#E5E5E5] transition-colors"
@@ -68,17 +68,30 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
       </div>
 
       {/* Main Image */}
-      <div className="relative w-[520px] h-[785px] bg-[#F6F6F6]">
+      <div className="relative w-full lg:w-[520px] aspect-[3/4] lg:h-[785px] bg-[#F6F6F6] rounded-lg lg:rounded-none">
         <Image
           src={displayImages[selectedIndex]}
           alt={productName}
           fill
-          className="object-cover"
+          className="object-cover rounded-lg lg:rounded-none"
           priority
           unoptimized
         />
+        
+        {/* Mobile Navigation Arrows */}
+        <button
+          onClick={handlePrevious}
+          className="lg:hidden absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center"
+        >
+          <ChevronLeft className="w-5 h-5 text-[#3C4242]" />
+        </button>
+        <button
+          onClick={handleNext}
+          className="lg:hidden absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center"
+        >
+          <ChevronRight className="w-5 h-5 text-[#3C4242]" />
+        </button>
       </div>
     </div>
   );
 }
-

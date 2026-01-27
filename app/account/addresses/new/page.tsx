@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ChevronRight, ChevronDown } from 'lucide-react';
+import { ChevronRight, ChevronDown, Loader2 } from 'lucide-react';
+import { userApi } from '@/lib/api/user';
 
 export default function AddAddressPage() {
   const router = useRouter();
@@ -23,6 +24,8 @@ export default function AddAddressPage() {
     isDefaultBilling: false,
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -35,10 +38,31 @@ export default function AddAddressPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Saving address:', formData);
-    router.push('/account');
+    setIsLoading(true);
+    try {
+      await userApi.createAddress({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        country: formData.country,
+        address1: formData.streetAddress, // backend expects 'address1'
+        address: formData.streetAddress, // keep for type compatibility if needed
+        address2: formData.apt,
+        city: formData.city,
+        state: formData.state,
+        postalCode: formData.postalCode,
+        phoneNumber: formData.phone,
+        isDefault: formData.isDefaultShipping,
+        type: 'shipping' // backend requires type
+      });
+      router.push('/account'); // Navigate back to profile
+    } catch (error) {
+      console.error('Failed to create address', error);
+      // Ideally show error toast
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -62,7 +86,7 @@ export default function AddAddressPage() {
 
       {/* My Info Heading */}
       <h1 className="text-[#3C4242] text-2xl font-semibold mb-2">My Info</h1>
-      
+
       {/* Add Address Subheading */}
       <h2 className="text-[#3C4242] text-xl mb-8">Add Address</h2>
 
@@ -106,15 +130,20 @@ export default function AddAddressPage() {
             <label className="block text-[#3C4242] text-base mb-2 tracking-wide">
               Country / Region*
             </label>
-            <input
-              type="text"
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              placeholder="Country / Region"
-              required
-              className="w-full px-5 py-4 bg-[#F6F6F6] rounded-lg text-[#3C4242] placeholder:text-[#807D7E] focus:outline-none focus:ring-2 focus:ring-[#8A33FD]/30"
-            />
+            <div className="relative">
+              <select
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                required
+                className="w-full px-5 py-4 bg-[#F6F6F6] rounded-lg text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8A33FD]/30 appearance-none cursor-pointer"
+              >
+                <option value="">Select Country</option>
+                <option value="Egypt">Egypt</option>
+                <option value="Iraq">Iraq</option>
+              </select>
+              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#3C4242] pointer-events-none" />
+            </div>
           </div>
           <div>
             <label className="block text-[#3C4242] text-base mb-2 tracking-wide">
@@ -180,7 +209,7 @@ export default function AddAddressPage() {
           </div>
           <div>
             <label className="block text-[#3C4242] text-base mb-2 tracking-wide">
-              State*
+              State / Governorate*
             </label>
             <div className="relative">
               <select
@@ -188,14 +217,63 @@ export default function AddAddressPage() {
                 value={formData.state}
                 onChange={handleChange}
                 required
-                className="w-full px-5 py-4 bg-[#F6F6F6] rounded-lg text-[#807D7E] focus:outline-none focus:ring-2 focus:ring-[#8A33FD]/30 appearance-none cursor-pointer"
+                className="w-full px-5 py-4 bg-[#F6F6F6] rounded-lg text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8A33FD]/30 appearance-none cursor-pointer"
               >
-                <option value="">State</option>
-                <option value="Gujarat">Gujarat</option>
-                <option value="Maharashtra">Maharashtra</option>
-                <option value="Karnataka">Karnataka</option>
-                <option value="Tamil Nadu">Tamil Nadu</option>
-                <option value="Delhi">Delhi</option>
+                <option value="">Select State</option>
+                {/* Dynamic States based on Country */}
+                {formData.country === 'Egypt' && (
+                  <>
+                    <option value="Cairo">Cairo</option>
+                    <option value="Giza">Giza</option>
+                    <option value="Alexandria">Alexandria</option>
+                    <option value="Dakahlia">Dakahlia</option>
+                    <option value="Red Sea">Red Sea</option>
+                    <option value="Beheira">Beheira</option>
+                    <option value="Fayoum">Fayoum</option>
+                    <option value="Gharbiya">Gharbiya</option>
+                    <option value="Ismailia">Ismailia</option>
+                    <option value="Menofia">Menofia</option>
+                    <option value="Minya">Minya</option>
+                    <option value="Qaliubiya">Qaliubiya</option>
+                    <option value="New Valley">New Valley</option>
+                    <option value="Suez">Suez</option>
+                    <option value="Aswan">Aswan</option>
+                    <option value="Assiut">Assiut</option>
+                    <option value="Beni Suef">Beni Suef</option>
+                    <option value="Port Said">Port Said</option>
+                    <option value="Damietta">Damietta</option>
+                    <option value="Sharkia">Sharkia</option>
+                    <option value="South Sinai">South Sinai</option>
+                    <option value="Kafr Al Sheikh">Kafr Al Sheikh</option>
+                    <option value="Matrouh">Matrouh</option>
+                    <option value="Luxor">Luxor</option>
+                    <option value="Qena">Qena</option>
+                    <option value="North Sinai">North Sinai</option>
+                    <option value="Sohag">Sohag</option>
+                  </>
+                )}
+                {formData.country === 'Iraq' && (
+                  <>
+                    <option value="Baghdad">Baghdad</option>
+                    <option value="Basra">Basra</option>
+                    <option value="Nineveh">Nineveh</option>
+                    <option value="Erbil">Erbil</option>
+                    <option value="Kirkuk">Kirkuk</option>
+                    <option value="Sulaymaniyah">Sulaymaniyah</option>
+                    <option value="Anbar">Anbar</option>
+                    <option value="Babil">Babil</option>
+                    <option value="Dhi Qar">Dhi Qar</option>
+                    <option value="Diyala">Diyala</option>
+                    <option value="Duhok">Duhok</option>
+                    <option value="Karbala">Karbala</option>
+                    <option value="Maysan">Maysan</option>
+                    <option value="Muthanna">Muthanna</option>
+                    <option value="Najaf">Najaf</option>
+                    <option value="Saladin">Saladin</option>
+                    <option value="Wasit">Wasit</option>
+                  </>
+                )}
+                {!formData.country && <option disabled>Select Country First</option>}
               </select>
               <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#3C4242] pointer-events-none" />
             </div>
@@ -293,4 +371,6 @@ export default function AddAddressPage() {
     </div>
   );
 }
+
+
 

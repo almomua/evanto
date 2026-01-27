@@ -12,7 +12,7 @@ export function useProducts() {
 export function useProduct(id: string) {
   return useQuery<Product | undefined>({
     queryKey: ['product', id],
-    queryFn: () => productsApi.getById(id),
+    queryFn: () => productsApi.getBySlug(id),
     enabled: !!id,
   });
 }
@@ -69,4 +69,6 @@ export function useCategoryBySlug(slug: string) {
     enabled: !!slug,
   });
 }
+
+
 

@@ -1,82 +1,97 @@
-import {
-  getProducts,
-  getProductById,
-  getProductsByCategory,
-  getFeaturedProducts,
-  type Product,
-} from '@/lib/data/mock-products';
+import api from '@/lib/axios';
 
-import {
-  getCategories,
-  getMakeupCategories,
-  getPerfumeCategories,
-  getCategoryBySlug,
-  type Category,
-} from '@/lib/data/mock-categories';
+export interface Product {
+  _id: string;
+  slug: string;
+  name: string;
+  description: string;
+  shortDesc?: string;
+  price: number;
+  discount: number;
+  images: { secure_url: string }[];
+  category: { _id: string; name: string; slug: string };
+  isFeatured: boolean;
+  ratingsAverage: number;
+  ratingsQuantity: number;
+  variants: any[];
+  ingredients?: string;
+  howToUse?: string;
+}
 
-// API base URL - replace with your actual API endpoint
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
-
-// For now, we use mock data. Replace these with actual API calls when backend is ready.
+export interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  image: { secure_url: string };
+  parentCategory?: string;
+}
 
 export const productsApi = {
-  // Get all products
-  getAll: async (): Promise<Product[]> => {
-    // Replace with: return fetch(`${API_BASE_URL}/products`).then(res => res.json())
-    return getProducts();
+  // Get all products with optional filtering
+  getAll: async (params?: Record<string, any>): Promise<Product[]> => {
+    const response = await api.get('/products', { params });
+    return response.data.data.docs;
   },
 
-  // Get single product by ID
-  getById: async (id: string): Promise<Product | undefined> => {
-    // Replace with: return fetch(`${API_BASE_URL}/products/${id}`).then(res => res.json())
-    return getProductById(id);
+  // Get single product by slug or ID (backend supports both)
+  getBySlug: async (slugOrId: string): Promise<Product | undefined> => {
+    try {
+      const response = await api.get(`/products/${slugOrId}`);
+      return response.data.data.doc;
+    } catch (error) {
+      return undefined;
+    }
   },
 
-  // Get products by category
-  getByCategory: async (category: string): Promise<Product[]> => {
-    // Replace with: return fetch(`${API_BASE_URL}/products?category=${category}`).then(res => res.json())
-    return getProductsByCategory(category);
+  // Get products by category slug
+  // Since backend filters by Category ID normally, we might need to first resolve slug to ID 
+  // or update backend to support filtering by category slug via population.
+  // For now, let's assume valid ID is passed or handle slug resolution if needed.
+  // Ideally, backend should support ?category=id
+  getByCategory: async (categoryId: string): Promise<Product[]> => {
+    const response = await api.get('/products', { params: { category: categoryId } });
+    return response.data.data.docs;
   },
 
   // Get featured products
   getFeatured: async (): Promise<Product[]> => {
-    // Replace with: return fetch(`${API_BASE_URL}/products/featured`).then(res => res.json())
-    return getFeaturedProducts();
+    const response = await api.get('/products', { params: { isFeatured: true } });
+    return response.data.data.docs;
   },
 
   // Search products
   search: async (query: string): Promise<Product[]> => {
-    // Replace with actual search API
-    const products = await getProducts();
-    return products.filter(
-      (p) =>
-        p.name.toLowerCase().includes(query.toLowerCase()) ||
-        p.brand.toLowerCase().includes(query.toLowerCase())
-    );
+    const response = await api.get('/products', { params: { search: query } });
+    return response.data.data.docs;
   },
 };
 
 export const categoriesApi = {
   // Get all categories
   getAll: async (): Promise<Category[]> => {
-    return getCategories();
+    const response = await api.get('/categories');
+    return response.data.data.docs;
   },
 
-  // Get makeup categories
+  // Get makeup categories (Example: filter by specific parent or logic)
+  // Logic depends on how categories are structured. Assuming we fetch all and filter client side 
+  // OR backend has specific endpoints. For now, fetch all.
   getMakeup: async (): Promise<Category[]> => {
-    return getMakeupCategories();
+    const response = await api.get('/categories');
+    // This needs proper implementation based on DB structure
+    return response.data.data.docs;
   },
 
   // Get perfume categories
   getPerfume: async (): Promise<Category[]> => {
-    return getPerfumeCategories();
+    const response = await api.get('/categories');
+    return response.data.data.docs;
   },
 
   // Get category by slug
   getBySlug: async (slug: string): Promise<Category | undefined> => {
-    return getCategoryBySlug(slug);
+    // This requires a backend endpoint to find by slug, or filtering list
+    const response = await api.get('/categories');
+    return response.data.data.docs.find((c: Category) => c.slug === slug);
   },
 };
-
-export type { Product, Category };
-

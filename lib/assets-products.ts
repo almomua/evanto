@@ -1,15 +1,15 @@
-// Figma Asset URLs for Products Listing Page - Valid for 7 days
-// Download and replace with local paths before they expire
+// Local asset paths for Products Listing Page
+// All assets are stored in public/images/
 
 export const PRODUCT_LISTING_ASSETS = {
   // Product images from the listing page
-  product1: "https://www.figma.com/api/mcp/asset/91bc5c9e-d5a6-49fd-8594-6721df4b74bd",
-  product2: "https://www.figma.com/api/mcp/asset/b78ab1b8-87f3-4695-aba9-6b4ba8547401",
-  product3: "https://www.figma.com/api/mcp/asset/8e5a6cac-7598-48bf-bd9b-6b6578282c02",
-  product4: "https://www.figma.com/api/mcp/asset/7be44f51-5ccc-4ed4-9ec6-4d9e97660d0c",
-  product5: "https://www.figma.com/api/mcp/asset/d8a9049e-f3ff-4542-9068-0234241ae4e0",
-  product6: "https://www.figma.com/api/mcp/asset/2e73dfe1-2339-48cf-af9b-1131731aee9f",
-  product7: "https://www.figma.com/api/mcp/asset/b19a633e-b655-4d6f-8339-5e1301c6a8eb",
+  product1: "/images/products/product-1.png",
+  product2: "/images/products/product-2.png",
+  product3: "/images/products/product-3.png",
+  product4: "/images/products/product-4.png",
+  product5: "/images/products/product-1.png", // Reusing product1
+  product6: "/images/products/product-2.png", // Reusing product2
+  product7: "/images/products/product-3.png", // Reusing product3
 };
 
 // Extended mock products for the listing page
@@ -111,4 +111,6 @@ export const listingProducts = [
     category: 'makeup',
   },
 ];
+
+
 
