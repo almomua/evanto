@@ -13,13 +13,15 @@ if (typeof window !== 'undefined') {
     if (key && host) {
         posthog.init(key, {
             api_host: host,
-            person_profiles: 'identified_only',
+            person_profiles: 'always', // Track guests as well to ensure data appears
             capture_pageview: false,
             capture_pageleave: true,
             autocapture: true,
-            debug: true, // Enable debug mode for troubleshooting
+            persistence: 'localStorage',
+            debug: false, // Enable debug mode for troubleshooting
             loaded: (ph) => {
                 console.log('PostHog loaded successfully');
+                ph.capture('posthog_ready'); // Send a test event to verify connection
             }
         });
     } else {
