@@ -5,15 +5,22 @@ import { PostHogProvider as PHProvider } from 'posthog-js/react';
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
-// Initialize PostHog only in browser
+// Initialize PostHog only in browser and if key is present
 if (typeof window !== 'undefined') {
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-        api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-        person_profiles: 'identified_only',
-        capture_pageview: false,
-        capture_pageleave: true,
-        autocapture: true,
-    });
+    const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+    const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
+
+    if (key && host) {
+        posthog.init(key, {
+            api_host: host,
+            person_profiles: 'identified_only',
+            capture_pageview: false,
+            capture_pageleave: true,
+            autocapture: true,
+        });
+    } else {
+        console.warn('PostHog environment variables are missing. Analytics will not be captured.');
+    }
 }
 
 // Page view tracker component
