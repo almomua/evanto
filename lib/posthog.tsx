@@ -17,6 +17,10 @@ if (typeof window !== 'undefined') {
             capture_pageview: false,
             capture_pageleave: true,
             autocapture: true,
+            debug: true, // Enable debug mode for troubleshooting
+            loaded: (ph) => {
+                console.log('PostHog loaded successfully');
+            }
         });
     } else {
         console.warn('PostHog environment variables are missing. Analytics will not be captured.');
