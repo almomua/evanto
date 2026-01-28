@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface ShippingFormData {
   firstName: string;
@@ -16,9 +16,11 @@ interface ShippingFormData {
 
 interface ShippingFormProps {
   onSubmit: (data: ShippingFormData) => void;
+  initialData?: Partial<ShippingFormData>;
+  showSubmit?: boolean;
 }
 
-export function ShippingForm({ onSubmit, initialData }: { onSubmit: (data: ShippingFormData) => void, initialData?: Partial<ShippingFormData> }) {
+export function ShippingForm({ onSubmit, initialData, showSubmit = true }: ShippingFormProps) {
   const [formData, setFormData] = useState<ShippingFormData>({
     firstName: initialData?.firstName || '',
     lastName: initialData?.lastName || '',
@@ -31,14 +33,38 @@ export function ShippingForm({ onSubmit, initialData }: { onSubmit: (data: Shipp
     country: 'Egypt',
   });
 
+  // Sync initialData when it changes (e.g. after user profile loads)
+  useEffect(() => {
+    if (initialData) {
+      setFormData((prev) => ({
+        ...prev,
+        firstName: initialData.firstName || prev.firstName || '',
+        lastName: initialData.lastName || prev.lastName || '',
+        email: initialData.email || prev.email || '',
+        phone: initialData.phone || prev.phone || '',
+        address: initialData.address || prev.address || '',
+        city: initialData.city || prev.city || '',
+        state: initialData.state || prev.state || '',
+        zipCode: initialData.zipCode || prev.zipCode || '',
+        country: initialData.country || prev.country || 'Egypt',
+      }));
+    }
+  }, [initialData]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value || '' }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+
+    // Final safety check: replace any nulls/undefined with empty strings just in case
+    const safeData = Object.fromEntries(
+      Object.entries(formData).map(([key, val]) => [key, val ?? ''])
+    ) as ShippingFormData;
+
+    onSubmit(safeData);
   };
 
   return (
@@ -190,6 +216,15 @@ export function ShippingForm({ onSubmit, initialData }: { onSubmit: (data: Shipp
             </select>
           </div>
         </div>
+
+        {showSubmit && (
+          <button
+            type="submit"
+            className="mt-4 lg:mt-6 w-full sm:w-auto px-6 lg:px-8 py-2.5 lg:py-3 bg-[#8A33FD] text-white rounded-lg hover:bg-[#7229D6] transition-colors text-sm lg:text-base font-medium"
+          >
+            Continue to Payment
+          </button>
+        )}
       </form>
     </div>
   );

@@ -3,14 +3,15 @@
 import React, { useState } from 'react';
 
 const tabs = [
+    'All',
     'Pending',
-    'Confirmed',
     'Processing',
-    'Picked',
     'Shipped',
     'Delivered',
     'Cancelled',
 ];
+
+const statusOptions = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 
 const statusColors: Record<string, { bg: string, text: string, ring: string }> = {
     'Pending': { bg: 'bg-orange-50', text: 'text-orange-500', ring: 'ring-orange-500/10' },
@@ -24,13 +25,15 @@ const statusColors: Record<string, { bg: string, text: string, ring: string }> =
 
 import { ordersApi, Order } from '@/lib/api/orders';
 import { Loader2 } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
 import { useEffect } from 'react';
+import { clsx } from 'clsx';
 
 
 export function OrderManagementTable() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('Pending');
+    const [activeTab, setActiveTab] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
@@ -40,6 +43,7 @@ export function OrderManagementTable() {
 
     const loadOrders = async () => {
         try {
+            setLoading(true);
             const data = await ordersApi.getOrders();
             setOrders(data);
         } catch (error) {
@@ -49,16 +53,20 @@ export function OrderManagementTable() {
         }
     };
 
+    const handleStatusUpdate = async (orderId: string, newStatus: string) => {
+        try {
+            await ordersApi.updateOrder(orderId, { status: newStatus as any });
+            // Update local state
+            setOrders(prev => prev.map(o => o._id === orderId ? { ...o, status: newStatus } : o));
+        } catch (error) {
+            console.error('Failed to update status', error);
+            alert('Failed to update order status');
+        }
+    };
+
     const filteredOrders = orders.filter(order => {
         // Filter by tab
-        if (activeTab !== 'Pending' && activeTab.toLowerCase() !== order.status) {
-            // Basic mapping: if tab matches status. 
-            // Note: 'Pending' tab maps to 'pending' status.
-            // 'Delivered' -> 'delivered'.
-            // 'Confirmed', 'Picked' might not exist in backend, so they will be empty or need mapping.
-            return false;
-        } else if (activeTab === 'Pending' && order.status !== 'pending') {
-            // Ensure Pending tab only shows pending
+        if (activeTab !== 'All' && activeTab.toLowerCase() !== order.status) {
             return false;
         }
 
@@ -152,7 +160,7 @@ export function OrderManagementTable() {
                                     </td>
                                     <td className="px-6 py-4 text-gray-700 font-medium">{order.customer?.name}</td>
                                     <td className="px-6 py-4 font-bold text-[#3C4242]">
-                                        ${order.totalAmount.toFixed(2)}
+                                        {formatPrice(order.totalAmount)}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2">
@@ -160,14 +168,32 @@ export function OrderManagementTable() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <div className="relative inline-block">
-                                            <button className={`flex items-center gap-2 px-3 py-1.5 ${statusColors[order.status.charAt(0).toUpperCase() + order.status.slice(1)]?.bg || 'bg-gray-50'} ${statusColors[order.status.charAt(0).toUpperCase() + order.status.slice(1)]?.text || 'text-gray-500'} text-xs font-semibold rounded-lg ring-1 ${statusColors[order.status.charAt(0).toUpperCase() + order.status.slice(1)]?.ring || 'ring-gray-500/10'} capitalize`}>
-                                                {order.status}
-                                            </button>
-                                        </div>
+                                        <select
+                                            value={order.status}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                handleStatusUpdate(order._id, e.target.value);
+                                            }}
+                                            className={clsx(
+                                                'block w-full px-2 py-1 text-xs font-semibold rounded-lg ring-1 transition-all outline-none cursor-pointer',
+                                                statusColors[order.status.charAt(0).toUpperCase() + order.status.slice(1)]?.bg || 'bg-gray-50',
+                                                statusColors[order.status.charAt(0).toUpperCase() + order.status.slice(1)]?.text || 'text-gray-500',
+                                                statusColors[order.status.charAt(0).toUpperCase() + order.status.slice(1)]?.ring || 'ring-gray-500/10'
+                                            )}
+                                        >
+                                            {statusOptions.map(status => (
+                                                <option key={status} value={status}>{status.charAt(0).toUpperCase() + status.slice(1)}</option>
+                                            ))}
+                                        </select>
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        <button className="p-2 text-gray-400 hover:text-[#8B5CF6] rounded-full hover:bg-[#8B5CF6]/10 transition-colors">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setExpandedRow(expandedRow === order._id ? null : order._id);
+                                            }}
+                                            className="p-2 text-gray-400 hover:text-[#8B5CF6] rounded-full hover:bg-[#8B5CF6]/10 transition-colors"
+                                        >
                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`transition-transform duration-200 ${expandedRow === order._id ? 'rotate-180' : ''}`}>
                                                 <circle cx="12" cy="12" r="10" />
                                                 <path d="m8 10 4 4 4-4" />
@@ -195,10 +221,10 @@ export function OrderManagementTable() {
                                                             <tr key={i}>
                                                                 <td className="py-4 text-[#807D7E]">{i + 1}</td>
                                                                 <td className="py-4 text-[#3C4242]">#{item.product._id.slice(-6).toUpperCase()}</td>
-                                                                <td className="py-4 text-[#3C4242] font-bold">{item.product.name}</td>
-                                                                <td className="py-4 text-[#3C4242]">${item.price.toFixed(2)}</td>
+                                                                <td className="py-4 text-[#3C4242] font-bold">{item.product?.name}</td>
+                                                                <td className="py-4 text-[#3C4242]">{formatPrice(item.variant?.price || item.product?.price)}</td>
                                                                 <td className="py-4 text-[#3C4242]">{item.quantity}</td>
-                                                                <td className="py-4 text-[#3C4242] font-bold">${(item.price * item.quantity).toFixed(2)}</td>
+                                                                <td className="py-4 text-[#3C4242] font-bold">{formatPrice(item.subtotal)}</td>
                                                             </tr>
                                                         ))}
                                                     </tbody>
@@ -208,7 +234,7 @@ export function OrderManagementTable() {
                                                 <div className="w-64 space-y-3">
                                                     <div className="flex justify-between pt-3 border-t border-gray-100">
                                                         <span className="font-bold text-[#3C4242]">Total</span>
-                                                        <span className="text-[#3C4242] font-bold">${order.totalAmount.toFixed(2)}</span>
+                                                        <span className="text-[#3C4242] font-bold">{formatPrice(order.totalAmount)}</span>
                                                     </div>
                                                 </div>
                                             </div>

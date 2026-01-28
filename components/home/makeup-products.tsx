@@ -27,7 +27,7 @@ export function MakeupProducts({ data }: MakeupProductsProps) {
   const secondRow = categories.slice(4, 8);
 
   return (
-    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[100px] py-8 lg:py-16">
+    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-[100px] py-8 lg:py-16 overflow-hidden">
       <SectionHeader title={title} className="mb-6 lg:mb-10" />
 
       <div className="flex flex-col gap-6 lg:gap-12">

@@ -5,6 +5,7 @@ import { authApi, User } from "@/lib/api/auth";
 import { userApi } from "@/lib/api/user";
 import { useWishlistStore } from "@/lib/store/wishlist-store";
 import { useRouter } from "next/navigation";
+import { analytics } from "@/lib/posthog";
 
 interface AuthContextType {
     user: User | null;
@@ -77,7 +78,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const login = async (email: string, password: string) => {
-        const { user } = await authApi.login(email, password);
+        const { user, token } = await authApi.login(email, password);
+
+        if (token) {
+            localStorage.setItem("token", token);
+        }
 
         // Sync local wishlist to server
         await syncWishlist();
@@ -99,6 +104,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         setUser(user);
 
+        // Identify user in PostHog analytics
+        analytics.identify(user._id, {
+            email: user.email,
+            name: user.name,
+            role: user.role,
+        });
+
         // Check for redirect destination (for users who were redirected to login)
         const redirectTo = typeof window !== 'undefined'
             ? sessionStorage.getItem('redirectAfterLogin')
@@ -115,7 +127,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const register = async (data: any) => {
-        const { user } = await authApi.register(data);
+        const { user, token } = await authApi.register(data);
+
+        if (token) {
+            localStorage.setItem("token", token);
+        }
 
         // Sync local wishlist to server
         await syncWishlist();
@@ -136,15 +152,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         setUser(user);
+
+        // Identify user in PostHog analytics
+        analytics.identify(user._id, {
+            email: user.email,
+            name: user.name,
+            role: user.role,
+        });
+
         router.push('/');
     };
 
     const logout = async () => {
         await authApi.logout();
+        localStorage.removeItem("token");
         // Clear server wishlist state
         const wishlistStore = useWishlistStore.getState();
         wishlistStore.clearServerItems();
         setUser(null);
+
+        // Reset PostHog user tracking
+        analytics.reset();
+
         router.push('/auth/login');
     };
 

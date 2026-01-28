@@ -9,6 +9,7 @@ import { useWishlistStore, WishlistItem } from '@/lib/store/wishlist-store';
 import { userApi } from '@/lib/api/user';
 import { useAuth } from '@/lib/context/auth-context';
 import { Product } from '@/lib/api/products';
+import { formatPrice } from '@/lib/utils';
 import { GuestWishlistPrompt } from '@/components/auth';
 
 
@@ -163,14 +164,14 @@ export function WishlistGrid() {
 
                 {/* Price - Desktop */}
                 <div className="hidden sm:block text-[#3C4242] text-lg font-medium w-24 text-right">
-                  ${item.price.toFixed(2)}
+                  {formatPrice(item.price)}
                 </div>
               </div>
 
               {/* Mobile Price and Add to Cart */}
               <div className="flex items-center justify-between sm:justify-end gap-4 ml-7 sm:ml-0">
                 <span className="sm:hidden text-[#3C4242] text-sm font-medium">
-                  ${item.price.toFixed(2)}
+                  {formatPrice(item.price)}
                 </span>
                 <button
                   onClick={() => handleAddToCart(item)}

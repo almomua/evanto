@@ -22,7 +22,7 @@ export function DealsSection({ data }: DealsSectionProps) {
   };
 
   return (
-    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[100px] py-8 lg:py-16">
+    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-[100px] py-8 lg:py-16 overflow-hidden">
       <div className="flex flex-col md:flex-row gap-4 lg:gap-[30px]">
         {/* Left Deal Card */}
         <div className="relative w-full md:w-1/2 lg:w-[605px] h-[200px] sm:h-[280px] lg:h-[356px] rounded-xl overflow-hidden shadow-lg">

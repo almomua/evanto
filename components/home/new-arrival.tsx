@@ -22,7 +22,7 @@ export function NewArrival({ data }: NewArrivalProps) {
   const items = data?.items && data.items.length > 0 ? data.items : defaultArrivals;
 
   return (
-    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[100px] py-8 lg:py-10">
+    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-[100px] py-8 lg:py-10 overflow-hidden">
       <SectionHeader title={title} className="mb-6 lg:mb-10" />
 
       <div className="relative">

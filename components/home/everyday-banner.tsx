@@ -16,7 +16,7 @@ export function EverydayBanner({ data }: EverydayBannerProps) {
   const rightImage = data?.rightImage || ASSETS.everydayRight;
 
   return (
-    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[100px] py-8 lg:py-16">
+    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-[100px] py-8 lg:py-16 overflow-hidden">
       <div className="relative w-full h-auto lg:h-[640px] rounded-xl overflow-hidden flex flex-col lg:flex-row">
         {/* Left Side - Image with Text Overlay */}
         <div className="relative w-full lg:w-1/2 h-[400px] sm:h-[500px] lg:h-full">

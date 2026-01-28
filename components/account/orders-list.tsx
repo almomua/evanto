@@ -8,6 +8,7 @@ import { clsx } from 'clsx';
 import { ordersApi, Order } from '@/lib/api/orders';
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
 
 
 const statusColors = {
@@ -98,7 +99,7 @@ export function OrdersList() {
                   </div>
                   <div>
                     <p className="text-[#807D7E] text-xs sm:text-sm">Total</p>
-                    <p className="text-[#3C4242] font-medium text-sm sm:text-base">${order.totalAmount.toFixed(2)}</p>
+                    <p className="text-[#3C4242] font-medium text-sm sm:text-base">{formatPrice(order.totalAmount)}</p>
                   </div>
                 </div>
                 <span
@@ -115,8 +116,8 @@ export function OrdersList() {
 
             {/* Order Items */}
             <div className="p-4 sm:p-6">
-              {order.items.map((item) => (
-                <div key={item.product._id} className="flex items-center gap-3 sm:gap-4">
+              {order.items.map((item, index) => (
+                <div key={`${item.product._id}-${index}`} className="flex items-center gap-3 sm:gap-4">
                   <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-[#F6F6F6] flex-shrink-0">
                     <Image
                       src={item.product.images?.[0]?.secure_url || '/placeholder.png'}
@@ -131,7 +132,7 @@ export function OrdersList() {
                     <p className="text-[#807D7E] text-xs sm:text-sm">Qty: {item.quantity}</p>
                   </div>
                   <p className="text-[#3C4242] font-medium text-sm sm:text-base flex-shrink-0">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    {formatPrice(item.subtotal)}
                   </p>
                 </div>
               ))}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Anton, Anton_SC } from "next/font/google";
 import { Providers } from "./providers";
 import { AuthProvider } from "@/lib/context/auth-context";
+import { PostHogProvider } from "@/lib/posthog";
 import { FloatingChat } from "@/components/layout/floating-chat";
 import "./globals.css";
 
@@ -36,12 +37,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${poppins.variable} ${anton.variable} ${antonSC.variable} font-sans antialiased`} suppressHydrationWarning>
-        <Providers>
-          <AuthProvider>
-            {children}
-            <FloatingChat />
-          </AuthProvider>
-        </Providers>
+        <PostHogProvider>
+          <Providers>
+            <AuthProvider>
+              {children}
+              <FloatingChat />
+            </AuthProvider>
+          </Providers>
+        </PostHogProvider>
       </body>
     </html>
   );

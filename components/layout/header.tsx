@@ -10,6 +10,7 @@ import { useWishlistStore } from '@/lib/store/wishlist-store';
 import { useAuth } from '@/lib/context/auth-context';
 import { useModal } from '@/components/ui/modal';
 import { productsApi, Product } from '@/lib/api/products';
+import { formatPrice } from '@/lib/utils';
 
 const navLinks = [
   { href: '/products', label: 'Shop' },
@@ -177,7 +178,7 @@ export function Header() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-[#3C4242] truncate">{product.name}</p>
-                            <p className="text-xs text-[#807D7E]">${product.price}</p>
+                            <p className="text-xs text-[#807D7E]">{formatPrice(product.price)}</p>
                           </div>
                         </Link>
                       ))}

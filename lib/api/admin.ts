@@ -9,6 +9,14 @@ export interface AdminStats {
     totalProducts: number;
     totalUsers: number;
     recentOrders: Order[];
+    // PostHog Analytics
+    activeUsers: number;
+    sessionsToday: number;
+    sessionsThisWeek: number;
+    pageViewsToday: number;
+    // Coupon Stats
+    couponsUsed: number;
+    totalDiscountCut: number;
 }
 
 export interface Coupon {
@@ -60,6 +68,13 @@ export const adminApi = {
                 totalProducts: stats.totalProducts,
                 totalUsers: stats.totalUsers,
                 recentOrders: recentOrders,
+                // PostHog Analytics
+                activeUsers: stats.activeUsers || 0,
+                sessionsToday: stats.sessionsToday || 0,
+                sessionsThisWeek: stats.sessionsThisWeek || 0,
+                pageViewsToday: stats.pageViewsToday || 0,
+                couponsUsed: stats.couponsUsed || 0,
+                totalDiscountCut: stats.totalDiscountCut || 0,
             };
         } catch (error) {
             console.error("Failed to fetch admin stats", error);

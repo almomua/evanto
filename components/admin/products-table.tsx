@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { adminApi } from '@/lib/api/admin';
+import { formatPrice } from '@/lib/utils';
 
 export function BestSellingProducts() {
   const [products, setProducts] = useState<any[]>([]);
@@ -70,9 +71,9 @@ export function BestSellingProducts() {
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-[#3C4242]">{product.totalSold}</td>
                   <td className="px-6 py-4">
-                    <span className="text-sm font-bold text-green-500">${product.revenue?.toLocaleString()}</span>
+                    <span className="text-sm font-bold text-green-500">{formatPrice(product.revenue || 0)}</span>
                   </td>
-                  <td className="px-6 py-4 text-sm font-bold text-[#3C4242]">${product.price}</td>
+                  <td className="px-6 py-4 text-sm font-bold text-[#3C4242]">{formatPrice(product.price)}</td>
                 </tr>
               ))
             )}
@@ -142,7 +143,7 @@ export function TrendingProducts() {
                 <p className="text-sm font-bold text-[#3C4242] truncate">{product.name}</p>
                 <p className="text-xs text-[#807D7E]">{product.totalSold} Units Sold</p>
               </div>
-              <span className="text-sm font-bold text-[#3C4242]">${product.price}</span>
+              <span className="text-sm font-bold text-[#3C4242]">{formatPrice(product.price)}</span>
             </div>
           ))
         )}

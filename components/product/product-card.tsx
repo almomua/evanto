@@ -7,6 +7,7 @@ import { clsx } from 'clsx';
 import { useWishlistStore } from '@/lib/store/wishlist-store';
 import { useAuth } from '@/lib/context/auth-context';
 import { userApi } from '@/lib/api/user';
+import { formatPrice } from '@/lib/utils';
 
 interface ProductCardProps {
   id: string;
@@ -100,15 +101,15 @@ export function ProductCard({ id, slug, name, brand, price, image, href = '#', s
             {productDiscount > 0 ? (
               <>
                 <span className="text-[#3C4242] text-xs font-bold line-through opacity-50">
-                  ${price.toFixed(2)}
+                  {formatPrice(price)}
                 </span>
                 <span className="text-[#8B5CF6] text-sm font-bold">
-                  ${(price * (1 - productDiscount / 100)).toFixed(2)}
+                  {formatPrice(price * (1 - productDiscount / 100))}
                 </span>
               </>
             ) : (
               <span className="text-[#3C4242] text-base font-bold">
-                ${price.toFixed(2)}
+                {formatPrice(price)}
               </span>
             )}
           </div>

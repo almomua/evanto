@@ -6,6 +6,7 @@ import { Send, X, Loader2, ExternalLink } from 'lucide-react';
 import { chatApi, ChatProduct } from '@/lib/api/chat';
 import Image from 'next/image';
 import Link from 'next/link';
+import { formatPrice } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -120,7 +121,7 @@ export function FloatingChat() {
           'fixed bottom-6 right-6 z-[9999] flex items-center justify-center rounded-full shadow-lg transition-all duration-300 hover:scale-110',
           'bg-[#8A33FD] text-white',
           'md:w-16 md:h-16 w-14 h-14',
-          isOpen && 'md:w-12 md:h-12 w-10 h-10'
+          isOpen && 'hidden md:flex md:w-12 md:h-12'
         )}
         aria-label="Toggle chat"
       >
@@ -210,12 +211,12 @@ export function FloatingChat() {
                             const src = String(props.src || '');
                             if (!src) return null;
                             return (
-                              <span className="block my-2 relative w-full h-[150px] rounded-lg overflow-hidden bg-gray-50 border border-gray-100">
+                              <span className="block my-2 relative w-full h-[200px] rounded-lg overflow-hidden bg-white border border-gray-100 flex items-center justify-center">
                                 <Image
                                   src={src}
                                   alt={props.alt || 'Chat image'}
                                   fill
-                                  className="object-cover"
+                                  className="object-contain p-1"
                                   unoptimized
                                 />
                               </span>
@@ -255,7 +256,7 @@ export function FloatingChat() {
                           </div>
                           <div className="p-2">
                             <h4 className="text-xs font-bold text-[#3C4242] line-clamp-1 mb-1 leading-snug h-8 overflow-hidden">{product.name}</h4>
-                            <p className="text-xs font-bold text-[#8A33FD]">${product.price}</p>
+                            <p className="text-xs font-bold text-[#8A33FD]">{formatPrice(product.price)}</p>
                           </div>
                         </Link>
                       ))}

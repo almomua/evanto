@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ordersApi, Order } from '@/lib/api/orders';
 import { useEffect, useState } from 'react';
+import { formatPrice } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
 
@@ -57,7 +58,7 @@ export function TransactionsTable() {
                   <td className="px-6 py-4 text-sm text-[#3C4242]">
                     {new Date(order.createdAt).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 text-sm font-medium text-[#3C4242]">${order.totalAmount.toFixed(2)}</td>
+                  <td className="px-6 py-4 text-sm font-medium text-[#3C4242]">{formatPrice(order.totalAmount)}</td>
                   <td className="px-6 py-4">
                     <Link href={`/admin/orders/${order._id}`} className="text-sm text-[#8B5CF6] hover:underline">
                       View Detail

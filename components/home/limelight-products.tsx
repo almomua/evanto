@@ -64,7 +64,7 @@ export function LimelightProducts({ data }: LimelightProductsProps) {
   }
 
   return (
-    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[100px] py-8 lg:py-16">
+    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-[100px] py-8 lg:py-16 overflow-hidden">
       <SectionHeader title={title} className="mb-6 lg:mb-10" />
 
       {products.length === 0 ? (

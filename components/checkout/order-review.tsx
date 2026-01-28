@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCartStore, CartItem } from '@/lib/store/cart-store';
+import { formatPrice } from '@/lib/utils';
 
 interface OrderReviewProps {
   onPlaceOrder: () => void;
@@ -31,18 +32,18 @@ export function OrderReview({ onPlaceOrder, isProcessing = false, discount = 0 }
       <div className="space-y-4 py-6 border-b border-[#BEBCBD]/50">
         <div className="flex items-center justify-between">
           <span className="text-[#807D7E] text-base">Subtotal</span>
-          <span className="text-[#3C4242] text-base font-medium">${subtotal.toFixed(2)}</span>
+          <span className="text-[#3C4242] text-base font-medium">{formatPrice(subtotal)}</span>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-[#807D7E] text-base">Shipping</span>
           <span className="text-[#3C4242] text-base font-medium">
-            {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+            {shipping === 0 ? 'Free' : formatPrice(shipping)}
           </span>
         </div>
         {discount > 0 && (
           <div className="flex items-center justify-between text-green-600">
             <span className="text-base">Discount</span>
-            <span className="text-base font-medium">-${discount.toFixed(2)}</span>
+            <span className="text-base font-medium">-{formatPrice(discount)}</span>
           </div>
         )}
       </div>
@@ -50,7 +51,7 @@ export function OrderReview({ onPlaceOrder, isProcessing = false, discount = 0 }
       {/* Total */}
       <div className="flex items-center justify-between py-6">
         <span className="text-[#3C4242] text-xl font-bold">Total</span>
-        <span className="text-[#3C4242] text-xl font-bold">${total.toFixed(2)}</span>
+        <span className="text-[#3C4242] text-xl font-bold">{formatPrice(total)}</span>
       </div>
 
       {/* Place Order Button */}
@@ -96,7 +97,7 @@ function OrderItem({ item }: { item: CartItem }) {
         <p className="text-[#807D7E] text-xs">Qty: {item.quantity}</p>
       </div>
       <span className="text-[#3C4242] text-sm font-medium">
-        ${(item.price * item.quantity).toFixed(2)}
+        {formatPrice(item.price * item.quantity)}
       </span>
     </div>
   );

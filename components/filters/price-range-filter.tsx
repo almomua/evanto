@@ -72,7 +72,7 @@ export function PriceRangeFilter({ value, onChange, min, max }: PriceRangeFilter
           <div className="relative h-[20px] mb-6">
             {/* Background Track */}
             <div className="absolute top-1/2 -translate-y-1/2 w-full h-[3px] bg-[#807D7E]/60 rounded" />
-            
+
             {/* Active Track */}
             <div
               className="absolute top-1/2 -translate-y-1/2 h-[3px] bg-[#8A33FD] rounded"
@@ -119,12 +119,12 @@ export function PriceRangeFilter({ value, onChange, min, max }: PriceRangeFilter
           <div className="flex gap-[30px]">
             <div className="flex-1">
               <div className="border border-[#BEBCBD]/80 rounded-lg px-4 py-2">
-                <span className="text-[#3C4242] text-base">${localMin}</span>
+                <span className="text-[#3C4242] text-base">{localMin} IQD</span>
               </div>
             </div>
             <div className="flex-1">
               <div className="border border-[#BEBCBD]/80 rounded-lg px-4 py-2">
-                <span className="text-[#3C4242] text-base">${localMax}</span>
+                <span className="text-[#3C4242] text-base">{localMax} IQD</span>
               </div>
             </div>
           </div>

@@ -109,7 +109,7 @@ export function RecentOrdersTable({ orders = [] }: RecentOrdersTableProps) {
                     {order.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-sm font-medium text-[#3C4242]">${order.totalAmount?.toFixed(2)}</td>
+                <td className="px-6 py-4 text-sm font-medium text-[#3C4242]">{formatPrice(order.totalAmount)}</td>
               </tr>
             ))}
           </tbody>
@@ -118,3 +118,5 @@ export function RecentOrdersTable({ orders = [] }: RecentOrdersTableProps) {
     </div>
   );
 }
+
+import { formatPrice } from '@/lib/utils';

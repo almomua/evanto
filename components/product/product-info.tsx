@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ShoppingCart, Star, ArrowRight } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useCartStore } from '@/lib/store/cart-store';
+import { formatPrice } from '@/lib/utils';
 
 interface ProductInfoProps {
   id: string;
@@ -129,7 +130,7 @@ export function ProductInfo({ id, name, brand, price, rating, image, variants }:
           <span className="text-sm lg:text-lg">Add to cart</span>
         </button>
         <div className="flex items-center justify-center border border-[#3C4242] px-6 lg:px-10 py-3 rounded-lg">
-          <span className="text-[#3C4242] text-sm lg:text-lg font-medium">${currentPrice.toFixed(2)}</span>
+          <span className="text-[#3C4242] text-sm lg:text-lg font-medium">{formatPrice(currentPrice)}</span>
         </div>
       </div>
     </div>

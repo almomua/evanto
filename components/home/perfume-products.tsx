@@ -19,7 +19,7 @@ export function PerfumeProducts({ data }: PerfumeProductsProps) {
   const categories = data?.items && data.items.length > 0 ? data.items : defaultPerfumeCategories;
 
   return (
-    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[100px] py-8 lg:py-16">
+    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-[100px] py-8 lg:py-16 overflow-hidden">
       <SectionHeader title={title} className="mb-6 lg:mb-10" />
 
       <div className="flex gap-4 lg:gap-[50px] overflow-x-auto pb-4 lg:pb-0 lg:overflow-visible lg:justify-center scrollbar-hide">

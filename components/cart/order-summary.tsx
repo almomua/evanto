@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useCartStore } from '@/lib/store/cart-store';
+import { formatPrice } from '@/lib/utils';
 
 interface OrderSummaryProps {
   subtotal: number;
@@ -19,27 +20,27 @@ export function OrderSummary({ subtotal, shipping = 0, discount = 0 }: OrderSumm
       <div className="space-y-4 pb-6 border-b border-[#BEBCBD]">
         <div className="flex items-center justify-between">
           <span className="text-[#807D7E] text-lg">Subtotal</span>
-          <span className="text-[#3C4242] text-lg font-medium">${subtotal.toFixed(2)}</span>
+          <span className="text-[#3C4242] text-lg font-medium">{formatPrice(subtotal)}</span>
         </div>
 
         <div className="flex items-center justify-between">
           <span className="text-[#807D7E] text-lg">Shipping</span>
           <span className="text-[#3C4242] text-lg font-medium">
-            {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+            {shipping === 0 ? 'Free' : formatPrice(shipping)}
           </span>
         </div>
 
         {discount > 0 && (
           <div className="flex items-center justify-between">
             <span className="text-[#807D7E] text-lg">Discount</span>
-            <span className="text-green-600 text-lg font-medium">-${discount.toFixed(2)}</span>
+            <span className="text-green-600 text-lg font-medium">-{formatPrice(discount)}</span>
           </div>
         )}
       </div>
 
       <div className="flex items-center justify-between py-6 border-b border-[#BEBCBD]">
         <span className="text-[#3C4242] text-xl font-bold">Total</span>
-        <span className="text-[#3C4242] text-xl font-bold">${total.toFixed(2)}</span>
+        <span className="text-[#3C4242] text-xl font-bold">{formatPrice(total)}</span>
       </div>
 
       {/* Coupon Code */}

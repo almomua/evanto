@@ -110,11 +110,21 @@ function CheckoutContent() {
       // Calculate total
       const totalAmount = items.reduce((sum, item) => sum + item.price, 0) - discount;
 
+      // Debug: log the shipping data before sending
+      console.log("Placing order with shipping data:", shippingData);
+
+      if (!shippingData) {
+        alert("Shipping information is missing. Please go back and fill in your address.");
+        setIsProcessing(false);
+        return;
+      }
+
       await ordersApi.createOrder({
         items: orderItems,
         totalAmount: totalAmount > 0 ? totalAmount : 0, // Ensure no negative total
         shippingAddress: shippingData,
         paymentMethod: 'COD',
+        couponCode: couponCode || undefined,
       });
 
       clearCart();
@@ -192,15 +202,11 @@ function CheckoutContent() {
             {/* Shipping Form */}
             {currentStep >= 1 && (
               <div className={clsx(currentStep !== 1 && 'opacity-60')}>
-                <ShippingForm onSubmit={handleShippingSubmit} initialData={initialShippingData} />
-                {currentStep === 1 && (
-                  <button
-                    onClick={() => setCurrentStep(2)}
-                    className="mt-4 lg:mt-6 w-full sm:w-auto px-6 lg:px-8 py-2.5 lg:py-3 bg-[#8A33FD] text-white rounded-lg hover:bg-[#7229D6] transition-colors text-sm lg:text-base"
-                  >
-                    Continue to Payment
-                  </button>
-                )}
+                <ShippingForm
+                  onSubmit={handleShippingSubmit}
+                  initialData={initialShippingData}
+                  showSubmit={currentStep === 1}
+                />
               </div>
             )}
 

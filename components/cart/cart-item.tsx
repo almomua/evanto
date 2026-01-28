@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, X } from 'lucide-react';
 import { useCartStore } from '@/lib/store/cart-store';
+import { formatPrice } from '@/lib/utils';
 
 interface CartItemProps {
   id: string;
@@ -102,7 +103,7 @@ export function CartItem({
 
           {/* Price */}
           <p className="text-[#3C4242] text-xl font-semibold">
-            ${(price * quantity).toFixed(2)}
+            {formatPrice(price * quantity)}
           </p>
         </div>
       </div>

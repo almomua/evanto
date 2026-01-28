@@ -11,14 +11,14 @@ export interface User {
 }
 
 export const authApi = {
-    login: async (email: string, password: string): Promise<{ user: User }> => {
+    login: async (email: string, password: string): Promise<{ user: User; token: string }> => {
         const response = await api.post('/auth/login', { email, password });
-        return response.data.data;
+        return { user: response.data.data.user, token: response.data.token };
     },
 
-    register: async (data: any): Promise<{ user: User }> => {
+    register: async (data: any): Promise<{ user: User; token: string }> => {
         const response = await api.post('/auth/signup', data);
-        return response.data.data;
+        return { user: response.data.data.user, token: response.data.token };
     },
 
     logout: async (): Promise<void> => {

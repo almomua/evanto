@@ -15,6 +15,7 @@ import {
 import { useEffect, useState } from 'react';
 import { adminApi, AdminStats } from '@/lib/api/admin';
 import { Loader2 } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -42,7 +43,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-7">
           <TotalSalesCard
-            salesValue={`$${stats?.totalSales.toFixed(2) || '0.00'}`}
+            salesValue={formatPrice(stats?.totalSales || 0)}
             costValue="--"
             change={{
               value: '8.56K',
@@ -66,38 +67,75 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Row 2: Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Row 2: Analytics Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <SmallStatsCard
+          title="Active Users"
+          subtitle="Last 15 min"
+          value={stats?.activeUsers.toString() || '0'}
+          change={{
+            value: 'Live',
+            isPositive: true,
+            label: 'real-time',
+          }}
+          chartColor="#22C55E"
+        />
+        <SmallStatsCard
+          title="Sessions Today"
+          subtitle="Unique visits"
+          value={stats?.sessionsToday.toString() || '0'}
+          change={{
+            value: `${stats?.sessionsThisWeek || 0} this week`,
+            isPositive: true,
+            label: '',
+          }}
+          chartColor="#3B82F6"
+        />
+        <SmallStatsCard
+          title="Page Views"
+          subtitle="Today"
+          value={stats?.pageViewsToday.toString() || '0'}
+          change={{
+            value: 'PostHog',
+            isPositive: true,
+            label: 'analytics',
+          }}
+          chartColor="#8B5CF6"
+        />
         <SmallStatsCard
           title="Total Orders"
           subtitle="All time"
           value={stats?.totalOrders.toString() || '0'}
           change={{
-            value: '8%',
+            value: `${stats?.totalProducts || 0} products`,
             isPositive: true,
-            label: 'vs last 7 days',
+            label: 'in catalog',
           }}
-          chartColor="#22C55E"
+          chartColor="#F59E0B"
+        />
+      </div>
+
+      {/* Row: Coupon Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <SmallStatsCard
+          title="Coupons Used"
+          subtitle="Total redemptions"
+          value={stats?.couponsUsed.toString() || '0'}
+          change={{
+            value: 'Redeemed',
+            isPositive: true,
+            label: 'Successfully',
+          }}
+          chartColor="#10B981"
         />
         <SmallStatsCard
-          title="Total Products"
-          subtitle="In Catalog"
-          value={stats?.totalProducts.toString() || '0'}
+          title="Total Savings"
+          subtitle="Amount cut by coupons"
+          value={formatPrice(stats?.totalDiscountCut || 0)}
           change={{
-            value: '12%',
+            value: 'Value',
             isPositive: true,
-            label: 'vs last 7 days',
-          }}
-          chartColor="#8B5CF6"
-        />
-        <SmallStatsCard
-          title="Discounted Amount"
-          subtitle="Last 7 days"
-          value="12K"
-          change={{
-            value: '2%',
-            isPositive: true,
-            label: 'vs last 7 days',
+            label: 'Discounted',
           }}
           chartColor="#EF4444"
         />

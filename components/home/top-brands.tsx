@@ -24,7 +24,7 @@ export function TopBrands({ data }: TopBrandsProps) {
   const formattedSubtitle = subtitle.replace('{discount}', String(discountPercent));
 
   return (
-    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[100px] py-8 lg:py-16">
+    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-[100px] py-8 lg:py-16 overflow-hidden">
       <div className="relative w-full py-8 sm:py-12 lg:py-0 lg:h-[357px] bg-[#3C4242] border border-[#323232] rounded-xl flex flex-col items-center justify-center">
         {/* Title */}
         <h2 className="text-white text-2xl sm:text-4xl lg:text-[50px] font-extrabold mb-2 text-center px-4">
