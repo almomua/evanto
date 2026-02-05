@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Loader2 } from 'lucide-react';
+import { categoriesApi, Category } from '@/lib/api/products';
 
 const footerLinks = {
   needHelp: {
@@ -48,6 +50,23 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await categoriesApi.getAll();
+        setCategories(data.slice(0, 8)); // Limit to first 8 for footer
+      } catch (error) {
+        console.error('Failed to load categories for footer', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <footer className="bg-[#3C4242] text-[#F6F6F6] pt-10 lg:pt-[60px] pb-8 lg:pb-10">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[110px]">
@@ -128,6 +147,27 @@ export function Footer() {
         <div className="border-t border-[#F6F6F6]/30 pt-6 lg:pt-8 pb-4 lg:pb-6">
           {/* Popular Categories */}
           <h4 className="text-lg lg:text-[28px] mb-4">Popular Categories</h4>
+
+          {loading ? (
+            <div className="flex justify-start py-2">
+              <Loader2 className="w-5 h-5 animate-spin text-[#F6F6F6]/50" />
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-x-6 gap-y-2">
+              {categories.map((cat) => (
+                <Link
+                  key={cat._id}
+                  href={`/products?category=${cat.slug}`}
+                  className="text-sm lg:text-lg text-[#F6F6F6]/80 hover:text-white transition-colors"
+                >
+                  {cat.name}
+                </Link>
+              ))}
+              {categories.length === 0 && (
+                <span className="text-sm text-[#F6F6F6]/50">No categories found</span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Divider */}

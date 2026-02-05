@@ -6,11 +6,14 @@ import { categoriesApi, Category } from '@/lib/api/products';
 import { adminApi } from '@/lib/api/admin';
 import { Loader2 } from 'lucide-react';
 import { useModal } from '@/components/ui/modal';
+import { Pagination } from './pagination';
 
 export function CategoriesTable() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const modal = useModal();
 
     useEffect(() => {
@@ -45,6 +48,18 @@ export function CategoriesTable() {
     const filteredCategories = categories.filter(c =>
         c.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    // Pagination logic
+    const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
+    const paginatedCategories = filteredCategories.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Reset to page 1 when search changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery]);
 
     if (loading) return <div className="p-8 flex justify-center"><Loader2 className="animate-spin" /></div>;
 
@@ -89,7 +104,7 @@ export function CategoriesTable() {
                     </thead>
                     <tbody className="divide-y divide-gray-50">
 
-                        {filteredCategories.map((category) => (
+                        {paginatedCategories.map((category) => (
                             <tr key={category._id} className="hover:bg-gray-50 transition-colors">
                                 <td className="px-6 py-4 text-[#3C4242] font-medium">{category.name}</td>
                                 <td className="px-6 py-4 text-[#3C4242] font-medium">N/A</td>
@@ -121,42 +136,14 @@ export function CategoriesTable() {
                 </table>
             </div>
 
-            {/* Pagination */}
-            <div className="p-4 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-gray-100">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                    Showing
-                    <select className="px-2 py-1 bg-white border border-gray-200 rounded text-gray-700 outline-none focus:ring-1 focus:ring-[#8B5CF6]">
-                        <option>10</option>
-                        <option>20</option>
-                        <option>50</option>
-                    </select>
-                    of 50
-                </div>
-
-                <div className="flex items-center gap-1">
-                    <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-400">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="m15 18-6-6 6-6" />
-                        </svg>
-                    </button>
-                    {[1, 2, 3, 4, 5].map((page) => (
-                        <button
-                            key={page}
-                            className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${page === 1
-                                ? 'bg-[#1E6BFF] text-white'
-                                : 'text-gray-600 hover:bg-gray-100'
-                                }`}
-                        >
-                            {page}
-                        </button>
-                    ))}
-                    <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-400">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="m9 18 6-6-6-6" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={filteredCategories.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+                onItemsPerPageChange={setItemsPerPage}
+            />
         </div>
     );
 }

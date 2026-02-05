@@ -85,7 +85,7 @@ export function OrdersList() {
                 <div className="flex flex-wrap items-center gap-4 sm:gap-8">
                   <div>
                     <p className="text-[#807D7E] text-xs sm:text-sm">Order Number</p>
-                    <p className="text-[#3C4242] font-medium text-sm sm:text-base">#{order._id.slice(-8).toUpperCase()}</p>
+                    <p className="text-[#3C4242] font-medium text-sm sm:text-base">#{order._id.slice(-6).toUpperCase()}</p>
                   </div>
                   <div>
                     <p className="text-[#807D7E] text-xs sm:text-sm">Date</p>
@@ -115,20 +115,20 @@ export function OrdersList() {
             </div>
 
             {/* Order Items */}
-            <div className="p-4 sm:p-6">
+            <div className="p-4 sm:p-6 space-y-4">
               {order.items.map((item, index) => (
-                <div key={`${item.product._id}-${index}`} className="flex items-center gap-3 sm:gap-4">
+                <div key={item.product?._id ? `${item.product._id}-${index}` : `item-${index}`} className="flex items-center gap-3 sm:gap-4">
                   <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-[#F6F6F6] flex-shrink-0">
                     <Image
-                      src={item.product.images?.[0]?.secure_url || '/placeholder.png'}
-                      alt={item.product.name}
+                      src={item.product?.images?.[0]?.secure_url || item.variant?.images?.[0]?.secure_url || '/placeholder.png'}
+                      alt={item.product?.name || 'Product'}
                       fill
                       className="object-cover"
                       unoptimized
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-[#3C4242] font-medium text-sm sm:text-base truncate">{item.product.name}</h4>
+                    <h4 className="text-[#3C4242] font-medium text-sm sm:text-base truncate">{item.product?.name || 'Deleted Product'}</h4>
                     <p className="text-[#807D7E] text-xs sm:text-sm">Qty: {item.quantity}</p>
                   </div>
                   <p className="text-[#3C4242] font-medium text-sm sm:text-base flex-shrink-0">

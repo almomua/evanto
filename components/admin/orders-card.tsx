@@ -1,11 +1,33 @@
 'use client';
 
-export function TodayOrdersCard() {
+import { AdminStats } from '@/lib/api/admin';
+import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { formatPrice } from '@/lib/utils';
+import { Order } from '@/lib/api/orders';
+
+interface TodayOrdersCardProps {
+  count?: number;
+  data?: { time: string; orders: number }[];
+}
+
+export function TodayOrdersCard({ count = 0, data = [] }: TodayOrdersCardProps) {
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white p-2 border border-gray-100 shadow rounded text-xs">
+          <p className="font-semibold text-[#8A33FD]">{label}</p>
+          <p className="text-gray-600">{payload[0].value} orders</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <div className="bg-white rounded-xl">
+    <div className="bg-white rounded-xl h-full shadow-sm border border-gray-100 overflow-hidden flex flex-col">
       {/* Header */}
       <div className="p-6 pb-0 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-[#3C4242]">Today Order</h3>
+        <h3 className="text-lg font-bold text-[#3C4242]">Today Order</h3>
         <button className="p-2 hover:bg-gray-100 rounded-lg">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#807D7E" strokeWidth="2">
             <circle cx="12" cy="12" r="1" />
@@ -15,67 +37,67 @@ export function TodayOrdersCard() {
         </button>
       </div>
 
-      <div className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <p className="text-3xl font-bold text-[#3C4242]">16.5K</p>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="flex items-center gap-1 text-sm font-medium text-green-500">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="18 15 12 9 6 15" />
-                </svg>
-                6%
-              </span>
-              <span className="text-sm text-[#807D7E]">vs last day</span>
-            </div>
+      <div className="p-6 flex-1 flex flex-col justify-between">
+        <div className="mb-4">
+          <p className="text-3xl font-bold text-[#3C4242]">{count}</p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-sm text-[#807D7E]">Orders today</span>
           </div>
         </div>
 
-        <p className="text-sm text-[#807D7E] mb-4">Orders Over Time</p>
+        <p className="text-sm font-medium text-[#807D7E] mb-4">Orders Over Time</p>
 
-        {/* Mini Chart */}
-        <div className="h-32">
-          <svg className="w-full h-full" viewBox="0 0 250 100" fill="none">
-            <path
-              d="M0 80 Q30 75, 50 70 T100 50 T150 60 T200 30 T250 40"
-              stroke="#8B5CF6"
-              strokeWidth="2"
-              fill="none"
-            />
-            <path
-              d="M0 80 Q30 75, 50 70 T100 50 T150 60 T200 30 T250 40 V100 H0 Z"
-              fill="#8B5CF6"
-              fillOpacity="0.1"
-            />
-          </svg>
-        </div>
-
-        {/* X-axis labels */}
-        <div className="flex justify-between text-xs text-[#807D7E] mt-2">
-          <span>12am</span>
-          <span>8am</span>
-          <span>4pm</span>
-          <span>11pm</span>
+        {/* Chart */}
+        <div className="h-32 -mx-2">
+          {data.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data}>
+                <defs>
+                  <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8A33FD" stopOpacity={0.1} />
+                    <stop offset="95%" stopColor="#8A33FD" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis
+                  dataKey="time"
+                  hide={false}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 10, fill: '#807D7E' }}
+                  interval="preserveStartEnd"
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Area
+                  type="monotone"
+                  dataKey="orders"
+                  stroke="#8A33FD"
+                  strokeWidth={2}
+                  fillOpacity={1}
+                  fill="url(#colorOrders)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-full flex items-center justify-center text-gray-300 text-xs">
+              No orders yet today
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-import { Order } from '@/lib/api/orders';
-
 interface RecentOrdersTableProps {
   orders?: Order[];
 }
 
-// const recentOrders = ... (removed)
-
 export function RecentOrdersTable({ orders = [] }: RecentOrdersTableProps) {
   return (
-    <div className="bg-white rounded-xl">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm h-full">
       {/* Header */}
       <div className="p-6 pb-4 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-[#3C4242]">Recent Orders</h3>
+        <h3 className="text-lg font-bold text-[#3C4242]">Recent Orders</h3>
         <button className="p-2 hover:bg-gray-100 rounded-lg">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#807D7E" strokeWidth="2">
             <circle cx="12" cy="12" r="1" />
@@ -86,37 +108,43 @@ export function RecentOrdersTable({ orders = [] }: RecentOrdersTableProps) {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto px-6 pb-2">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-100">
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[#807D7E] uppercase tracking-wider">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[#807D7E] uppercase tracking-wider">Customer</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[#807D7E] uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[#807D7E] uppercase tracking-wider">Total</th>
+            <tr className="border-b border-gray-50">
+              <th className="py-3 text-left text-xs font-bold text-[#807D7E] uppercase tracking-wider">ID</th>
+              <th className="py-3 text-left text-xs font-bold text-[#807D7E] uppercase tracking-wider">Customer</th>
+              <th className="py-3 text-left text-xs font-bold text-[#807D7E] uppercase tracking-wider">Status</th>
+              <th className="py-3 text-left text-xs font-bold text-[#807D7E] uppercase tracking-wider">Total</th>
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr key={order._id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-4 text-sm font-medium text-[#3C4242]">#{order._id.slice(-6).toUpperCase()}</td>
-                <td className="px-6 py-4 text-sm text-[#3C4242]">{order.customer?.name}</td>
-                <td className="px-6 py-4">
-                  <span className={`text-sm ${order.status === 'delivered' ? 'text-green-500' :
-                    order.status === 'cancelled' ? 'text-red-500' :
-                      'text-orange-500'
-                    } capitalize`}>
-                    {order.status}
-                  </span>
+            {orders.length > 0 ? (
+              orders.map((order) => (
+                <tr key={order._id} className="border-b border-gray-50/50 hover:bg-gray-50 transition-colors last:border-0">
+                  <td className="py-4 text-sm font-bold text-[#3C4242]">#{order._id.slice(-6).toUpperCase()}</td>
+                  <td className="py-4 text-sm font-semibold text-[#3C4242]">{order.customer?.name || 'Guest'}</td>
+                  <td className="py-4">
+                    <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${order.status === 'delivered' ? 'bg-green-50 text-green-600' :
+                        order.status === 'cancelled' ? 'bg-red-50 text-red-600' :
+                          'bg-orange-50 text-orange-600'
+                      } capitalize`}>
+                      {order.status}
+                    </span>
+                  </td>
+                  <td className="py-4 text-sm font-bold text-[#3C4242]">{formatPrice(order.totalAmount)}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} className="py-8 text-center text-sm text-gray-400">
+                  No recent orders found.
                 </td>
-                <td className="px-6 py-4 text-sm font-medium text-[#3C4242]">{formatPrice(order.totalAmount)}</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
     </div>
   );
 }
-
-import { formatPrice } from '@/lib/utils';

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronRight, Minus, Plus, Trash2, Loader2 } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { EmptyCart } from '@/components/cart/empty-cart';
@@ -60,13 +61,13 @@ export default function CartPage() {
 
       // Check minimum purchase
       if (subtotal < coupon.minPurchase) {
-        modal.error(`Minimum purchase of $${coupon.minPurchase} required`, 'Invalid Coupon');
+        modal.error(`Minimum purchase of ${formatPrice(coupon.minPurchase)} required`, 'Invalid Coupon');
         setDiscount(0);
         return;
       }
 
       setDiscount(calculatedDiscount);
-      modal.success(`Coupon applied! You saved $${calculatedDiscount.toFixed(2)}`, 'Success');
+      modal.success(`Coupon applied! You saved ${formatPrice(calculatedDiscount)}`, 'Success');
 
     } catch (error: any) {
       setDiscount(0);
@@ -179,16 +180,16 @@ export default function CartPage() {
                     <div className="space-y-3 lg:space-y-4 pb-4 lg:pb-6 border-b border-[#BEBCBD]/50">
                       <div className="flex items-center justify-between">
                         <span className="text-[#3C4242] text-base lg:text-xl tracking-wide">Sub Total</span>
-                        <span className="text-[#3C4242] text-base lg:text-xl">${subtotal.toFixed(2)}</span>
+                        <span className="text-[#3C4242] text-base lg:text-xl">{formatPrice(subtotal)}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-[#3C4242] text-base lg:text-xl tracking-wide">Shipping</span>
-                        <span className="text-[#3C4242] text-base lg:text-xl">{shipping === 0 ? 'Calculated at checkout' : `$${shipping.toFixed(2)}`}</span>
+                        <span className="text-[#3C4242] text-base lg:text-xl">{shipping === 0 ? 'Calculated at checkout' : formatPrice(shipping)}</span>
                       </div>
                       {discount > 0 && (
                         <div className="flex items-center justify-between text-green-600">
                           <span className="text-base lg:text-xl tracking-wide">Discount</span>
-                          <span className="text-base lg:text-xl">-${discount.toFixed(2)}</span>
+                          <span className="text-base lg:text-xl">-{formatPrice(discount)}</span>
                         </div>
                       )}
                     </div>
@@ -196,7 +197,7 @@ export default function CartPage() {
                     {/* Grand Total */}
                     <div className="flex items-center justify-between py-4 lg:py-6">
                       <span className="text-[#3C4242] text-base lg:text-xl tracking-wide font-medium">Grand Total</span>
-                      <span className="text-[#3C4242] text-base lg:text-xl font-medium">${grandTotal.toFixed(2)}</span>
+                      <span className="text-[#3C4242] text-base lg:text-xl font-medium">{formatPrice(grandTotal)}</span>
                     </div>
 
                     {/* Checkout Button */}
@@ -246,7 +247,7 @@ function CartItemRow({ item }: { item: CartItem }) {
               <div className="min-w-0">
                 <h3 className="text-[#3C4242] text-sm sm:text-base font-medium truncate">{item.name}</h3>
                 <p className="text-[#807D7E] text-xs sm:text-sm mt-1">{item.brand}</p>
-                <p className="text-[#3C4242] text-sm sm:text-base font-medium mt-2">${item.price.toFixed(2)}</p>
+                <p className="text-[#3C4242] text-sm sm:text-base font-medium mt-2">{formatPrice(item.price)}</p>
               </div>
               <button
                 onClick={() => removeItem(item.id)}
@@ -275,7 +276,7 @@ function CartItemRow({ item }: { item: CartItem }) {
                 </button>
               </div>
               <span className="text-[#3C4242] text-sm font-medium">
-                Total: ${itemSubtotal.toFixed(2)}
+                Total: {formatPrice(itemSubtotal)}
               </span>
             </div>
           </div>
@@ -304,7 +305,7 @@ function CartItemRow({ item }: { item: CartItem }) {
 
         {/* Price */}
         <div className="text-center">
-          <span className="text-[#3C4242] text-lg">${item.price.toFixed(2)}</span>
+          <span className="text-[#3C4242] text-lg">{formatPrice(item.price)}</span>
         </div>
 
         {/* Quantity */}
@@ -330,13 +331,13 @@ function CartItemRow({ item }: { item: CartItem }) {
         {/* Shipping */}
         <div className="text-center">
           <span className={shipping === 0 ? 'text-[#BEBCBD] text-lg tracking-wide' : 'text-[#3C4242] text-lg'}>
-            {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
+            {shipping === 0 ? 'FREE' : formatPrice(shipping)}
           </span>
         </div>
 
         {/* Subtotal */}
         <div className="text-center">
-          <span className="text-[#3C4242] text-lg">${itemSubtotal.toFixed(2)}</span>
+          <span className="text-[#3C4242] text-lg">{formatPrice(itemSubtotal)}</span>
         </div>
 
         {/* Action */}

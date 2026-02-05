@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { adminApi, Transaction } from '@/lib/api/admin';
+import { formatPrice } from '@/lib/utils';
+import { Pagination } from './pagination';
 
 export function TransactionTable() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -25,6 +29,18 @@ export function TransactionTable() {
         tx.customer?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tx._id.includes(searchQuery)
     );
+
+    // Pagination logic
+    const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+    const paginatedTransactions = filteredTransactions.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Reset to page 1 when search changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery]);
 
     if (loading) return <div className="p-12 text-center text-gray-400">Loading transactions...</div>;
 
@@ -67,18 +83,18 @@ export function TransactionTable() {
                         {filteredTransactions.length === 0 ? (
                             <tr><td colSpan={7} className="px-6 py-10 text-center text-gray-400">No transactions found</td></tr>
                         ) : (
-                            filteredTransactions.map((tx) => (
+                            paginatedTransactions.map((tx) => (
                                 <tr key={tx._id} className="hover:bg-gray-50 transition-colors">
                                     <td className="px-6 py-4 text-[#3C4242] font-mono text-xs">#{tx._id.slice(-6).toUpperCase()}</td>
                                     <td className="px-6 py-4 text-[#3C4242]">{tx.customer?.name || 'Guest'}</td>
                                     <td className="px-6 py-4 text-gray-500 font-medium">
                                         {new Date(tx.transactionDate).toLocaleDateString()}
                                     </td>
-                                    <td className="px-6 py-4 text-[#3C4242] font-bold">${tx.amount.toLocaleString()}</td>
+                                    <td className="px-6 py-4 text-[#3C4242] font-bold">{formatPrice(tx.amount)}</td>
                                     <td className="px-6 py-4 text-[#3C4242]">{tx.method}</td>
                                     <td className="px-6 py-4">
                                         <span className={`font-bold ${tx.status === 'Completed' ? 'text-green-500' :
-                                                tx.status === 'Pending' ? 'text-orange-400' : 'text-red-400'
+                                            tx.status === 'Pending' ? 'text-orange-400' : 'text-red-400'
                                             }`}>
                                             {tx.status}
                                         </span>
@@ -97,6 +113,15 @@ export function TransactionTable() {
                     </tbody>
                 </table>
             </div>
+
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={filteredTransactions.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+                onItemsPerPageChange={setItemsPerPage}
+            />
         </div>
     );
 }

@@ -169,7 +169,7 @@ export function FloatingChat() {
             >
               <X className="w-6 h-6" />
             </button>
-            <h2 className="text-white text-xl font-bold font-['Anton_SC',sans-serif]">
+            <h2 className="text-white text-xl font-bold" style={{ fontFamily: 'var(--font-heading), sans-serif' }}>
               PROBERRY ASSISTANT
             </h2>
           </div>

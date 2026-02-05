@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Package, Heart, User, LogOut, Menu, X } from 'lucide-react';
+import { Package, Heart, User, LogOut, Menu, X, LayoutDashboard } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuth } from '@/lib/context/auth-context';
 import { useModal } from '@/components/ui/modal';
@@ -76,6 +76,17 @@ export function AccountSidebar({ user: propsUser }: AccountSidebarProps) {
           );
         })}
 
+        {/* Admin Dashboard Page Link */}
+        {authUser?.role === 'admin' && (
+          <Link
+            href="/admin"
+            className="flex items-center gap-3 py-3 px-3 rounded-r-lg text-[#8A33FD] hover:bg-purple-50 transition-colors"
+          >
+            <LayoutDashboard className="w-5 h-5" />
+            <span className="text-sm lg:text-base font-medium">Admin Page</span>
+          </Link>
+        )}
+
         {/* Sign Out / Sign In */}
         {isGuest ? (
           <Link
@@ -145,6 +156,18 @@ export function AccountSidebar({ user: propsUser }: AccountSidebarProps) {
                 </Link>
               );
             })}
+
+            {/* Admin Dashboard Page Link (Mobile) */}
+            {authUser?.role === 'admin' && (
+              <Link
+                href="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 py-3 px-3 rounded-lg text-[#8A33FD] bg-purple-50 transition-colors"
+              >
+                <LayoutDashboard className="w-5 h-5" />
+                <span className="text-sm font-medium">Admin Page</span>
+              </Link>
+            )}
 
             {/* Sign Out / Sign In */}
             {isGuest ? (

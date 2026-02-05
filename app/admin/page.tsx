@@ -44,12 +44,13 @@ export default function AdminDashboard() {
         <div className="lg:col-span-7">
           <TotalSalesCard
             salesValue={formatPrice(stats?.totalSales || 0)}
-            costValue="--"
+            costValue=""
             change={{
-              value: '8.56K',
+              value: 'Live',
               isPositive: true,
-              label: 'vs last 7 days',
+              label: 'Real-time sales',
             }}
+            data={stats?.salesChartData || []}
           />
         </div>
         <div className="lg:col-span-5">
@@ -144,10 +145,14 @@ export default function AdminDashboard() {
       {/* Row 3: Reports & Users */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-7">
-          <ReportsCard />
+          <ReportsCard stats={stats} />
         </div>
         <div className="lg:col-span-5">
-          <UsersCard totalUsers={stats?.totalUsers || 0} />
+          <UsersCard
+            totalUsers={stats?.totalUsers || 0}
+            salesByCountry={stats?.salesByCountry || []}
+            totalSales={stats?.totalSales || 0}
+          />
         </div>
       </div>
 
@@ -174,7 +179,10 @@ export default function AdminDashboard() {
       {/* Row 6: Today Orders & Recent Orders */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-4">
-          <TodayOrdersCard />
+          <TodayOrdersCard
+            count={stats?.ordersTodayCount || 0}
+            data={stats?.ordersChartData || []}
+          />
         </div>
         <div className="lg:col-span-8">
           <RecentOrdersTable orders={stats?.recentOrders || []} />

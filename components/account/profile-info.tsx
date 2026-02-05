@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ChevronRight, Loader2 } from 'lucide-react';
+import { ChevronRight, Loader2, LayoutDashboard } from 'lucide-react';
 import { userApi, Address } from '@/lib/api/user';
 import { useAuth } from '@/lib/context/auth-context';
 import { useModal } from '@/components/ui/modal';
@@ -122,17 +122,28 @@ export function ProfileInfo({ user: initialUser }: ProfileInfoProps) {
       {/* My Info Heading */}
       <div className="flex items-center justify-between mb-4 sm:mb-6">
         <h1 className="text-[#3C4242] text-xl sm:text-2xl font-semibold">My Info</h1>
-        <button
-          onClick={async () => {
-            const confirmed = await modal.confirm('Are you sure you want to logout?', 'Logout');
-            if (confirmed) {
-              logout();
-            }
-          }}
-          className="px-4 py-2 border border-red-500 text-red-500 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors"
-        >
-          Logout
-        </button>
+        <div className="flex items-center gap-3">
+          {user?.role === 'admin' && (
+            <Link
+              href="/admin"
+              className="px-4 py-2 bg-[#8A33FD] text-white rounded-lg text-sm font-medium hover:bg-[#7229D6] transition-colors flex items-center gap-2"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              <span>Admin Dashboard</span>
+            </Link>
+          )}
+          <button
+            onClick={async () => {
+              const confirmed = await modal.confirm('Are you sure you want to logout?', 'Logout');
+              if (confirmed) {
+                logout();
+              }
+            }}
+            className="px-4 py-2 border border-red-500 text-red-500 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* Contact Details Section */}

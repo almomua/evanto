@@ -190,6 +190,7 @@ export function AddProductForm() {
             if (videoUrl) formData.append('videoUrl', videoUrl);
             if (ingredients) formData.append('ingredients', ingredients);
             if (howToUse) formData.append('howToUse', howToUse);
+            formData.append('stock_quantity', stock);
 
             // Append main files
             images.forEach((file) => {
@@ -431,9 +432,9 @@ export function AddProductForm() {
                                 ))}
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-gray-400 uppercase">Variant Price</label>
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase">Variant Price (IQD)</label>
                                         <div className="relative">
-                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">$</span>
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">IQD</span>
                                             <input
                                                 type="text"
                                                 value={variant.price}
@@ -502,9 +503,9 @@ export function AddProductForm() {
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-6">
                     <h3 className="text-xl font-bold text-[#3C4242]">Pricing & Inventory</h3>
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-[#3C4242]">Price</label>
+                        <label className="text-sm font-semibold text-[#3C4242]">Price (IQD)</label>
                         <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">$</span>
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium whitespace-nowrap">IQD</span>
                             <input
                                 type="number"
                                 value={price}

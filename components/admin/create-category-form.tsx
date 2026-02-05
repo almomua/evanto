@@ -35,26 +35,20 @@ export function CreateCategoryForm() {
 
         try {
             setLoading(true);
-            const slug = name.toLowerCase().replace(/\s+/g, '-');
-            const payload = {
-                name,
-                slug,
-                description,
-                isActive: isVisible,
-                image: {
-                    secure_url: 'https://placehold.co/400x400?text=' + name,
-                    publicId: 'mock_' + Date.now()
-                }
-            };
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('description', description);
+            formData.append('isActive', String(isVisible));
+            formData.append('image', image);
 
-            await adminApi.createCategory(payload);
+            await adminApi.createCategory(formData);
             modal.success('Category created successfully', 'Success');
             setTimeout(() => {
                 router.push('/admin/categories');
             }, 1000);
         } catch (error) {
             console.error('Failed to create category', error);
-            modal.error('Failed to create category. Note: Image upload requires backend configuration.', 'Error');
+            modal.error('Failed to create category.', 'Error');
         } finally {
             setLoading(false);
         }

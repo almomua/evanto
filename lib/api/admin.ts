@@ -17,6 +17,17 @@ export interface AdminStats {
     // Coupon Stats
     couponsUsed: number;
     totalDiscountCut: number;
+    // Inventory Stats
+    inStockProducts: number;
+    outOfStockProducts: number;
+    // Sales by Country
+    salesByCountry: { country: string; sales: number }[];
+    // Charts Data
+    salesChartData: { date: string; sales: number }[];
+    ordersChartData: { time: string; orders: number }[];
+    userChartData: { date: string; count: number }[];
+    productChartData: { date: string; count: number }[];
+    ordersTodayCount: number;
 }
 
 export interface Coupon {
@@ -46,6 +57,7 @@ export interface Brand {
     _id: string;
     name: string;
     slug: string;
+    image?: { secure_url: string; publicId?: string };
     description?: string;
     createdAt?: string;
 }
@@ -75,6 +87,14 @@ export const adminApi = {
                 pageViewsToday: stats.pageViewsToday || 0,
                 couponsUsed: stats.couponsUsed || 0,
                 totalDiscountCut: stats.totalDiscountCut || 0,
+                inStockProducts: stats.inStockProducts || 0,
+                outOfStockProducts: stats.outOfStockProducts || 0,
+                salesByCountry: stats.salesByCountry || [],
+                salesChartData: stats.salesChartData || [],
+                ordersChartData: stats.ordersChartData || [],
+                userChartData: stats.userChartData || [],
+                productChartData: stats.productChartData || [],
+                ordersTodayCount: stats.ordersTodayCount || 0,
             };
         } catch (error) {
             console.error("Failed to fetch admin stats", error);
@@ -197,6 +217,11 @@ export const adminApi = {
     getTransactions: async (): Promise<Transaction[]> => {
         const response = await api.get('/transactions');
         return response.data.data.docs;
+    },
+
+    getTransaction: async (id: string): Promise<Transaction> => {
+        const response = await api.get(`/transactions/${id}`);
+        return response.data.data.doc;
     },
 
     // Brands

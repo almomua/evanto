@@ -1,31 +1,59 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { adminApi } from '@/lib/api/admin';
-import { Loader2 } from 'lucide-react';
+import { Loader2, X, Upload } from 'lucide-react';
+import Image from 'next/image';
+import { useModal } from '@/components/ui/modal';
 
 export function CreateBrandForm() {
     const router = useRouter();
+    const modal = useModal();
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [image, setImage] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+    const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImage(file);
+            setPreviewUrl(URL.createObjectURL(file));
+        }
+    };
+
+    const removeImage = () => {
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        setImage(null);
+        setPreviewUrl(null);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!name.trim()) {
-            alert('Brand name is required');
+            modal.error('Brand name is required');
             return;
         }
+
         setLoading(true);
         try {
-            await adminApi.createBrand({ name, description });
-            alert('Brand created successfully!');
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('description', description);
+            if (image) {
+                formData.append('image', image);
+            }
+
+            await adminApi.createBrand(formData);
+            modal.success('Brand created successfully!');
             router.push('/admin/brands');
         } catch (error) {
             console.error('Failed to create brand', error);
-            alert('Failed to create brand');
+            modal.error('Failed to create brand');
         } finally {
             setLoading(false);
         }
@@ -57,6 +85,42 @@ export function CreateBrandForm() {
                         rows={4}
                         className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-medium resize-none"
                     />
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#807D7E]">Brand Logo</label>
+                    <div
+                        onClick={() => !image && fileInputRef.current?.click()}
+                        className={`border-2 border-dashed border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-center space-y-2 transition-colors relative h-48 ${!image ? 'cursor-pointer hover:bg-gray-50' : ''}`}
+                    >
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleImageSelect}
+                        />
+                        {previewUrl ? (
+                            <div className="relative w-full h-full group">
+                                <Image src={previewUrl} alt="Preview" fill className="object-contain" />
+                                <button
+                                    type="button"
+                                    onClick={removeImage}
+                                    className="absolute top-0 right-0 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                                >
+                                    <X size={16} />
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <Upload className="w-8 h-8 text-gray-400" />
+                                <p className="text-sm text-gray-500">
+                                    Click to upload brand logo
+                                </p>
+                                <p className="text-xs text-gray-400">PNG, JPG up to 5MB</p>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
 

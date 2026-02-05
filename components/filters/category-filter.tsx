@@ -1,20 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ChevronRight, Loader2 } from 'lucide-react';
 import { clsx } from 'clsx';
-
-const categories = [
-  { id: 'category', label: 'Category', hasChildren: true },
-  { id: 'makeup', label: 'Makeup', hasChildren: true },
-  { id: 'shampoos', label: 'Shampoos', hasChildren: true },
-  { id: 'cleansers', label: 'Cleansers', hasChildren: false },
-  { id: 'haircare', label: 'Haircare', hasChildren: true },
-  { id: 'conditioners', label: 'Conditioners', hasChildren: false },
-  { id: 'body-sprays', label: 'Body Sprays', hasChildren: false },
-  { id: 'hair-masks', label: 'Hair Masks', hasChildren: false },
-  { id: 'treatments', label: 'Treatments', hasChildren: false },
-];
+import { categoriesApi, Category } from '@/lib/api/products';
 
 interface CategoryFilterProps {
   selectedCategories: string[];
@@ -22,14 +11,30 @@ interface CategoryFilterProps {
 }
 
 export function CategoryFilter({ selectedCategories, onCategoryChange }: CategoryFilterProps) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
 
-  const toggleCategory = (categoryId: string) => {
-    const isSelected = selectedCategories.includes(categoryId);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await categoriesApi.getAll();
+        setCategories(data);
+      } catch (error) {
+        console.error('Failed to load categories', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const toggleCategory = (categorySlug: string) => {
+    const isSelected = selectedCategories.includes(categorySlug);
     if (isSelected) {
-      onCategoryChange(selectedCategories.filter((c) => c !== categoryId));
+      onCategoryChange(selectedCategories.filter((c) => c !== categorySlug));
     } else {
-      onCategoryChange([...selectedCategories, categoryId]);
+      onCategoryChange([...selectedCategories, categorySlug]);
     }
   };
 
@@ -42,40 +47,37 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
     );
   };
 
+  if (loading) {
+    return (
+      <div className="px-[30px] py-5 flex justify-center">
+        <Loader2 className="w-5 h-5 animate-spin text-[#8A33FD]" />
+      </div>
+    );
+  }
+
   return (
     <div className="px-[30px] py-5">
       <ul className="space-y-[18px]">
         {categories.map((category) => (
-          <li key={category.id}>
+          <li key={category._id}>
             <button
-              onClick={() => toggleCategory(category.id)}
+              onClick={() => toggleCategory(category.slug)}
               className={clsx(
                 'w-full flex items-center justify-between text-left text-base transition-colors',
-                selectedCategories.includes(category.id)
+                selectedCategories.includes(category.slug)
                   ? 'text-[#8A33FD] font-medium'
                   : 'text-[#8A8989] hover:text-[#3C4242]'
               )}
             >
-              <span>{category.label}</span>
-              {category.hasChildren && (
-                <ChevronRight
-                  onClick={(e) => toggleExpand(category.id, e)}
-                  className={clsx(
-                    'w-4 h-4 transition-transform cursor-pointer',
-                    expandedCategories.includes(category.id) && 'rotate-90'
-                  )}
-                />
-              )}
-              {!category.hasChildren && (
-                <ChevronRight className="w-4 h-4" />
-              )}
+              <span>{category.name}</span>
+              <ChevronRight className="w-4 h-4" />
             </button>
           </li>
         ))}
+        {categories.length === 0 && (
+          <li className="text-sm text-gray-400">No categories found</li>
+        )}
       </ul>
     </div>
   );
 }
-
-
-

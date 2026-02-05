@@ -122,7 +122,7 @@ export default function EditCouponPage() {
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Discount Value {formData.discountType === 'Percentage' ? '(%)' : '($)'}
+                                Discount Value {formData.discountType === 'Percentage' ? '(%)' : '(IQD)'}
                             </label>
                             <input
                                 type="number"
@@ -134,7 +134,7 @@ export default function EditCouponPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Purchase ($)</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Purchase (IQD)</label>
                             <input
                                 type="number"
                                 value={formData.minPurchase}

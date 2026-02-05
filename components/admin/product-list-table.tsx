@@ -3,29 +3,43 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { adminApi } from '@/lib/api/admin';
-import { Product } from '@/lib/api/products';
+import { Product, Category, categoriesApi } from '@/lib/api/products';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import { formatPrice } from '@/lib/utils';
 import { useModal } from '@/components/ui/modal';
 
 // const mockProducts = ... (removed)
 
 export function ProductListTable() {
     const [products, setProducts] = useState<Product[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState('all');
+    const [stockFilter, setStockFilter] = useState('all');
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>({
+        key: 'name',
+        direction: 'asc'
+    });
+
     const modal = useModal();
 
     useEffect(() => {
-        loadProducts();
+        loadData();
     }, []);
 
-    const loadProducts = async () => {
+    const loadData = async () => {
         try {
-            const data = await adminApi.getProducts();
-            setProducts(data);
+            setLoading(true);
+            const [productsData, categoriesData] = await Promise.all([
+                adminApi.getProducts(),
+                categoriesApi.getAll()
+            ]);
+            setProducts(productsData);
+            setCategories(categoriesData);
         } catch (error) {
-            console.error(error);
+            console.error('Failed to load data', error);
         } finally {
             setLoading(false);
         }
@@ -45,30 +59,115 @@ export function ProductListTable() {
         }
     };
 
-    const filteredProducts = products.filter(p =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const handleSort = (key: string) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const getStockStatus = (stock: number) => {
+        if (stock <= 0) return { label: 'Out of Stock', color: 'text-red-600 bg-red-50' };
+        if (stock <= 5) return { label: 'Low Stock', color: 'text-orange-600 bg-orange-50' };
+        return { label: 'In Stock', color: 'text-green-600 bg-green-50' };
+    };
+
+    // Filter and Sort Logic
+    const processedProducts = products
+        .filter(p => {
+            const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesCategory = categoryFilter === 'all' || p.category?._id === categoryFilter;
+
+            const stock = (p as any).stock_quantity || 0;
+            let matchesStock = true;
+            if (stockFilter === 'in') matchesStock = stock > 5;
+            if (stockFilter === 'low') matchesStock = stock > 0 && stock <= 5;
+            if (stockFilter === 'out') matchesStock = stock <= 0;
+
+            return matchesSearch && matchesCategory && matchesStock;
+        })
+        .sort((a, b) => {
+            if (!sortConfig) return 0;
+            const { key, direction } = sortConfig;
+
+            let valA: any = a[key as keyof Product];
+            let valB: any = b[key as keyof Product];
+
+            // Special cases for nested objects or calculated fields
+            if (key === 'category') {
+                valA = a.category?.name || '';
+                valB = b.category?.name || '';
+            }
+            if (key === 'stock') {
+                valA = (a as any).stock_quantity || 0;
+                valB = (b as any).stock_quantity || 0;
+            }
+
+            if (valA < valB) return direction === 'asc' ? -1 : 1;
+            if (valA > valB) return direction === 'asc' ? 1 : -1;
+            return 0;
+        });
 
     if (loading) return <div className="p-8 flex justify-center"><Loader2 className="animate-spin" /></div>;
 
+    const SortIcon = ({ column }: { column: string }) => {
+        if (sortConfig?.key !== column) return <span className="ml-1 opacity-20">⇅</span>;
+        return <span className="ml-1">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>;
+    };
+
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            {/* Filters */}
-            <div className="p-4">
-                <div className="relative w-full md:w-80">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#807D7E" strokeWidth="2">
-                            <circle cx="11" cy="11" r="8" />
-                            <path d="m21 21-4.3-4.3" />
-                        </svg>
-                    </span>
-                    <input
-                        type="text"
-                        placeholder="Search..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-[#F8F9FA] border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20"
-                    />
+            {/* Filters Bar */}
+            <div className="p-4 border-b border-gray-50 bg-[#F8F9FA]/50">
+                <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    {/* Search */}
+                    <div className="relative w-full md:w-80">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#807D7E" strokeWidth="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.3-4.3" />
+                            </svg>
+                        </span>
+                        <input
+                            type="text"
+                            placeholder="Search product name..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all"
+                        />
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                        {/* Category Filter */}
+                        <select
+                            value={categoryFilter}
+                            onChange={(e) => setCategoryFilter(e.target.value)}
+                            className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 outline-none cursor-pointer"
+                        >
+                            <option value="all">All Categories</option>
+                            {categories.map(cat => (
+                                <option key={cat._id} value={cat._id}>{cat.name}</option>
+                            ))}
+                        </select>
+
+                        {/* Stock Filter */}
+                        <select
+                            value={stockFilter}
+                            onChange={(e) => setStockFilter(e.target.value)}
+                            className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 outline-none cursor-pointer"
+                        >
+                            <option value="all">Stock Status</option>
+                            <option value="in">In Stock</option>
+                            <option value="low">Low Stock (≤5)</option>
+                            <option value="out">Out of Stock</option>
+                        </select>
+
+                        {/* Results Count */}
+                        <span className="text-xs font-bold text-gray-400 ml-2">
+                            {processedProducts.length} PRODUCTS FOUND
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -77,20 +176,43 @@ export function ProductListTable() {
                 <table className="w-full text-sm">
                     <thead>
                         <tr className="bg-white border-b border-gray-100 text-[#807D7E] text-xs uppercase tracking-wider">
-                            <th className="px-6 py-4 text-left font-semibold">NAME</th>
-                            <th className="px-6 py-4 text-left font-semibold">CATEGORY</th>
-                            <th className="px-6 py-4 text-left font-semibold">PRICE</th>
+                            <th
+                                className="px-6 py-4 text-left font-semibold cursor-pointer hover:text-[#3C4242] transition-colors"
+                                onClick={() => handleSort('name')}
+                            >
+                                <div className="flex items-center">NAME <SortIcon column="name" /></div>
+                            </th>
+                            <th
+                                className="px-6 py-4 text-left font-semibold cursor-pointer hover:text-[#3C4242] transition-colors"
+                                onClick={() => handleSort('category')}
+                            >
+                                <div className="flex items-center">CATEGORY <SortIcon column="category" /></div>
+                            </th>
+                            <th
+                                className="px-6 py-4 text-left font-semibold cursor-pointer hover:text-[#3C4242] transition-colors"
+                                onClick={() => handleSort('price')}
+                            >
+                                <div className="flex items-center">PRICE <SortIcon column="price" /></div>
+                            </th>
+                            <th
+                                className="px-6 py-4 text-left font-semibold cursor-pointer hover:text-[#3C4242] transition-colors"
+                                onClick={() => handleSort('stock')}
+                            >
+                                <div className="flex items-center">STOCK <SortIcon column="stock" /></div>
+                            </th>
                             <th className="px-6 py-4 text-left font-semibold">ACTION</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
-                        {filteredProducts.map((product) => (
-                            <tr key={product._id} className="hover:bg-gray-50 transition-colors">
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gray-100 relative overflow-hidden">
-                                            {product.images?.[0]?.secure_url &&
-                                                product.images[0].secure_url !== 'string' && (
+                        {processedProducts.map((product) => {
+                            const stock = (product as any).stock_quantity || 0;
+                            const status = getStockStatus(stock);
+                            return (
+                                <tr key={product._id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-lg bg-gray-100 relative overflow-hidden border border-gray-100">
+                                                {product.images?.[0]?.secure_url && (
                                                     <Image
                                                         src={product.images[0].secure_url}
                                                         alt={product.name}
@@ -99,77 +221,68 @@ export function ProductListTable() {
                                                         unoptimized
                                                     />
                                                 )}
+                                            </div>
+                                            <span className="font-bold text-[#3C4242]">{product.name}</span>
                                         </div>
-                                        <span className="font-bold text-[#3C4242]">{product.name}</span>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 text-gray-700 font-medium">{product.category?.name || 'N/A'}</td>
-                                <td className="px-6 py-4 text-gray-700 font-medium">
-                                    {typeof product.price === 'number' ? product.price.toFixed(2) : '0.00'}
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <Link
-                                            href={`/admin/products/${product._id}/edit`}
-                                            className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
-                                        >
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M12 20h9" />
-                                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                                            </svg>
-                                        </Link>
-                                        <button
-                                            onClick={() => handleDelete(product._id)}
-                                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                                        >
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className="text-gray-600 font-medium px-2 py-1 bg-gray-100 rounded text-[10px] uppercase">
+                                            {product.category?.name || 'Uncategorized'}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-gray-700 font-bold">
+                                        {formatPrice(product.price)}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex flex-col gap-1">
+                                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-block w-fit ${status.color}`}>
+                                                {status.label}
+                                            </span>
+                                            <span className="text-gray-400 text-[10px] ml-2">{stock} units</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-2">
+                                            <Link
+                                                href={`/admin/products/${product._id}/edit`}
+                                                className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                                                title="Edit Product"
+                                            >
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M12 20h9" />
+                                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                                </svg>
+                                            </Link>
+                                            <button
+                                                onClick={() => handleDelete(product._id)}
+                                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                title="Delete Product"
+                                            >
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M3 6h18" />
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
 
-            {/* Pagination */}
-            <div className="p-4 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-gray-100">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                    Showing
-                    <select className="px-2 py-1 bg-white border border-gray-200 rounded text-gray-700 outline-none focus:ring-1 focus:ring-[#8B5CF6]">
-                        <option>10</option>
-                        <option>20</option>
-                        <option>50</option>
-                    </select>
-                    of 50
+            {/* Empty State */}
+            {processedProducts.length === 0 && (
+                <div className="p-20 text-center">
+                    <p className="text-gray-400 italic">No products found matching your filters.</p>
                 </div>
+            )}
 
-                <div className="flex items-center gap-1">
-                    <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-400">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="m15 18-6-6 6-6" />
-                        </svg>
-                    </button>
-                    {[1, 2, 3, 4, 5].map((page) => (
-                        <button
-                            key={page}
-                            className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${page === 1
-                                ? 'bg-[#8B5CF6] text-white'
-                                : 'text-gray-600 hover:bg-gray-100'
-                                }`}
-                        >
-                            {page}
-                        </button>
-                    ))}
-                    <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-400">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="m9 18 6-6-6-6" />
-                        </svg>
-                    </button>
-                </div>
+            {/* Footer with Info */}
+            <div className="p-4 bg-white border-t border-gray-100 flex justify-between items-center text-xs text-gray-400">
+                <p>Showing {processedProducts.length} of {products.length} total products</p>
+                <p>Use column headers to sort the table</p>
             </div>
         </div>
     );

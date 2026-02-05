@@ -50,6 +50,7 @@ export default function EditProductPage() {
         isFeatured: false,
         ingredients: '',
         howToUse: '',
+        stock_quantity: 0,
     });
 
     const [variants, setVariants] = useState<ProductVariant[]>([]);
@@ -80,6 +81,7 @@ export default function EditProductPage() {
                 isFeatured: productData.isFeatured || false,
                 ingredients: productData.ingredients || '',
                 howToUse: productData.howToUse || '',
+                stock_quantity: (productData as any).stock_quantity || 0,
             });
             // Load existing variants
             if (productData.variants && productData.variants.length > 0) {
@@ -240,7 +242,7 @@ export default function EditProductPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Price</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Price (IQD)</label>
                             <input
                                 type="number"
                                 step="0.01"
@@ -259,6 +261,19 @@ export default function EditProductPage() {
                                 onChange={(e) => setFormData({ ...formData, discount: parseInt(e.target.value) })}
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Total Stock</label>
+                            <input
+                                type="number"
+                                value={formData.stock_quantity}
+                                onChange={(e) => setFormData({ ...formData, stock_quantity: parseInt(e.target.value) || 0 })}
+                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-50"
+                                readOnly={variants.length > 0}
+                                title={variants.length > 0 ? "Calculated from variants" : ""}
+                            />
+                            {variants.length > 0 && <p className="text-[10px] text-gray-400 mt-1">Calculated automatically from variants</p>}
                         </div>
 
                         <div>
@@ -406,10 +421,10 @@ export default function EditProductPage() {
                                         ))}
 
                                         <div>
-                                            <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Price ($)</label>
+                                            <label className="block text-xs font-medium text-gray-500 uppercase mb-1">Price (IQD)</label>
                                             <input
                                                 type="number"
-                                                step="0.01"
+                                                step="1"
                                                 value={variant.price}
                                                 onChange={(e) => updateVariantField(index, 'price', parseFloat(e.target.value) || 0)}
                                                 className="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-purple-500"

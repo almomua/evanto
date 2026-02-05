@@ -1,18 +1,27 @@
 'use client';
 
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { CheckCircle, Package, Mail } from 'lucide-react';
+import { CheckCircle, Package, Mail, Loader2 } from 'lucide-react';
 
-export default function CheckoutSuccessPage() {
-  const orderNumber = `EVR-${Date.now().toString().slice(-8)}`;
+function SuccessContent() {
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get('id');
+
+  // Format the order ID to match admin panel (# + last 6 chars)
+  // Fallback to a timestamp-based ID if for some reason the ID is missing
+  const displayId = orderId
+    ? `#${orderId.slice(-6).toUpperCase()}`
+    : `EVR-${Date.now().toString().slice(-8)}`;
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
 
-      <main className="max-w-[1440px] mx-auto px-[100px] py-12">
+      <main className="max-w-[1440px] mx-auto px-4 lg:px-[100px] py-12">
         <div className="max-w-[600px] mx-auto text-center py-16">
           {/* Success Icon */}
           <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8">
@@ -30,11 +39,11 @@ export default function CheckoutSuccessPage() {
           {/* Order Number */}
           <div className="bg-[#F6F6F6] rounded-xl p-6 mb-8">
             <p className="text-[#807D7E] text-sm mb-2">Order Number</p>
-            <p className="text-[#3C4242] text-2xl font-bold">{orderNumber}</p>
+            <p className="text-[#3C4242] text-2xl font-bold">{displayId}</p>
           </div>
 
           {/* Info Cards */}
-          <div className="grid grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
             <div className="bg-white border border-[#BEBCBD]/30 rounded-xl p-6">
               <Mail className="w-8 h-8 text-[#8A33FD] mx-auto mb-4" />
               <h3 className="text-[#3C4242] font-medium mb-2">Confirmation Email</h3>
@@ -52,7 +61,7 @@ export default function CheckoutSuccessPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/products"
               className="px-8 py-4 bg-[#8A33FD] text-white text-lg font-medium rounded-lg hover:bg-[#7229D6] transition-colors"
@@ -71,6 +80,18 @@ export default function CheckoutSuccessPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-[#8A33FD]" />
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }
 

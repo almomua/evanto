@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 const tabs = [
     'All',
@@ -28,14 +29,28 @@ import { Loader2 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { useEffect } from 'react';
 import { clsx } from 'clsx';
+import { Pagination } from './pagination';
 
 
 export function OrderManagementTable() {
+    return (
+        <Suspense fallback={<div className="p-12 flex justify-center"><Loader2 className="animate-spin" /></div>}>
+            <OrderManagementTableContent />
+        </Suspense>
+    );
+}
+
+function OrderManagementTableContent() {
+    const searchParams = useSearchParams();
+    const initialSearch = searchParams.get('search') || '';
+
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('All');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [expandedRow, setExpandedRow] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState(initialSearch);
+    const [expandedRow, setExpandedRow] = useState<string | null>(initialSearch || null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     useEffect(() => {
         loadOrders();
@@ -46,6 +61,14 @@ export function OrderManagementTable() {
             setLoading(true);
             const data = await ordersApi.getOrders();
             setOrders(data);
+
+            // If we have an initial search (likely an ID), try to expand that row
+            if (initialSearch) {
+                const foundOrder = data.find(o => o._id === initialSearch || o._id.endsWith(initialSearch.toUpperCase()));
+                if (foundOrder) {
+                    setExpandedRow(foundOrder._id);
+                }
+            }
         } catch (error) {
             console.error('Failed to load orders', error);
         } finally {
@@ -80,6 +103,18 @@ export function OrderManagementTable() {
         }
         return true;
     });
+
+    // Pagination logic
+    const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+    const paginatedOrders = filteredOrders.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeTab, searchQuery]);
 
     if (loading) return <div className="p-12 flex justify-center"><Loader2 className="animate-spin" /></div>;
 
@@ -146,7 +181,7 @@ export function OrderManagementTable() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
-                        {filteredOrders.map((order) => (
+                        {paginatedOrders.map((order) => (
                             <React.Fragment key={order._id}>
                                 <tr
                                     className={`hover:bg-gray-50 transition-colors cursor-pointer ${expandedRow === order._id ? 'bg-gray-50' : ''}`}
@@ -217,12 +252,12 @@ export function OrderManagementTable() {
                                                         </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-gray-50">
-                                                        {order.items.map((item, i) => (
+                                                        {order.items.filter(item => item.product).map((item, i) => (
                                                             <tr key={i}>
                                                                 <td className="py-4 text-[#807D7E]">{i + 1}</td>
-                                                                <td className="py-4 text-[#3C4242]">#{item.product._id.slice(-6).toUpperCase()}</td>
-                                                                <td className="py-4 text-[#3C4242] font-bold">{item.product?.name}</td>
-                                                                <td className="py-4 text-[#3C4242]">{formatPrice(item.variant?.price || item.product?.price)}</td>
+                                                                <td className="py-4 text-[#3C4242]">#{item.product?._id?.slice(-6).toUpperCase() || 'N/A'}</td>
+                                                                <td className="py-4 text-[#3C4242] font-bold">{item.product?.name || 'Deleted Product'}</td>
+                                                                <td className="py-4 text-[#3C4242]">{formatPrice(item.variant?.price || item.product?.price || 0)}</td>
                                                                 <td className="py-4 text-[#3C4242]">{item.quantity}</td>
                                                                 <td className="py-4 text-[#3C4242] font-bold">{formatPrice(item.subtotal)}</td>
                                                             </tr>
@@ -247,42 +282,14 @@ export function OrderManagementTable() {
                 </table>
             </div>
 
-            {/* Pagination */}
-            <div className="p-4 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-gray-100">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                    Showing
-                    <select className="px-2 py-1 bg-white border border-gray-200 rounded text-gray-700 outline-none focus:ring-1 focus:ring-[#8B5CF6]">
-                        <option>10</option>
-                        <option>20</option>
-                        <option>50</option>
-                    </select>
-                    of 50
-                </div>
-
-                <div className="flex items-center gap-1">
-                    <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-400">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="m15 18-6-6 6-6" />
-                        </svg>
-                    </button>
-                    {[1, 2, 3, 4, 5].map((page) => (
-                        <button
-                            key={page}
-                            className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${page === 1
-                                ? 'bg-[#8B5CF6] text-white'
-                                : 'text-gray-600 hover:bg-gray-100'
-                                }`}
-                        >
-                            {page}
-                        </button>
-                    ))}
-                    <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-400">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="m9 18 6-6-6-6" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={filteredOrders.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+                onItemsPerPageChange={setItemsPerPage}
+            />
         </div>
     );
 }

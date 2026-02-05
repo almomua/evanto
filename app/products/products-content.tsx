@@ -8,7 +8,7 @@ import { FilterSidebar } from '@/components/filters/filter-sidebar';
 import { ProductGrid } from '@/components/product/product-grid';
 import { SortTabs, SortOption } from '@/components/product/sort-tabs';
 import { Pagination } from '@/components/product/pagination';
-import { productsApi, Product } from '@/lib/api/products';
+import { productsApi, Product, brandsApi, Brand } from '@/lib/api/products';
 import { Loader2 } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 9;
@@ -19,6 +19,7 @@ export function ProductsPageContent() {
 
   // Data state
   const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [allBrands, setAllBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
   const [availableSizes, setAvailableSizes] = useState<string[]>([]);
 
@@ -26,7 +27,9 @@ export function ProductsPageContent() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     categoryFromUrl ? [categoryFromUrl] : []
   );
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200000]);
+  const [maxPrice, setMaxPrice] = useState(200000);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
 
 
@@ -35,17 +38,22 @@ export function ProductsPageContent() {
   const [activeSort, setActiveSort] = useState<SortOption>('new');
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Fetch products
+  // Fetch products and brands
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
-        const data = await productsApi.getAll();
-        setAllProducts(data);
+        const [productsData, brandsData] = await Promise.all([
+          productsApi.getAll(),
+          brandsApi.getAll()
+        ]);
+
+        setAllProducts(productsData);
+        setAllBrands(brandsData);
 
         // Extract sizes from variants
         const sizeSet = new Set<string>();
-        data.forEach(product => {
+        productsData.forEach(product => {
           if (product.variants && product.variants.length > 0) {
             product.variants.forEach((variant: any) => {
               if (variant.options) {
@@ -71,8 +79,9 @@ export function ProductsPageContent() {
         setAvailableSizes(sortedSizes);
 
         // Find max price for range slider
-        const maxPrice = Math.max(...data.map(p => p.price), 1000);
-        setPriceRange([0, maxPrice]);
+        const calculatedMaxPrice = Math.max(...productsData.map(p => p.price), 10000);
+        setMaxPrice(calculatedMaxPrice);
+        setPriceRange([0, calculatedMaxPrice]);
 
       } catch (error) {
         console.error("Failed to fetch products", error);
@@ -83,14 +92,36 @@ export function ProductsPageContent() {
     fetchData();
   }, []);
 
-  // Update selected category when URL param changes
+  // Calculate available brands based on current category filters
+  const availableBrands = useMemo(() => {
+    if (selectedCategories.length === 0) return allBrands;
+
+    // Get all brand slugs that have products in the selected categories
+    const brandSlugsInCategories = new Set(
+      allProducts
+        .filter(p => p.category?.slug && selectedCategories.includes(p.category.slug))
+        .map(p => p.brand?.slug)
+        .filter(Boolean)
+    );
+
+    return allBrands.filter(brand => brandSlugsInCategories.has(brand.slug));
+  }, [allBrands, allProducts, selectedCategories]);
+
+  // Update selected category/brand when URL param changes
   useEffect(() => {
     if (categoryFromUrl) {
       setSelectedCategories([categoryFromUrl.toLowerCase()]);
     } else {
       setSelectedCategories([]);
     }
-  }, [categoryFromUrl]);
+
+    const brandHandle = searchParams.get('brand');
+    if (brandHandle) {
+      setSelectedBrands([brandHandle.toLowerCase()]);
+    } else {
+      setSelectedBrands([]);
+    }
+  }, [categoryFromUrl, searchParams]);
 
   // Filter products
   const filteredProducts = useMemo(() => {
@@ -116,7 +147,14 @@ export function ProductsPageContent() {
     // Filter by category if selected
     if (selectedCategories.length > 0) {
       products = products.filter((p) =>
-        p.category?.name && selectedCategories.some(c => p.category.name.toLowerCase().includes(c.toLowerCase()))
+        p.category?.slug && selectedCategories.includes(p.category.slug)
+      );
+    }
+
+    // Filter by brand if selected
+    if (selectedBrands.length > 0) {
+      products = products.filter((p) =>
+        p.brand?.slug && selectedBrands.includes(p.brand.slug)
       );
     }
 
@@ -153,7 +191,7 @@ export function ProductsPageContent() {
     }
 
     return products;
-  }, [allProducts, selectedCategories, priceRange, activeSort, selectedSizes, searchParams]);
+  }, [allProducts, selectedCategories, selectedBrands, priceRange, activeSort, selectedSizes, searchParams]);
 
   // Paginate
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -165,6 +203,11 @@ export function ProductsPageContent() {
   // Reset to page 1 when filters change
   const handleCategoryChange = (categories: string[]) => {
     setSelectedCategories(categories);
+    setCurrentPage(1);
+  };
+
+  const handleBrandChange = (brands: string[]) => {
+    setSelectedBrands(brands);
     setCurrentPage(1);
   };
 
@@ -193,11 +236,16 @@ export function ProductsPageContent() {
           <FilterSidebar
             selectedCategories={selectedCategories}
             onCategoryChange={handleCategoryChange}
+            selectedBrands={selectedBrands}
+            onBrandChange={handleBrandChange}
+            availableBrands={availableBrands}
+            brandsLoading={loading}
             priceRange={priceRange}
             onPriceChange={handlePriceChange}
             selectedSizes={selectedSizes}
             onSizeChange={handleSizeChange}
             availableSizes={availableSizes}
+            maxPrice={maxPrice}
           />
 
           {/* Main Content */}
@@ -226,7 +274,7 @@ export function ProductsPageContent() {
                     id: p._id,
                     slug: p.slug,
                     name: p.name,
-                    brand: p.category?.name || 'ProBerry',
+                    brand: p.brand?.name || p.category?.name || 'ProBerry',
                     price: p.price,
                     image: p.images?.[0]?.secure_url || '',
                     shortDesc: p.shortDesc,

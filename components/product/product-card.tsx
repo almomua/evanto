@@ -72,7 +72,7 @@ export function ProductCard({ id, slug, name, brand, price, image, href = '#', s
         </button>
 
         <Image
-          src={image && image !== 'string' ? image : 'https://placehold.co/600x400?text=Invalid+Image'}
+          src={image && image !== 'string' ? image : '/images/categories/makeup/rectangle-29.png'}
           alt={name}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"

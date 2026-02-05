@@ -60,7 +60,7 @@ export function TransactionsTable() {
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-[#3C4242]">{formatPrice(order.totalAmount)}</td>
                   <td className="px-6 py-4">
-                    <Link href={`/admin/orders/${order._id}`} className="text-sm text-[#8B5CF6] hover:underline">
+                    <Link href={`/admin/orders?search=${order._id}`} className="text-sm text-[#8B5CF6] hover:underline">
                       View Detail
                     </Link>
                   </td>

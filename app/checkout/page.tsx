@@ -119,7 +119,7 @@ function CheckoutContent() {
         return;
       }
 
-      await ordersApi.createOrder({
+      const newOrder = await ordersApi.createOrder({
         items: orderItems,
         totalAmount: totalAmount > 0 ? totalAmount : 0, // Ensure no negative total
         shippingAddress: shippingData,
@@ -128,7 +128,7 @@ function CheckoutContent() {
       });
 
       clearCart();
-      router.push('/checkout/success');
+      router.push(`/checkout/success?id=${newOrder._id}`);
     } catch (error) {
       console.error("Order failed", error);
       // You might want to show an error message state here

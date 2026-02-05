@@ -10,6 +10,7 @@ export interface Product {
   discount: number;
   images: { secure_url: string }[];
   category: { _id: string; name: string; slug: string };
+  brand: { _id: string; name: string; slug: string };
   isFeatured: boolean;
   ratingsAverage: number;
   ratingsQuantity: number;
@@ -23,6 +24,8 @@ export interface Category {
   name: string;
   slug: string;
   image: { secure_url: string };
+  description?: string;
+  isActive?: boolean;
   parentCategory?: string;
 }
 
@@ -93,5 +96,27 @@ export const categoriesApi = {
     // This requires a backend endpoint to find by slug, or filtering list
     const response = await api.get('/categories');
     return response.data.data.docs.find((c: Category) => c.slug === slug);
+  },
+};
+
+export interface Brand {
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  image?: { secure_url: string };
+}
+
+export const brandsApi = {
+  // Get all brands
+  getAll: async (): Promise<Brand[]> => {
+    const response = await api.get('/brands');
+    return response.data.data.docs;
+  },
+
+  // Get brand by slug
+  getBySlug: async (slug: string): Promise<Brand | undefined> => {
+    const response = await api.get('/brands');
+    return response.data.data.docs.find((b: Brand) => b.slug === slug);
   },
 };

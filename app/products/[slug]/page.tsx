@@ -9,7 +9,6 @@ import { ProductFeatures } from '@/components/product/product-features';
 import { ProductDescription } from '@/components/product/product-description';
 import { ProductVideo } from '@/components/product/product-video';
 import { SimilarProducts } from '@/components/product/similar-products';
-import { similarProducts } from '@/lib/assets-product-detail';
 import { productsApi } from '@/lib/api/products';
 import { Loader2 } from 'lucide-react';
 
@@ -21,6 +20,7 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { slug } = use(params);
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [similarProductsList, setSimilarProductsList] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -35,6 +35,22 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
     };
     fetchProduct();
   }, [slug]);
+
+  useEffect(() => {
+    if (product?.category?._id) {
+      const fetchSimilar = async () => {
+        try {
+          const data = await productsApi.getByCategory(product.category._id);
+          // Filter out the current product itself
+          const filtered = data.filter((p: any) => p._id !== product._id);
+          setSimilarProductsList(filtered);
+        } catch (error) {
+          console.error('Failed to fetch similar products', error);
+        }
+      };
+      fetchSimilar();
+    }
+  }, [product]);
 
   if (loading) {
     return (
@@ -113,7 +129,14 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
 
         {/* Similar Products */}
         <section className="py-8 lg:py-12">
-          <SimilarProducts products={similarProducts} />
+          <SimilarProducts products={similarProductsList.map(p => ({
+            id: p._id,
+            slug: p.slug,
+            name: p.name,
+            brand: p.brand?.name || p.category?.name || 'ProBerry',
+            price: p.price,
+            image: p.images?.[0]?.secure_url || ''
+          }))} />
         </section>
       </main>
 

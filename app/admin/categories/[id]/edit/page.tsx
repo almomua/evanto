@@ -1,17 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { adminApi } from '@/lib/api/admin';
 import { Category } from '@/lib/api/products';
-import { Loader2, ArrowLeft, Save } from 'lucide-react';
+import { Loader2, ArrowLeft, Save, X, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useModal } from '@/components/ui/modal';
 
 export default function EditCategoryPage() {
     const params = useParams();
     const router = useRouter();
+    const modal = useModal();
     const categoryId = params.id as string;
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [category, setCategory] = useState<Category | null>(null);
     const [loading, setLoading] = useState(true);
@@ -20,7 +24,11 @@ export default function EditCategoryPage() {
     const [formData, setFormData] = useState({
         name: '',
         slug: '',
+        description: '',
     });
+    const [isVisible, setIsVisible] = useState(true);
+    const [image, setImage] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     useEffect(() => {
         loadCategory();
@@ -33,12 +41,39 @@ export default function EditCategoryPage() {
             setFormData({
                 name: data.name || '',
                 slug: data.slug || '',
+                description: data.description || '',
             });
+            setIsVisible(data.isActive !== false);
+            if (data.image?.secure_url && !data.image.secure_url.includes('placehold.co')) {
+                setPreviewUrl(data.image.secure_url);
+            } else {
+                setPreviewUrl('/images/categories/makeup/rectangle-29.png');
+            }
         } catch (error) {
             console.error('Failed to load category:', error);
-            alert('Failed to load category');
+            modal.error('Failed to load category');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImage(file);
+            setPreviewUrl(URL.createObjectURL(file));
+        }
+    };
+
+    const removeImage = () => {
+        if (image && previewUrl) URL.revokeObjectURL(previewUrl);
+        setImage(null);
+
+        const originalUrl = category?.image?.secure_url;
+        if (originalUrl && !originalUrl.includes('placehold.co')) {
+            setPreviewUrl(originalUrl);
+        } else {
+            setPreviewUrl('/images/categories/makeup/rectangle-29.png');
         }
     };
 
@@ -46,12 +81,21 @@ export default function EditCategoryPage() {
         e.preventDefault();
         try {
             setSaving(true);
-            await adminApi.updateCategory(categoryId, formData);
-            alert('Category updated successfully!');
+            const data = new FormData();
+            data.append('name', formData.name);
+            data.append('slug', formData.slug);
+            data.append('description', formData.description);
+            data.append('isActive', String(isVisible));
+            if (image) {
+                data.append('image', image);
+            }
+
+            await adminApi.updateCategory(categoryId, data);
+            modal.success('Category updated successfully!');
             router.push('/admin/categories');
         } catch (error) {
             console.error('Failed to update category:', error);
-            alert('Failed to update category');
+            modal.error('Failed to update category');
         } finally {
             setSaving(false);
         }
@@ -108,6 +152,82 @@ export default function EditCategoryPage() {
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             />
                             <p className="text-sm text-gray-500 mt-1">URL-friendly version of the name</p>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                rows={3}
+                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Visibility</label>
+                            <div className="flex items-center gap-4">
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        checked={isVisible}
+                                        onChange={() => setIsVisible(true)}
+                                        className="text-purple-600 focus:ring-purple-500"
+                                    />
+                                    <span className="text-sm">Active</span>
+                                </label>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        checked={!isVisible}
+                                        onChange={() => setIsVisible(false)}
+                                        className="text-purple-600 focus:ring-purple-500"
+                                    />
+                                    <span className="text-sm">Inactive</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
+                            <div
+                                onClick={() => !image && !previewUrl && fileInputRef.current?.click()}
+                                className={`border-2 border-dashed border-gray-200 rounded-xl p-4 flex flex-col items-center justify-center space-y-2 transition-colors relative h-40 ${!image && !previewUrl ? 'cursor-pointer hover:bg-gray-50' : ''}`}
+                            >
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleImageSelect}
+                                />
+                                {previewUrl ? (
+                                    <div className="relative w-full h-full group">
+                                        <Image src={previewUrl} alt="Preview" fill className="object-contain" />
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => fileInputRef.current?.click()}
+                                                className="p-2 bg-white text-gray-700 rounded-lg hover:bg-gray-100"
+                                            >
+                                                <Upload size={16} />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={removeImage}
+                                                className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <Upload className="w-8 h-8 text-gray-400" />
+                                        <p className="text-sm text-gray-500">Click to upload image</p>
+                                    </>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

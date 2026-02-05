@@ -114,8 +114,8 @@ export function CreateCouponForm() {
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-[#807D7E]">Discount Value</label>
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">
-                                    {discountType === 'Percentage' ? '%' : '$'}
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">
+                                    {discountType === 'Percentage' ? '%' : 'IQD'}
                                 </span>
                                 <input
                                     type="number"
@@ -123,20 +123,20 @@ export function CreateCouponForm() {
                                     required
                                     value={formData.value}
                                     onChange={handleChange}
-                                    className="w-full pl-10 pr-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-medium"
+                                    className="w-full pr-14 pl-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-medium"
                                 />
                             </div>
                         </div>
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-[#807D7E]">Minimum Purchase</label>
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">$</span>
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">IQD</span>
                                 <input
                                     type="number"
                                     name="minPurchase"
                                     value={formData.minPurchase}
                                     onChange={handleChange}
-                                    className="w-full pl-10 pr-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-medium"
+                                    className="w-full pr-14 pl-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-medium"
                                 />
                             </div>
                         </div>
@@ -198,12 +198,12 @@ export function CreateCouponForm() {
                     <div className="flex justify-between items-center py-1">
                         <span className="text-sm text-[#807D7E] font-medium">Discount</span>
                         <span className="text-sm text-[#3C4242] font-bold">
-                            {formData.value ? `${formData.value}${discountType === 'Percentage' ? '%' : '$'} Off` : '----'}
+                            {formData.value ? `${formData.value}${discountType === 'Percentage' ? '%' : ' IQD'} Off` : '----'}
                         </span>
                     </div>
                     <div className="flex justify-between items-center py-1">
                         <span className="text-sm text-[#807D7E] font-medium">Min Purchase</span>
-                        <span className="text-sm text-[#3C4242] font-bold">{formData.minPurchase ? `$${formData.minPurchase}.00` : '----'}</span>
+                        <span className="text-sm text-[#3C4242] font-bold">{formData.minPurchase ? `${formData.minPurchase} IQD` : '----'}</span>
                     </div>
                     <div className="flex justify-between items-center py-1">
                         <span className="text-sm text-[#807D7E] font-medium">Expires On</span>

@@ -3,27 +3,39 @@
 import { useState } from 'react';
 import { SlidersHorizontal, X } from 'lucide-react';
 import { CategoryFilter } from './category-filter';
+import { BrandFilter } from './brand-filter';
 import { PriceRangeFilter } from './price-range-filter';
 import { SizeFilter } from './size-filter';
+import { Brand } from '@/lib/api/products';
 
 interface FilterSidebarProps {
   selectedCategories: string[];
   onCategoryChange: (categories: string[]) => void;
+  selectedBrands: string[];
+  onBrandChange: (brands: string[]) => void;
+  availableBrands: Brand[];
+  brandsLoading?: boolean;
   priceRange: [number, number];
   onPriceChange: (range: [number, number]) => void;
   selectedSizes: string[];
   onSizeChange: (sizes: string[]) => void;
   availableSizes?: string[];
+  maxPrice?: number;
 }
 
 export function FilterSidebar({
   selectedCategories,
   onCategoryChange,
+  selectedBrands,
+  onBrandChange,
+  availableBrands,
+  brandsLoading,
   priceRange,
   onPriceChange,
   selectedSizes,
   onSizeChange,
   availableSizes,
+  maxPrice = 200000,
 }: FilterSidebarProps) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -37,13 +49,23 @@ export function FilterSidebar({
         />
       </div>
 
+      {/* Brand Filter */}
+      <div className="border-b border-[#BEBCBD]">
+        <BrandFilter
+          selectedBrands={selectedBrands}
+          onBrandChange={onBrandChange}
+          brands={availableBrands}
+          loading={brandsLoading}
+        />
+      </div>
+
       {/* Price Filter */}
       <div className="border-b border-[#BEBCBD]">
         <PriceRangeFilter
           value={priceRange}
           onChange={onPriceChange}
           min={0}
-          max={1000}
+          max={maxPrice}
         />
       </div>
 

@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
-import { Poppins, Anton, Anton_SC } from "next/font/google";
+import { Tajawal, Cairo, Anton, Anton_SC } from "next/font/google";
 import { Providers } from "./providers";
 import { AuthProvider } from "@/lib/context/auth-context";
 import { PostHogProvider } from "@/lib/posthog";
 import { FloatingChat } from "@/components/layout/floating-chat";
 import "./globals.css";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+const tajawal = Tajawal({
+  variable: "--font-tajawal",
+  subsets: ["latin", "arabic"],
+  weight: ["300", "400", "500", "700", "800", "900"],
+});
+
+const cairo = Cairo({
+  variable: "--font-cairo",
+  subsets: ["latin", "arabic"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 const anton = Anton({
@@ -36,7 +42,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${poppins.variable} ${anton.variable} ${antonSC.variable} font-sans antialiased`} suppressHydrationWarning>
+      <body className={`${tajawal.variable} ${cairo.variable} ${anton.variable} ${antonSC.variable} font-sans antialiased`} suppressHydrationWarning>
         <PostHogProvider>
           <Providers>
             <AuthProvider>

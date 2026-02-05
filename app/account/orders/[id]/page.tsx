@@ -104,7 +104,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div>
             <p className="text-[#3C4242] text-lg font-medium">
-              Order no: #{order._id.slice(-8).toUpperCase()}
+              Order no: #{order._id.slice(-6).toUpperCase()}
             </p>
             <p className="text-[#807D7E] text-sm mt-1">
               Placed On: {new Date(order.createdAt).toLocaleDateString('en-US', {
@@ -187,7 +187,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
         <h3 className="text-[#3C4242] font-semibold mb-4">Items Order</h3>
         {order.items.map((item, index) => (
           <div
-            key={`${item.product._id}-${index}`}
+            key={item.product?._id ? `${item.product._id}-${index}` : `item-${index}`}
             className="flex items-center gap-4 sm:gap-6 py-4 border-b border-[#BEBCBD]/30"
           >
             {/* Product Image */}
