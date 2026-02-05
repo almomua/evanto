@@ -10,9 +10,10 @@ if (typeof window !== 'undefined') {
     const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
     const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
 
-    if (key && host) {
+    if (key) {
         posthog.init(key, {
-            api_host: host,
+            api_host: '/ingest',
+            ui_host: 'https://eu.posthog.com',
             person_profiles: 'always', // Track guests as well to ensure data appears
             capture_pageview: false,
             capture_pageleave: true,
