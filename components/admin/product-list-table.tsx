@@ -18,6 +18,8 @@ export function ProductListTable() {
     const [searchQuery, setSearchQuery] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('all');
     const [stockFilter, setStockFilter] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>({
         key: 'name',
         direction: 'asc'
@@ -27,16 +29,29 @@ export function ProductListTable() {
 
     useEffect(() => {
         loadData();
-    }, []);
+    }, [currentPage, categoryFilter, stockFilter, sortConfig]);
+
+    useEffect(() => {
+        // Reset to page 1 when filters change
+        setCurrentPage(1);
+    }, [categoryFilter, stockFilter, searchQuery]);
 
     const loadData = async () => {
         try {
             setLoading(true);
-            const [productsData, categoriesData] = await Promise.all([
-                adminApi.getProducts(),
+            const params: any = {
+                page: currentPage,
+                limit: 10,
+                sort: sortConfig ? `${sortConfig.direction === 'desc' ? '-' : ''}${sortConfig.key}` : undefined,
+                category: categoryFilter !== 'all' ? categoryFilter : undefined,
+            };
+
+            const [{ docs, totalPages: total }, categoriesData] = await Promise.all([
+                adminApi.getProducts(params),
                 categoriesApi.getAll()
             ]);
-            setProducts(productsData);
+            setProducts(docs);
+            setTotalPages(total);
             setCategories(categoriesData);
         } catch (error) {
             console.error('Failed to load data', error);
@@ -73,40 +88,11 @@ export function ProductListTable() {
         return { label: 'In Stock', color: 'text-green-600 bg-green-50' };
     };
 
-    // Filter and Sort Logic
+    // Filter and Sort Logic (Search remains client-side for immediate feedback, others moved to server)
     const processedProducts = products
         .filter(p => {
             const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesCategory = categoryFilter === 'all' || p.category?._id === categoryFilter;
-
-            const stock = (p as any).stock_quantity || 0;
-            let matchesStock = true;
-            if (stockFilter === 'in') matchesStock = stock > 5;
-            if (stockFilter === 'low') matchesStock = stock > 0 && stock <= 5;
-            if (stockFilter === 'out') matchesStock = stock <= 0;
-
-            return matchesSearch && matchesCategory && matchesStock;
-        })
-        .sort((a, b) => {
-            if (!sortConfig) return 0;
-            const { key, direction } = sortConfig;
-
-            let valA: any = a[key as keyof Product];
-            let valB: any = b[key as keyof Product];
-
-            // Special cases for nested objects or calculated fields
-            if (key === 'category') {
-                valA = a.category?.name || '';
-                valB = b.category?.name || '';
-            }
-            if (key === 'stock') {
-                valA = (a as any).stock_quantity || 0;
-                valB = (b as any).stock_quantity || 0;
-            }
-
-            if (valA < valB) return direction === 'asc' ? -1 : 1;
-            if (valA > valB) return direction === 'asc' ? 1 : -1;
-            return 0;
+            return matchesSearch;
         });
 
     if (loading) return <div className="p-8 flex justify-center"><Loader2 className="animate-spin" /></div>;
@@ -279,10 +265,54 @@ export function ProductListTable() {
                 </div>
             )}
 
-            {/* Footer with Info */}
-            <div className="p-4 bg-white border-t border-gray-100 flex justify-between items-center text-xs text-gray-400">
-                <p>Showing {processedProducts.length} of {products.length} total products</p>
-                <p>Use column headers to sort the table</p>
+            {/* Footer with Pagination */}
+            <div className="p-4 bg-white border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div className="text-xs text-gray-400">
+                    Page <span className="font-bold text-gray-600">{currentPage}</span> of <span className="font-bold text-gray-600">{totalPages}</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        disabled={currentPage === 1 || loading}
+                        className="px-4 py-2 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                    >
+                        Previous
+                    </button>
+
+                    <div className="flex items-center gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1)
+                            .filter(page => {
+                                // Show first, last, and pages around current
+                                return page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1;
+                            })
+                            .map((page, index, array) => (
+                                <React.Fragment key={page}>
+                                    {index > 0 && array[index - 1] !== page - 1 && (
+                                        <span className="text-gray-400 px-1">...</span>
+                                    )}
+                                    <button
+                                        onClick={() => setCurrentPage(page)}
+                                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${currentPage === page
+                                                ? 'bg-[#1E6BFF] text-white'
+                                                : 'text-gray-600 hover:bg-gray-50 border border-transparent hover:border-gray-200'
+                                            }`}
+                                    >
+                                        {page}
+                                    </button>
+                                </React.Fragment>
+                            ))
+                        }
+                    </div>
+
+                    <button
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        disabled={currentPage === totalPages || loading}
+                        className="px-4 py-2 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                    >
+                        Next
+                    </button>
+                </div>
             </div>
         </div>
     );

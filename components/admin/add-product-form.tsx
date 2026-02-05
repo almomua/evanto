@@ -197,21 +197,30 @@ export function AddProductForm() {
                 formData.append('images', file);
             });
 
+            // Filter for valid variants (must have at least one option with a value)
+            const validVariants = variants.filter(v =>
+                v.options.some(opt => opt.value.trim() !== '')
+            );
+
             // Append variant files
-            variants.forEach((variant, index) => {
+            validVariants.forEach((variant, index) => {
                 variant.images.forEach(file => {
                     formData.append(`variant_images_${index}`, file);
                 });
             });
 
             // Handle variants
-            const variantsData = variants.map(v => ({
-                options: v.options.filter(o => o.value),
-                price: Number(v.price) || Number(price),
-                inventory: Number(v.stock) || 0,
-                // images are handled by backend controller mapping
-            }));
-            formData.append('variants', JSON.stringify(variantsData));
+            if (validVariants.length > 0) {
+                const variantsData = validVariants.map(v => ({
+                    options: v.options.filter(o => o.value.trim() !== ''),
+                    price: Number(v.price) || Number(price),
+                    inventory: Number(v.stock) || 0,
+                }));
+                formData.append('variants', JSON.stringify(variantsData));
+            } else {
+                // If no valid variants, explicitly send empty array so backend uses main stock_quantity
+                formData.append('variants', JSON.stringify([]));
+            }
 
             // Handle details (convert to object)
             const detailsObj: Record<string, string> = {};
@@ -434,13 +443,13 @@ export function AddProductForm() {
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-bold text-gray-400 uppercase">Variant Price (IQD)</label>
                                         <div className="relative">
-                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">IQD</span>
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-[10px]">IQD</span>
                                             <input
                                                 type="text"
                                                 value={variant.price}
                                                 onChange={(e) => updateVariantField(variant.id, 'price', e.target.value)}
                                                 placeholder="0.00"
-                                                className="w-full pl-8 pr-4 py-3 bg-[#F8F9FA] border border-gray-100 rounded-xl text-sm text-[#3C4242] outline-none"
+                                                className="w-full pl-14 pr-4 py-3 bg-[#F8F9FA] border border-gray-100 rounded-xl text-sm text-[#3C4242] outline-none"
                                             />
                                         </div>
                                     </div>
@@ -505,13 +514,13 @@ export function AddProductForm() {
                     <div className="space-y-2">
                         <label className="text-sm font-semibold text-[#3C4242]">Price (IQD)</label>
                         <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium whitespace-nowrap">IQD</span>
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs whitespace-nowrap">IQD</span>
                             <input
                                 type="number"
                                 value={price}
                                 onChange={(e) => setPrice(e.target.value)}
                                 placeholder="0.00"
-                                className="w-full pl-8 pr-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all"
+                                className="w-full pl-14 pr-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all"
                             />
                         </div>
                     </div>

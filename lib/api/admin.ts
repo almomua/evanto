@@ -113,9 +113,12 @@ export const adminApi = {
     },
 
     // Products
-    getProducts: async (params?: any): Promise<Product[]> => {
-        const response = await api.get('/products', { params: { limit: 100, ...params } });
-        return response.data.data.docs;
+    getProducts: async (params?: any): Promise<{ docs: Product[]; totalPages: number }> => {
+        const response = await api.get('/products', { params: { limit: 10, ...params } });
+        return {
+            docs: response.data.data.docs,
+            totalPages: response.data.totalPages
+        };
     },
 
     getProduct: async (id: string): Promise<Product> => {
