@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ChevronUp } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface PriceRangeFilterProps {
   value: [number, number];
@@ -12,6 +13,7 @@ interface PriceRangeFilterProps {
 
 export function PriceRangeFilter({ value, onChange, min, max }: PriceRangeFilterProps) {
   const [isExpanded, setIsExpanded] = useState(true);
+  const t = useTranslations('products');
   const [localMin, setLocalMin] = useState(value[0].toString());
   const [localMax, setLocalMax] = useState(value[1].toString());
 
@@ -71,7 +73,7 @@ export function PriceRangeFilter({ value, onChange, min, max }: PriceRangeFilter
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between text-[#807D7E] text-[22px] tracking-wide mb-6"
       >
-        <span>Price</span>
+        <span>{t('price')}</span>
         <ChevronUp
           className={`w-4 h-4 transition-transform ${!isExpanded ? 'rotate-180' : ''}`}
         />
@@ -119,10 +121,10 @@ export function PriceRangeFilter({ value, onChange, min, max }: PriceRangeFilter
                 onChange={handleMinChange}
                 onBlur={handleMinBlur}
                 onKeyDown={handleKeyDown}
-                placeholder="Min"
+                placeholder={t('min')}
                 className="w-full border border-[#BEBCBD]/80 rounded-lg px-4 py-2 text-[#3C4242] text-base text-center focus:outline-none focus:ring-2 focus:ring-[#8A33FD]/20"
               />
-              <span className="block text-xs text-gray-400 text-center mt-1">IQD</span>
+              <span className="block text-xs text-gray-400 text-center mt-1">{t('currency')}</span>
             </div>
             <div className="flex-1">
               <input
@@ -131,10 +133,10 @@ export function PriceRangeFilter({ value, onChange, min, max }: PriceRangeFilter
                 onChange={handleMaxChange}
                 onBlur={handleMaxBlur}
                 onKeyDown={handleKeyDown}
-                placeholder="Max"
+                placeholder={t('max')}
                 className="w-full border border-[#BEBCBD]/80 rounded-lg px-4 py-2 text-[#3C4242] text-base text-center focus:outline-none focus:ring-2 focus:ring-[#8A33FD]/20"
               />
-              <span className="block text-xs text-gray-400 text-center mt-1">IQD</span>
+              <span className="block text-xs text-gray-400 text-center mt-1">{t('currency')}</span>
             </div>
           </div>
         </>

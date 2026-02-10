@@ -7,6 +7,7 @@ import { BrandFilter } from './brand-filter';
 import { PriceRangeFilter } from './price-range-filter';
 import { SizeFilter } from './size-filter';
 import { Brand } from '@/lib/api/products';
+import { useTranslations } from 'next-intl';
 
 interface FilterSidebarProps {
   selectedCategories: string[];
@@ -38,6 +39,7 @@ export function FilterSidebar({
   maxPrice = 200000,
 }: FilterSidebarProps) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const t = useTranslations('products');
 
   const filterContent = (
     <>
@@ -88,7 +90,7 @@ export function FilterSidebar({
         className="lg:hidden fixed bottom-4 right-4 z-40 flex items-center gap-2 bg-[#8A33FD] text-white px-4 py-3 rounded-full shadow-lg"
       >
         <SlidersHorizontal className="w-5 h-5" />
-        <span className="text-sm font-medium">Filters</span>
+        <span className="text-sm font-medium">{t('filter')}</span>
       </button>
 
       {/* Mobile Filter Drawer */}
@@ -104,7 +106,7 @@ export function FilterSidebar({
           <div className="absolute left-0 top-0 bottom-0 w-[85%] max-w-[320px] bg-white overflow-y-auto">
             {/* Drawer Header */}
             <div className="flex items-center justify-between px-4 py-4 border-b border-[#BEBCBD] sticky top-0 bg-white z-10">
-              <h2 className="text-[#3C4242] text-lg font-semibold">Filters</h2>
+              <h2 className="text-[#3C4242] text-lg font-semibold">{t('filter')}</h2>
               <button
                 onClick={() => setMobileFiltersOpen(false)}
                 className="w-8 h-8 flex items-center justify-center text-[#807D7E]"
@@ -122,7 +124,7 @@ export function FilterSidebar({
                 onClick={() => setMobileFiltersOpen(false)}
                 className="w-full bg-[#8A33FD] text-white py-3 rounded-lg font-medium"
               >
-                Apply Filters
+                {t('applyFilters')}
               </button>
             </div>
           </div>
@@ -133,7 +135,7 @@ export function FilterSidebar({
       <aside className="hidden lg:block w-[295px] flex-shrink-0">
         {/* Filter Header */}
         <div className="flex items-center justify-between px-[30px] py-5 border-b border-[#BEBCBD]">
-          <h2 className="text-[#807D7E] text-[22px] tracking-wide">Filter</h2>
+          <h2 className="text-[#807D7E] text-[22px] tracking-wide">{t('filter')}</h2>
           <SlidersHorizontal className="w-4 h-4 text-[#807D7E] rotate-90" />
         </div>
 

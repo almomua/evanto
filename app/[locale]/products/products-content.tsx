@@ -256,7 +256,7 @@ export function ProductsPageContent() {
           <div className="flex-1 px-4 sm:px-6 lg:px-10 py-4 lg:py-8">
             {/* Sort Tabs */}
             <SortTabs
-              category={categoryFromUrl || 'All'}
+              category={categoryFromUrl || t('all')}
               activeSort={activeSort}
               onSortChange={handleSortChange}
             />

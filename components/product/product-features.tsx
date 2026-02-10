@@ -1,13 +1,18 @@
-import { PRODUCT_DETAIL_ASSETS } from '@/lib/assets-product-detail';
+'use client';
 
-const features = [
-  { icon: PRODUCT_DETAIL_ASSETS.securePayment, label: 'Secure payment' },
-  { icon: PRODUCT_DETAIL_ASSETS.sizeFit, label: 'Size & Fit' },
-  { icon: PRODUCT_DETAIL_ASSETS.freeShipping, label: 'Free shipping' },
-  { icon: PRODUCT_DETAIL_ASSETS.freeReturns, label: 'Free Shipping & Returns' },
-];
+import { PRODUCT_DETAIL_ASSETS } from '@/lib/assets-product-detail';
+import { useTranslations } from 'next-intl';
 
 export function ProductFeatures() {
+  const t = useTranslations('products');
+
+  const features = [
+    { icon: PRODUCT_DETAIL_ASSETS.securePayment, label: t('featureSecurePayment') },
+    { icon: PRODUCT_DETAIL_ASSETS.sizeFit, label: t('featureAuthentic') },
+    { icon: PRODUCT_DETAIL_ASSETS.freeShipping, label: t('featureShipping') },
+    { icon: PRODUCT_DETAIL_ASSETS.freeReturns, label: t('featureSkinTested') },
+  ];
+
   return (
     <div className="grid grid-cols-2 gap-x-20 gap-y-5 pt-10 border-t border-[#BEBCBD]">
       {features.map((feature, index) => (

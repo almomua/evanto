@@ -1,6 +1,7 @@
 'use client';
 
 import { clsx } from 'clsx';
+import { useTranslations } from 'next-intl';
 
 export type SortOption = 'new' | 'recommended' | 'price-low-high' | 'price-high-low';
 
@@ -11,6 +12,8 @@ interface SortTabsProps {
 }
 
 export function SortTabs({ category, activeSort, onSortChange }: SortTabsProps) {
+  const t = useTranslations('products');
+
   return (
     <div className="flex items-center justify-between mb-8">
       {/* Category Title */}
@@ -29,7 +32,7 @@ export function SortTabs({ category, activeSort, onSortChange }: SortTabsProps) 
               : 'text-[#3F4646] hover:text-[#8A33FD]'
           )}
         >
-          New
+          {t('sortNew')}
         </button>
         <button
           onClick={() => onSortChange('recommended')}
@@ -40,7 +43,7 @@ export function SortTabs({ category, activeSort, onSortChange }: SortTabsProps) 
               : 'text-[#3F4646] hover:text-[#8A33FD]'
           )}
         >
-          Recommended
+          {t('sortRecommended')}
         </button>
         <button
           onClick={() => onSortChange('price-low-high')}
@@ -51,7 +54,7 @@ export function SortTabs({ category, activeSort, onSortChange }: SortTabsProps) 
               : 'text-[#3F4646] hover:text-[#8A33FD]'
           )}
         >
-          Price: Low to High
+          {t('sortPriceLowHigh')}
         </button>
         <button
           onClick={() => onSortChange('price-high-low')}
@@ -62,7 +65,7 @@ export function SortTabs({ category, activeSort, onSortChange }: SortTabsProps) 
               : 'text-[#3F4646] hover:text-[#8A33FD]'
           )}
         >
-          Price: High to Low
+          {t('sortPriceHighLow')}
         </button>
       </div>
       {/* Mobile Select for Sort */}
@@ -72,10 +75,10 @@ export function SortTabs({ category, activeSort, onSortChange }: SortTabsProps) 
           onChange={(e) => onSortChange(e.target.value as SortOption)}
           className="border border-gray-300 rounded px-2 py-1"
         >
-          <option value="new">New</option>
-          <option value="recommended">Recommended</option>
-          <option value="price-low-high">Price: Low to High</option>
-          <option value="price-high-low">Price: High to Low</option>
+          <option value="new">{t('sortNew')}</option>
+          <option value="recommended">{t('sortRecommended')}</option>
+          <option value="price-low-high">{t('sortPriceLowHigh')}</option>
+          <option value="price-high-low">{t('sortPriceHighLow')}</option>
         </select>
       </div>
     </div>

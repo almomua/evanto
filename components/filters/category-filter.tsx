@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { ChevronRight, Loader2 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { categoriesApi, Category } from '@/lib/api/products';
+import { useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 
 interface CategoryFilterProps {
   selectedCategories: string[];
@@ -14,6 +16,8 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+  const t = useTranslations('products');
+  const locale = useLocale();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -69,13 +73,13 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
                   : 'text-[#8A8989] hover:text-[#3C4242]'
               )}
             >
-              <span>{category.name}</span>
+              <span>{locale === 'ar' && (category as any).nameAr ? (category as any).nameAr : category.name}</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </li>
         ))}
         {categories.length === 0 && (
-          <li className="text-sm text-gray-400">No categories found</li>
+          <li className="text-sm text-gray-400">{t('noCategoriesFound')}</li>
         )}
       </ul>
     </div>

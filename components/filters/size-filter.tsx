@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ChevronUp } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useTranslations } from 'next-intl';
 
 interface SizeFilterProps {
   selectedSizes: string[];
@@ -12,6 +13,7 @@ interface SizeFilterProps {
 
 export function SizeFilter({ selectedSizes, onSizeChange, sizes = [] }: SizeFilterProps) {
   const [isExpanded, setIsExpanded] = useState(true);
+  const t = useTranslations('products');
 
   const toggleSize = (size: string) => {
     if (selectedSizes.includes(size)) {
@@ -31,7 +33,7 @@ export function SizeFilter({ selectedSizes, onSizeChange, sizes = [] }: SizeFilt
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between text-[#807D7E] text-[22px] tracking-wide mb-6"
       >
-        <span>Size</span>
+        <span>{t('size')}</span>
         <ChevronUp
           className={`w-4 h-4 transition-transform ${!isExpanded ? 'rotate-180' : ''}`}
         />
