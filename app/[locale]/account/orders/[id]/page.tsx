@@ -1,7 +1,7 @@
 'use client';
 
 import { use, useEffect, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Package, Loader2 } from 'lucide-react';
 import { clsx } from 'clsx';

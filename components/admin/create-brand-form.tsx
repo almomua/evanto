@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { adminApi } from '@/lib/api/admin';
 import { Loader2, X, Upload } from 'lucide-react';
 import Image from 'next/image';

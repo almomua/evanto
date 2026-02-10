@@ -1,7 +1,8 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useAuth } from '@/lib/context/auth-context';
+import { useTranslations } from 'next-intl';
 
 interface GuestWishlistPromptProps {
     itemCount: number;
@@ -13,6 +14,7 @@ interface GuestWishlistPromptProps {
  */
 export function GuestWishlistPrompt({ itemCount }: GuestWishlistPromptProps) {
     const { user } = useAuth();
+    const t = useTranslations('wishlist_prompt');
 
     // Don't show if user is logged in
     if (user) return null;
@@ -27,23 +29,23 @@ export function GuestWishlistPrompt({ itemCount }: GuestWishlistPromptProps) {
                 </div>
                 <div className="flex-1">
                     <h3 className="font-semibold text-[#3C4242] mb-1">
-                        {itemCount > 0 ? `You have ${itemCount} item${itemCount > 1 ? 's' : ''} in your wishlist!` : 'Start your wishlist!'}
+                        {itemCount > 0 ? t('itemsInWishlist', { count: itemCount }) : t('startWishlist')}
                     </h3>
                     <p className="text-sm text-gray-600 mb-3">
-                        Sign in to save your wishlist across devices and never lose your favorite items.
+                        {t('signInToSave')}
                     </p>
                     <div className="flex flex-wrap gap-2">
                         <Link
                             href="/auth/login"
                             className="px-4 py-1.5 bg-[#8A33FD] text-white text-sm rounded-lg font-medium hover:bg-[#7928E8] transition-colors"
                         >
-                            Sign In
+                            {t('signIn')}
                         </Link>
                         <Link
                             href="/auth/register"
                             className="px-4 py-1.5 border border-[#8A33FD] text-[#8A33FD] text-sm rounded-lg font-medium hover:bg-[#8A33FD]/10 transition-colors"
                         >
-                            Create Account
+                            {t('createAccount')}
                         </Link>
                     </div>
                 </div>

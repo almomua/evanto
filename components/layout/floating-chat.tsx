@@ -5,7 +5,7 @@ import { clsx } from 'clsx';
 import { Send, X, Loader2, ExternalLink } from 'lucide-react';
 import { chatApi, ChatProduct } from '@/lib/api/chat';
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { formatPrice } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';

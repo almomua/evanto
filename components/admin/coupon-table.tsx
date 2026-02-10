@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { adminApi, Coupon } from '@/lib/api/admin';
 
 export function CouponTable() {

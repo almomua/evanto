@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { adminApi } from '@/lib/api/admin';
 import { categoriesApi, Product, Category } from '@/lib/api/products';
 import { Loader2, ArrowLeft, Save, Plus, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import Image from 'next/image';
 
 interface VariantOption {

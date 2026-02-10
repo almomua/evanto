@@ -6,6 +6,8 @@ import { useForm } from 'react-hook-form';
 import { reviewsApi } from '@/lib/api/reviews';
 import { useAuth } from '@/lib/context/auth-context';
 import { useModal } from '@/components/ui/modal';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 interface AddReviewFormProps {
     productId: string;
@@ -23,12 +25,13 @@ export function AddReviewForm({ productId, onReviewAdded }: AddReviewFormProps) 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { user, isLoading } = useAuth();
     const modal = useModal();
+    const t = useTranslations('products');
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm<ReviewFormData>();
 
     const onSubmit = async (data: ReviewFormData) => {
         if (rating === 0) {
-            modal.error('Please select a star rating', 'Rating Required');
+            modal.error(t('ratingRequired'), t('yourRating'));
             return;
         }
 
@@ -39,13 +42,13 @@ export function AddReviewForm({ productId, onReviewAdded }: AddReviewFormProps) 
                 rating,
             });
 
-            modal.success('Your review has been verified and posted!', 'Thank you!');
+            modal.success(t('reviewPosted'), t('thankYou'));
             reset();
             setRating(0);
             onReviewAdded();
         } catch (error: any) {
             console.error("Failed to post review", error);
-            modal.error(error.response?.data?.message || 'Failed to post review', 'Error');
+            modal.error(error.response?.data?.message || t('failedToPostReview'), 'Error');
         } finally {
             setIsSubmitting(false);
         }
@@ -58,21 +61,21 @@ export function AddReviewForm({ productId, onReviewAdded }: AddReviewFormProps) 
     if (!user) {
         return (
             <div className="bg-gray-50 rounded-xl p-8 text-center border border-dashed border-gray-200">
-                <h4 className="text-[#3C4242] font-bold mb-2">Have you used this product?</h4>
-                <p className="text-[#807D7E] text-sm mb-4">Log in to share your experience with the community.</p>
-                <a href="/auth/login" className="text-[#8A33FD] font-bold text-sm hover:underline">Log in to write a review</a>
+                <h4 className="text-[#3C4242] font-bold mb-2">{t('haveYouUsedProduct')}</h4>
+                <p className="text-[#807D7E] text-sm mb-4">{t('loginToReview')}</p>
+                <Link href="/auth/login" className="text-[#8A33FD] font-bold text-sm hover:underline">{t('loginToWriteReview')}</Link>
             </div>
         );
     }
 
     return (
         <div className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
-            <h3 className="text-lg font-bold text-[#3C4242] mb-6">Write a Review</h3>
+            <h3 className="text-lg font-bold text-[#3C4242] mb-6">{t('writeReview')}</h3>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Rating */}
                 <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#3C4242]">Your Rating</label>
+                    <label className="text-sm font-semibold text-[#3C4242]">{t('yourRating')}</label>
                     <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                             <button
@@ -96,10 +99,10 @@ export function AddReviewForm({ productId, onReviewAdded }: AddReviewFormProps) 
 
                 {/* Title */}
                 <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#3C4242]">Review Title</label>
+                    <label className="text-sm font-semibold text-[#3C4242]">{t('reviewTitle')}</label>
                     <input
-                        {...register('title', { required: 'Title is required' })}
-                        placeholder="Summarize your experience"
+                        {...register('title', { required: t('titleRequired') })}
+                        placeholder={t('summarizeExperience')}
                         className="w-full px-4 py-3 bg-[#F8F9FA] border border-gray-100 rounded-lg text-sm focus:outline-none focus:border-[#8A33FD] transition-colors"
                     />
                     {errors.title && <p className="text-red-500 text-xs">{errors.title.message}</p>}
@@ -107,10 +110,10 @@ export function AddReviewForm({ productId, onReviewAdded }: AddReviewFormProps) 
 
                 {/* Comment */}
                 <div className="space-y-2">
-                    <label className="text-sm font-semibold text-[#3C4242]">Review Details</label>
+                    <label className="text-sm font-semibold text-[#3C4242]">{t('reviewDetails')}</label>
                     <textarea
-                        {...register('comment', { required: 'Review details are required', minLength: { value: 10, message: 'Minimum 10 characters' } })}
-                        placeholder="What did you like or dislike? How was the quality?"
+                        {...register('comment', { required: t('reviewDetailsRequired'), minLength: { value: 10, message: t('minCharacters') } })}
+                        placeholder={t('reviewPlaceholder')}
                         rows={4}
                         className="w-full px-4 py-3 bg-[#F8F9FA] border border-gray-100 rounded-lg text-sm focus:outline-none focus:border-[#8A33FD] transition-colors resize-none"
                     />
@@ -122,7 +125,7 @@ export function AddReviewForm({ productId, onReviewAdded }: AddReviewFormProps) 
                     disabled={isSubmitting}
                     className="w-full py-3 bg-[#3C4242] text-white rounded-lg font-medium hover:bg-black transition-colors disabled:opacity-70 flex justify-center items-center gap-2"
                 >
-                    {isSubmitting ? <Loader2 className="animate-spin w-4 h-4" /> : 'Submit Review'}
+                    {isSubmitting ? <Loader2 className="animate-spin w-4 h-4" /> : t('submitReview')}
                 </button>
             </form>
         </div>

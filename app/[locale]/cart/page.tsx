@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { ChevronRight, Minus, Plus, Trash2, Loader2 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
@@ -190,7 +190,7 @@ export default function CartPage() {
                       </div>
                       {discount > 0 && (
                         <div className="flex items-center justify-between text-green-600">
-                          <span className="text-base lg:text-xl tracking-wide">Discount</span>
+                          <span className="text-base lg:text-xl tracking-wide">{t('discountCodes')}</span>
                           <span className="text-base lg:text-xl">-{formatPrice(discount)}</span>
                         </div>
                       )}

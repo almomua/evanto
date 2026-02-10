@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useAuth } from '@/lib/context/auth-context';
 import { useModal } from '@/components/ui/modal';
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from '@/i18n/navigation';
 
 interface AdminHeaderProps {
   title: string;
@@ -26,9 +26,7 @@ export function AdminHeader({ title }: AdminHeaderProps) {
     // Update document direction and language immediately
     document.documentElement.dir = newLocale === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = newLocale;
-    // Remove current locale prefix and add new one
-    const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
-    router.push(`/${newLocale}${pathWithoutLocale}`);
+    router.replace(pathname, { locale: newLocale as 'en' | 'ar' });
   };
 
   return (

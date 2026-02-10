@@ -55,7 +55,29 @@
         "sortBy": "Sort By",
         "clearFilters": "Clear Filters",
         "showingResults": "Showing {count} results",
-        "noResults": "No products match your filters"
+        "noResults": "No products match your filters",
+        "noProductsFound": "No products found",
+        "tryAdjustingFilters": "Try adjusting your filters",
+        "exploreNow": "Explore Now!",
+        "verifiedPurchase": "Verified Purchase",
+        "noReviewsYet": "No reviews yet. Be the first to review this product!",
+        "writeReview": "Write a Review",
+        "yourRating": "Your Rating",
+        "reviewTitle": "Review Title",
+        "titleRequired": "Title is required",
+        "summarizeExperience": "Summarize your experience",
+        "reviewDetails": "Review Details",
+        "reviewDetailsRequired": "Review details are required",
+        "minCharacters": "Minimum 10 characters",
+        "reviewPlaceholder": "What did you like or dislike? How was the quality?",
+        "submitReview": "Submit Review",
+        "ratingRequired": "Please select a star rating",
+        "reviewPosted": "Your review has been verified and posted!",
+        "thankYou": "Thank you!",
+        "failedToPostReview": "Failed to post review",
+        "haveYouUsedProduct": "Have you used this product?",
+        "loginToReview": "Log in to share your experience with the community.",
+        "loginToWriteReview": "Log in to write a review"
     },
     "checkout": {
         "title": "Checkout",
@@ -104,6 +126,7 @@
         "addToCart": "Add To Cart",
         "cartEmpty": "Your cart is empty",
         "cartEmptyMessage": "Looks like you haven't added anything to your cart yet.",
+        "startShopping": "Start Shopping",
         "breadcrumbHome": "Home",
         "guestMessage": "Please fill in the fields below and click place order to complete your purchase!",
         "alreadyRegistered": "Already registered?",
@@ -247,5 +270,23 @@
         "language": "Language",
         "signOutConfirm": "Are you sure you want to sign out?",
         "signOut": "Sign Out"
+    },
+    "auth_guard": {
+        "signInRequired": "Sign in Required",
+        "pleaseSignIn": "Please sign in to access this page",
+        "signIn": "Sign In",
+        "createAccount": "Create Account"
+    },
+    "wishlist_prompt": {
+        "itemsInWishlist": "You have {count} item(s) in your wishlist!",
+        "startWishlist": "Start your wishlist!",
+        "signInToSave": "Sign in to save your wishlist across devices and never lose your favorite items.",
+        "signIn": "Sign In",
+        "createAccount": "Create Account"
+    },
+    "chat": {
+        "welcome": "Welcome to Proberry Store! How can I help you today?",
+        "error": "Sorry, I encountered an error. Please try again.",
+        "noImage": "No Image"
     }
 }

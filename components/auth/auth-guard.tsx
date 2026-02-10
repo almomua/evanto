@@ -1,16 +1,17 @@
 'use client';
 
 import { useAuth } from '@/lib/context/auth-context';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from '@/i18n/navigation';
 import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 interface AuthGuardProps {
     children: React.ReactNode;
     /** If true, redirects guest to login. If false, shows prompt instead */
     redirectOnGuest?: boolean;
-    /** Custom message to show guests */
+    /** Custom message to show guests (uses translated default if not provided) */
     guestMessage?: string;
 }
 
@@ -23,11 +24,12 @@ interface AuthGuardProps {
 export function AuthGuard({
     children,
     redirectOnGuest = false,
-    guestMessage = "Please sign in to access this page"
+    guestMessage
 }: AuthGuardProps) {
     const { user, isLoading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+    const t = useTranslations('auth_guard');
 
     useEffect(() => {
         if (!isLoading && !user && redirectOnGuest) {
@@ -59,20 +61,20 @@ export function AuthGuard({
                             <circle cx="12" cy="7" r="4" />
                         </svg>
                     </div>
-                    <h2 className="text-xl font-semibold text-[#3C4242] mb-2">Sign in Required</h2>
-                    <p className="text-gray-500 mb-6">{guestMessage}</p>
+                    <h2 className="text-xl font-semibold text-[#3C4242] mb-2">{t('signInRequired')}</h2>
+                    <p className="text-gray-500 mb-6">{guestMessage || t('pleaseSignIn')}</p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                         <Link
                             href="/auth/login"
                             className="px-6 py-2.5 bg-[#8A33FD] text-white rounded-lg font-medium hover:bg-[#7928E8] transition-colors"
                         >
-                            Sign In
+                            {t('signIn')}
                         </Link>
                         <Link
                             href="/auth/register"
                             className="px-6 py-2.5 border border-gray-300 text-[#3C4242] rounded-lg font-medium hover:bg-gray-50 transition-colors"
                         >
-                            Create Account
+                            {t('createAccount')}
                         </Link>
                     </div>
                 </div>

@@ -57,7 +57,29 @@
         "sortBy": "ترتيب حسب",
         "clearFilters": "مسح التصفية",
         "showingResults": "عرض {count} نتيجة",
-        "noResults": "لا توجد منتجات تطابق التصفية"
+        "noResults": "لا توجد منتجات تطابق التصفية",
+        "noProductsFound": "لم يتم العثور على منتجات",
+        "tryAdjustingFilters": "حاول تعديل عوامل التصفية",
+        "exploreNow": "استكشف الآن!",
+        "verifiedPurchase": "عملية شراء موثقة",
+        "noReviewsYet": "لا توجد تقييمات بعد. كن أول من يقيم هذا المنتج!",
+        "writeReview": "اكتب تقييماً",
+        "yourRating": "تقييمك",
+        "reviewTitle": "عنوان التقييم",
+        "titleRequired": "العنوان مطلوب",
+        "summarizeExperience": "لخّص تجربتك",
+        "reviewDetails": "تفاصيل التقييم",
+        "reviewDetailsRequired": "تفاصيل التقييم مطلوبة",
+        "minCharacters": "10 أحرف كحد أدنى",
+        "reviewPlaceholder": "ما الذي أعجبك أو لم يعجبك؟ كيف كانت الجودة؟",
+        "submitReview": "إرسال التقييم",
+        "ratingRequired": "يرجى اختيار تقييم بالنجوم",
+        "reviewPosted": "تم نشر تقييمك بنجاح!",
+        "thankYou": "شكراً لك!",
+        "failedToPostReview": "فشل في نشر التقييم",
+        "haveYouUsedProduct": "هل استخدمت هذا المنتج؟",
+        "loginToReview": "سجل الدخول لمشاركة تجربتك مع المجتمع.",
+        "loginToWriteReview": "سجل الدخول لكتابة تقييم"
     },
     "checkout": {
         "title": "إتمام الطلب",
@@ -106,6 +128,7 @@
         "addToCart": "إضافة إلى السلة",
         "cartEmpty": "سلة التسوق فارغة",
         "cartEmptyMessage": "يبدو أنك لم تضف أي شيء إلى سلة التسوق الخاصة بك بعد.",
+        "startShopping": "ابدأ التسوق",
         "breadcrumbHome": "الرئيسية",
         "guestMessage": "يرجى ملء الحقول أدناه والنقر على تأكيد الطلب لإتمام عملية الشراء!",
         "alreadyRegistered": "هل أنت مسجل بالفعل؟",
@@ -249,5 +272,23 @@
         "language": "اللغة",
         "signOutConfirm": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
         "signOut": "تسجيل الخروج"
+    },
+    "auth_guard": {
+        "signInRequired": "تسجيل الدخول مطلوب",
+        "pleaseSignIn": "يرجى تسجيل الدخول للوصول إلى هذه الصفحة",
+        "signIn": "تسجيل الدخول",
+        "createAccount": "إنشاء حساب"
+    },
+    "wishlist_prompt": {
+        "itemsInWishlist": "لديك {count} عنصر(عناصر) في قائمة الأمنيات!",
+        "startWishlist": "ابدأ قائمة الأمنيات!",
+        "signInToSave": "سجل الدخول لحفظ قائمة الأمنيات عبر أجهزتك ولا تفقد المنتجات المفضلة.",
+        "signIn": "تسجيل الدخول",
+        "createAccount": "إنشاء حساب"
+    },
+    "chat": {
+        "welcome": "مرحباً بك في متجر بروبيري! كيف يمكنني مساعدتك اليوم؟",
+        "error": "عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.",
+        "noImage": "لا توجد صورة"
     }
 }

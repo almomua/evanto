@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/lib/context/auth-context";
-import Link from "next/link";
+import { Link } from '@/i18n/navigation';
 import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {

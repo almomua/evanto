@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { ChevronRight, ChevronDown, Loader2 } from 'lucide-react';
 import { userApi } from '@/lib/api/user';
 

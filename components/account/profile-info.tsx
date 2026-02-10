@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { ChevronRight, Loader2, LayoutDashboard } from 'lucide-react';
 import { userApi, Address } from '@/lib/api/user';
 import { useAuth } from '@/lib/context/auth-context';

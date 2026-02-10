@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { adminApi, Transaction } from '@/lib/api/admin';
 import { formatPrice } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 interface TransactionDetailsFormProps {
     transactionId: string;

@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
 import { Package, Heart, User, LogOut, Menu, X, LayoutDashboard } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useAuth } from '@/lib/context/auth-context';

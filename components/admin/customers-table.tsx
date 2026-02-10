@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { adminApi } from '@/lib/api/admin';
 import { User } from '@/lib/api/auth';
 import { Loader2 } from 'lucide-react';

@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { ordersApi, Order } from '@/lib/api/orders';
 import { useEffect, useState } from 'react';
 import { formatPrice } from '@/lib/utils';

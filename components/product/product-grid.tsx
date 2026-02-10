@@ -1,6 +1,7 @@
 'use client';
 
 import { ProductCard } from './product-card';
+import { useTranslations } from 'next-intl';
 
 interface Product {
   id: string;
@@ -20,6 +21,8 @@ interface ProductGridProps {
 }
 
 export function ProductGrid({ products, columns = 3, isLoading = false }: ProductGridProps) {
+  const t = useTranslations('products');
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
@@ -42,8 +45,8 @@ export function ProductGrid({ products, columns = 3, isLoading = false }: Produc
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 lg:py-20">
-        <p className="text-[#807D7E] text-base lg:text-xl mb-2">No products found</p>
-        <p className="text-[#8A8989] text-xs lg:text-sm">Try adjusting your filters</p>
+        <p className="text-[#807D7E] text-base lg:text-xl mb-2">{t('noProductsFound')}</p>
+        <p className="text-[#8A8989] text-xs lg:text-sm">{t('tryAdjustingFilters')}</p>
       </div>
     );
   }

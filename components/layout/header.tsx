@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
-import { useRouter as useNextRouter } from 'next/navigation';
 import Flag from 'react-world-flags';
 import { Search, Heart, User, ShoppingCart, Menu, X, LogOut, Loader2, LayoutDashboard, ChevronDown } from 'lucide-react';
 import { useCartStore } from '@/lib/store/cart-store';
@@ -39,7 +38,6 @@ export function Header() {
   const serverWishlistCount = useWishlistStore((state) => state.serverItems.length);
   const { user, logout } = useAuth();
   const modal = useModal();
-  const nextRouter = useNextRouter();
 
   // Sync lang display with actual locale
   useEffect(() => {
@@ -120,7 +118,7 @@ export function Header() {
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent) => {
     if ((e.type === 'keydown' && (e as React.KeyboardEvent).key === 'Enter') || e.type === 'click') {
       if (searchQuery.trim()) {
-        nextRouter.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+        intlRouter.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
         setMobileMenuOpen(false);
       }
     }

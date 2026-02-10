@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { adminApi, Transaction } from '@/lib/api/admin';
 import { formatPrice } from '@/lib/utils';
 import { Pagination } from './pagination';

@@ -4,16 +4,19 @@ import { Review } from '@/lib/api/reviews';
 import { Star, CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 interface ReviewListProps {
     reviews: Review[];
 }
 
 export function ReviewList({ reviews }: ReviewListProps) {
+    const t = useTranslations('products');
+
     if (reviews.length === 0) {
         return (
             <div className="text-center py-10">
-                <p className="text-[#807D7E] text-lg">No reviews yet. Be the first to review this product!</p>
+                <p className="text-[#807D7E] text-lg">{t('noReviewsYet')}</p>
             </div>
         );
     }
@@ -55,7 +58,7 @@ export function ReviewList({ reviews }: ReviewListProps) {
                         {review.isVerifiedPurchase && (
                             <div className="flex items-center gap-1 text-green-600 bg-green-50 px-2 py-1 rounded-full">
                                 <CheckCircle2 size={12} />
-                                <span className="text-[10px] font-medium">Verified Purchase</span>
+                                <span className="text-[10px] font-medium">{t('verifiedPurchase')}</span>
                             </div>
                         )}
                     </div>

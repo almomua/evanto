@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { ShippingForm } from '@/components/checkout/shipping-form';
@@ -13,7 +13,7 @@ import { ordersApi } from '@/lib/api/orders';
 import { useAuth } from '@/lib/context/auth-context';
 import { Check, Loader2 } from 'lucide-react';
 import { clsx } from 'clsx';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 
 type PaymentType = 'card' | 'paypal' | 'bank';

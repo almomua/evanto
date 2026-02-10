@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { adminApi } from '@/lib/api/admin';
 import { categoriesApi, Category } from '@/lib/api/products';
 import { Loader2, X } from 'lucide-react';
