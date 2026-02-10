@@ -7,6 +7,7 @@ import { ReviewList } from '@/components/reviews/review-list';
 import { AddReviewForm } from '@/components/reviews/add-review-form';
 import { reviewsApi, Review } from '@/lib/api/reviews';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface ProductDescriptionProps {
   productId: string;
@@ -17,9 +18,10 @@ interface ProductDescriptionProps {
 }
 
 export function ProductDescription({ productId, description, details, ingredients, howToUse }: ProductDescriptionProps) {
-  const [activeTab, setActiveTab] = useState('Description');
+  const t = useTranslations('products');
+  const [activeTab, setActiveTab] = useState('description');
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [tabs, setTabs] = useState(['Description', 'Reviews', 'Question & Answer']);
+  const [tabs, setTabs] = useState(['description', 'reviews', 'questionAndAnswer']);
   const [loadingReviews, setLoadingReviews] = useState(false);
 
   // Mock details if not provided
@@ -45,23 +47,23 @@ export function ProductDescription({ productId, description, details, ingredient
   }, [productId]);
 
   useEffect(() => {
-    const newTabs = ['Description'];
-    if (ingredients) newTabs.push('Ingredients');
-    if (howToUse) newTabs.push('How to Use');
-    newTabs.push('Reviews');
-    newTabs.push('Question & Answer');
+    const newTabs = ['description'];
+    if (ingredients) newTabs.push('ingredients');
+    if (howToUse) newTabs.push('howToUse');
+    newTabs.push('reviews');
+    newTabs.push('questionAndAnswer');
     setTabs(newTabs);
   }, [ingredients, howToUse]);
 
   useEffect(() => {
-    if (activeTab === 'Reviews') {
+    if (activeTab === 'reviews') {
       loadReviews();
     }
   }, [activeTab, loadReviews]);
 
   return (
     <div className="max-w-[612px]">
-      <SectionHeader title="Product Description" className="mb-6" />
+      <SectionHeader title={t('productDescription')} className="mb-6" />
 
       {/* Tabs */}
       <div className="flex gap-8 mb-8 border-b border-gray-100 overflow-x-auto">
@@ -70,14 +72,14 @@ export function ProductDescription({ productId, description, details, ingredient
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={clsx(
-              'text-lg pb-4 transition-all relative px-2',
+              'text-lg pb-4 transition-all relative px-2 whitespace-nowrap',
               activeTab === tab
                 ? 'text-[#3C4242] font-semibold'
                 : 'text-[#807D7E] hover:text-[#3C4242]'
             )}
           >
-            {tab}
-            {tab === 'Reviews' && reviews.length > 0 && (
+            {t(tab)}
+            {tab === 'reviews' && reviews.length > 0 && (
               <span className="ml-2 text-xs bg-[#8A33FD] text-white px-2 py-0.5 rounded-full">
                 {reviews.length}
               </span>
@@ -90,10 +92,10 @@ export function ProductDescription({ productId, description, details, ingredient
       </div>
 
       {/* Description */}
-      {activeTab === 'Description' && (
+      {activeTab === 'description' && (
         <div className="animate-in fade-in duration-300">
           <p className="text-[#3C4242] text-lg leading-relaxed mb-8">
-            {description || 'Description here'}
+            {description}
           </p>
 
           {/* Details Table */}
@@ -109,7 +111,7 @@ export function ProductDescription({ productId, description, details, ingredient
           </div>
         </div>
       )}
-      {activeTab === 'Ingredients' && ingredients && (
+      {activeTab === 'ingredients' && ingredients && (
         <div className="animate-in fade-in duration-300">
           <p className="text-[#3C4242] text-lg leading-relaxed whitespace-pre-line mb-8">
             {ingredients}
@@ -117,7 +119,7 @@ export function ProductDescription({ productId, description, details, ingredient
         </div>
       )}
 
-      {activeTab === 'How to Use' && howToUse && (
+      {activeTab === 'howToUse' && howToUse && (
         <div className="animate-in fade-in duration-300">
           <p className="text-[#3C4242] text-lg leading-relaxed whitespace-pre-line mb-8">
             {howToUse}
@@ -125,11 +127,11 @@ export function ProductDescription({ productId, description, details, ingredient
         </div>
       )}
 
-      {activeTab === 'Reviews' && (
+      {activeTab === 'reviews' && (
         <div className="space-y-10 animate-in fade-in duration-300">
           <div className="flex justify-between items-center">
-            <h3 className="text-xl font-bold text-[#3C4242]">Customer Reviews</h3>
-            <span className="text-sm text-[#807D7E]">{reviews.length} reviews</span>
+            <h3 className="text-xl font-bold text-[#3C4242]">{t('customerReviews')}</h3>
+            <span className="text-sm text-[#807D7E]">{t('reviewCount', { count: reviews.length })}</span>
           </div>
 
           {/* Add Review Form */}
@@ -146,8 +148,8 @@ export function ProductDescription({ productId, description, details, ingredient
         </div>
       )}
 
-      {activeTab === 'Question & Answer' && (
-        <p className="text-[#807D7E] text-lg">No questions yet.</p>
+      {activeTab === 'questionAndAnswer' && (
+        <p className="text-[#807D7E] text-lg">{t('noQuestions')}</p>
       )}
     </div>
   );

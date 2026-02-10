@@ -37,15 +37,20 @@ export function AddProductForm() {
 
     // Form State
     const [name, setName] = useState('');
+    const [nameAr, setNameAr] = useState('');
     const [description, setDescription] = useState('');
+    const [descriptionAr, setDescriptionAr] = useState('');
     const [shortDesc, setShortDesc] = useState('');
+    const [shortDescAr, setShortDescAr] = useState('');
     const [price, setPrice] = useState('');
     const [stock, setStock] = useState('0');
     const [categoryId, setCategoryId] = useState('');
     const [brandId, setBrandId] = useState('');
     const [videoUrl, setVideoUrl] = useState('');
     const [ingredients, setIngredients] = useState('');
+    const [ingredientsAr, setIngredientsAr] = useState('');
     const [howToUse, setHowToUse] = useState('');
+    const [howToUseAr, setHowToUseAr] = useState('');
     const [images, setImages] = useState<File[]>([]);
     const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
@@ -182,15 +187,20 @@ export function AddProductForm() {
 
             const formData = new FormData();
             formData.append('name', name);
+            formData.append('nameAr', nameAr);
             formData.append('description', description);
+            formData.append('descriptionAr', descriptionAr);
             if (shortDesc) formData.append('shortDesc', shortDesc);
+            if (shortDescAr) formData.append('shortDescAr', shortDescAr);
             formData.append('price', price);
+            formData.append('stock_quantity', stock);
             formData.append('category', categoryId);
-            formData.append('brand', brandId);
+            if (brandId) formData.append('brand', brandId);
             if (videoUrl) formData.append('videoUrl', videoUrl);
             if (ingredients) formData.append('ingredients', ingredients);
+            if (ingredientsAr) formData.append('ingredientsAr', ingredientsAr);
             if (howToUse) formData.append('howToUse', howToUse);
-            formData.append('stock_quantity', stock);
+            if (howToUseAr) formData.append('howToUseAr', howToUseAr);
 
             // Append main files
             images.forEach((file) => {
@@ -265,6 +275,17 @@ export function AddProductForm() {
                             />
                         </div>
                         <div className="space-y-2">
+                            <label className="text-sm font-semibold text-[#3C4242]">Product Name (Arabic)</label>
+                            <input
+                                type="text"
+                                dir="rtl"
+                                value={nameAr}
+                                onChange={(e) => setNameAr(e.target.value)}
+                                placeholder="مثال: عطر فاخر"
+                                className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-arabic"
+                            />
+                        </div>
+                        <div className="space-y-2">
                             <label className="text-sm font-semibold text-[#3C4242]">Product Description</label>
                             <textarea
                                 value={description}
@@ -272,6 +293,17 @@ export function AddProductForm() {
                                 placeholder="Describe the product in detail..."
                                 rows={8}
                                 className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all resize-none"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-[#3C4242]">Product Description (Arabic)</label>
+                            <textarea
+                                value={descriptionAr}
+                                dir="rtl"
+                                onChange={(e) => setDescriptionAr(e.target.value)}
+                                placeholder="اصف المنتج بالتفصيل..."
+                                rows={8}
+                                className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all resize-none font-arabic"
                             />
                         </div>
                         <div className="space-y-2">
@@ -285,6 +317,17 @@ export function AddProductForm() {
                             />
                         </div>
                         <div className="space-y-2">
+                            <label className="text-sm font-semibold text-[#3C4242]">Short Description Arabic (Optional)</label>
+                            <textarea
+                                value={shortDescAr}
+                                dir="rtl"
+                                onChange={(e) => setShortDescAr(e.target.value)}
+                                placeholder="وصف قصير لقوائم المنتجات..."
+                                rows={3}
+                                className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all resize-none font-arabic"
+                            />
+                        </div>
+                        <div className="space-y-2">
                             <label className="text-sm font-semibold text-[#3C4242]">Ingredients (Optional)</label>
                             <textarea
                                 value={ingredients}
@@ -295,6 +338,17 @@ export function AddProductForm() {
                             />
                         </div>
                         <div className="space-y-2">
+                            <label className="text-sm font-semibold text-[#3C4242]">Ingredients Arabic (Optional)</label>
+                            <textarea
+                                value={ingredientsAr}
+                                dir="rtl"
+                                onChange={(e) => setIngredientsAr(e.target.value)}
+                                placeholder="قائمة المكونات..."
+                                rows={4}
+                                className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all resize-none font-arabic"
+                            />
+                        </div>
+                        <div className="space-y-2">
                             <label className="text-sm font-semibold text-[#3C4242]">How to Use (Optional)</label>
                             <textarea
                                 value={howToUse}
@@ -302,6 +356,17 @@ export function AddProductForm() {
                                 placeholder="Usage instructions..."
                                 rows={4}
                                 className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all resize-none"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-[#3C4242]">How to Use Arabic (Optional)</label>
+                            <textarea
+                                value={howToUseAr}
+                                dir="rtl"
+                                onChange={(e) => setHowToUseAr(e.target.value)}
+                                placeholder="تعليمات الاستخدام..."
+                                rows={4}
+                                className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all resize-none font-arabic"
                             />
                         </div>
                     </div>

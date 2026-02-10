@@ -6,6 +6,7 @@ import { ChevronRight, Loader2, LayoutDashboard } from 'lucide-react';
 import { userApi, Address } from '@/lib/api/user';
 import { useAuth } from '@/lib/context/auth-context';
 import { useModal } from '@/components/ui/modal';
+import { useTranslations } from 'next-intl';
 
 // const mockAddresses = ... (removed)
 
@@ -21,6 +22,8 @@ interface ProfileInfoProps {
 export function ProfileInfo({ user: initialUser }: ProfileInfoProps) {
   const { user, logout } = useAuth();
   const modal = useModal();
+  const t = useTranslations('account');
+  const commonT = useTranslations('common');
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
   const [editingField, setEditingField] = useState<string | null>(null);
@@ -37,7 +40,7 @@ export function ProfileInfo({ user: initialUser }: ProfileInfoProps) {
     setIsSaving(true);
     try {
       await userApi.updateProfile({ [editingField]: editValue });
-      modal.success(`${editingField} updated successfully`, 'Success');
+      modal.success(t('successUpdate', { field: t(editingField) }), t('success'));
       setEditingField(null);
       // Ideally reload user or update context here. For now, a reload mimics it or assume AuthContext updates naturally if it re-fetches or we force it.
       // Usually logout() / login() refresh token, but here we just updated DB. 
@@ -74,11 +77,11 @@ export function ProfileInfo({ user: initialUser }: ProfileInfoProps) {
 
   /* Address Cards Grid Logic */
   const handleDeleteAddress = async (id: string) => {
-    if (!await modal.confirm('Are you sure you want to delete this address?', 'Delete Address')) return;
+    if (!await modal.confirm(t('confirmDeleteAddress'), t('remove'))) return;
     try {
       await userApi.deleteAddress(id);
       setAddresses(prev => prev.filter(a => a._id !== id));
-      modal.success('Address deleted successfully');
+      modal.success(t('successUpdate', { field: t('address') }));
     } catch (error) {
       console.error('Failed to delete address', error);
       modal.error('Failed to delete address');
@@ -109,19 +112,19 @@ export function ProfileInfo({ user: initialUser }: ProfileInfoProps) {
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm mb-4 sm:mb-6 flex-wrap">
         <Link href="/" className="text-[#807D7E] hover:text-[#3C4242]">
-          Home
+          {commonT('home')}
         </Link>
-        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-[#807D7E]" />
+        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-[#807D7E] rtl:rotate-180" />
         <Link href="/account" className="text-[#807D7E] hover:text-[#3C4242]">
-          My Account
+          {t('title')}
         </Link>
-        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-[#807D7E]" />
-        <span className="text-[#3C4242]">Personal Info</span>
+        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-[#807D7E] rtl:rotate-180" />
+        <span className="text-[#3C4242]">{t('personalInfo')}</span>
       </nav>
 
       {/* My Info Heading */}
       <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <h1 className="text-[#3C4242] text-xl sm:text-2xl font-semibold">My Info</h1>
+        <h1 className="text-[#3C4242] text-xl sm:text-2xl font-semibold">{t('myInfo')}</h1>
         <div className="flex items-center gap-3">
           {user?.role === 'admin' && (
             <Link
@@ -129,79 +132,79 @@ export function ProfileInfo({ user: initialUser }: ProfileInfoProps) {
               className="px-4 py-2 bg-[#8A33FD] text-white rounded-lg text-sm font-medium hover:bg-[#7229D6] transition-colors flex items-center gap-2"
             >
               <LayoutDashboard className="w-4 h-4" />
-              <span>Admin Dashboard</span>
+              <span>{t('adminDashboard')}</span>
             </Link>
           )}
           <button
             onClick={async () => {
-              const confirmed = await modal.confirm('Are you sure you want to logout?', 'Logout');
+              const confirmed = await modal.confirm(t('confirmLogout'), t('logout'));
               if (confirmed) {
                 logout();
               }
             }}
             className="px-4 py-2 border border-red-500 text-red-500 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors"
           >
-            Logout
+            {t('logout')}
           </button>
         </div>
       </div>
 
       {/* Contact Details Section */}
       <div className="mb-8 sm:mb-10">
-        <h2 className="text-[#3C4242] text-base sm:text-lg font-medium mb-4 sm:mb-6">Contact Details</h2>
+        <h2 className="text-[#3C4242] text-base sm:text-lg font-medium mb-4 sm:mb-6">{t('contactDetails')}</h2>
 
         {/* Form Fields */}
         <div className="space-y-4 sm:space-y-6">
           {/* Your Name */}
           <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-[#BEBCBD]/30">
             <div className="min-w-0 flex-1">
-              <label className="block text-[#807D7E] text-xs sm:text-sm mb-1">Your Name</label>
+              <label className="block text-[#807D7E] text-xs sm:text-sm mb-1">{t('yourName')}</label>
               <p className="text-[#3C4242] text-sm sm:text-base truncate">{userData.name}</p>
             </div>
             <button
               onClick={() => handleEdit('name', userData.name)}
-              className="text-[#807D7E] hover:text-[#3C4242] text-xs sm:text-sm transition-colors ml-4 flex-shrink-0"
+              className="text-[#807D7E] hover:text-[#3C4242] text-xs sm:text-sm transition-colors ml-4 rtl:ml-0 rtl:mr-4 flex-shrink-0"
             >
-              Change
+              {t('change')}
             </button>
           </div>
 
           {/* Email Address */}
           <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-[#BEBCBD]/30">
             <div className="min-w-0 flex-1">
-              <label className="block text-[#807D7E] text-xs sm:text-sm mb-1">Email Address</label>
+              <label className="block text-[#807D7E] text-xs sm:text-sm mb-1">{t('emailAddress')}</label>
               <p className="text-[#3C4242] text-sm sm:text-base truncate">{userData.email}</p>
             </div>
             <button
               onClick={() => handleEdit('email', userData.email)}
-              className="text-[#807D7E] hover:text-[#3C4242] text-xs sm:text-sm transition-colors ml-4 flex-shrink-0"
+              className="text-[#807D7E] hover:text-[#3C4242] text-xs sm:text-sm transition-colors ml-4 rtl:ml-0 rtl:mr-4 flex-shrink-0"
             >
-              Change
+              {t('change')}
             </button>
           </div>
 
           {/* Phone Number */}
           <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-[#BEBCBD]/30">
             <div className="min-w-0 flex-1">
-              <label className="block text-[#807D7E] text-xs sm:text-sm mb-1">Phone Number</label>
+              <label className="block text-[#807D7E] text-xs sm:text-sm mb-1">{t('phoneNumber')}</label>
               <p className="text-[#3C4242] text-sm sm:text-base">{userData.phone}</p>
             </div>
             <button
               onClick={() => handleEdit('phone', userData.phone)}
-              className="text-[#807D7E] hover:text-[#3C4242] text-xs sm:text-sm transition-colors ml-4 flex-shrink-0"
+              className="text-[#807D7E] hover:text-[#3C4242] text-xs sm:text-sm transition-colors ml-4 rtl:ml-0 rtl:mr-4 flex-shrink-0"
             >
-              Change
+              {t('change')}
             </button>
           </div>
 
           {/* Password (Disable edit for now) */}
           <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-[#BEBCBD]/30">
             <div className="min-w-0 flex-1">
-              <label className="block text-[#807D7E] text-xs sm:text-sm mb-1">Password</label>
+              <label className="block text-[#807D7E] text-xs sm:text-sm mb-1">{t('password')}</label>
               <p className="text-[#3C4242] text-sm sm:text-base">{userData.password}</p>
             </div>
-            <button className="text-[#807D7E] hover:text-[#3C4242] text-xs sm:text-sm transition-colors ml-4 flex-shrink-0 opacity-50 cursor-not-allowed">
-              Change
+            <button className="text-[#807D7E] hover:text-[#3C4242] text-xs sm:text-sm transition-colors ml-4 rtl:ml-0 rtl:mr-4 flex-shrink-0 opacity-50 cursor-not-allowed">
+              {t('change')}
             </button>
           </div>
         </div>
@@ -211,7 +214,7 @@ export function ProfileInfo({ user: initialUser }: ProfileInfoProps) {
       {editingField && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm">
-            <h3 className="text-lg font-semibold text-[#3C4242] mb-4 capitalize">Change {editingField}</h3>
+            <h3 className="text-lg font-semibold text-[#3C4242] mb-4 capitalize">{t('changeField', { field: t(editingField) })}</h3>
             <input
               type={editingField === 'email' ? 'email' : 'text'}
               value={editValue}
@@ -224,14 +227,14 @@ export function ProfileInfo({ user: initialUser }: ProfileInfoProps) {
                 className="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-lg"
                 disabled={isSaving}
               >
-                Cancel
+                {t('cancel')}
               </button>
               <button
                 onClick={saveProfile}
                 className="px-4 py-2 bg-[#8A33FD] text-white rounded-lg hover:bg-[#7229D6] disabled:opacity-50"
                 disabled={isSaving}
               >
-                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}
+                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t('save')}
               </button>
             </div>
           </div>
@@ -240,12 +243,12 @@ export function ProfileInfo({ user: initialUser }: ProfileInfoProps) {
       {/* Address Section */}
       <div>
         <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h2 className="text-[#3C4242] text-lg sm:text-xl font-medium">Address</h2>
+          <h2 className="text-[#3C4242] text-lg sm:text-xl font-medium">{t('address')}</h2>
           <Link
             href="/account/addresses/new"
             className="text-[#807D7E] hover:text-[#3C4242] text-xs sm:text-sm transition-colors"
           >
-            Add New
+            {t('addNew')}
           </Link>
         </div>
 
@@ -254,7 +257,7 @@ export function ProfileInfo({ user: initialUser }: ProfileInfoProps) {
           {loadingAddresses ? (
             <div className="col-span-full flex justify-center py-8"><Loader2 className="animate-spin" /></div>
           ) : addresses.length === 0 ? (
-            <div className="col-span-full text-center text-gray-500 py-4">No addresses saved.</div>
+            <div className="col-span-full text-center text-gray-500 py-4">{t('noAddresses')}</div>
           ) : (
             addresses.map((address) => (
               <AddressCard
@@ -272,6 +275,7 @@ export function ProfileInfo({ user: initialUser }: ProfileInfoProps) {
 }
 
 function AddressCard({ address, onDelete, onSetDefault }: { address: Address, onDelete: () => void, onSetDefault: () => void }) {
+  const t = useTranslations('account');
   const hasDefaultTag = address.isDefault;
 
   return (
@@ -292,21 +296,21 @@ function AddressCard({ address, onDelete, onSetDefault }: { address: Address, on
         <span
           className="px-2 sm:px-3 py-0.5 sm:py-1 border border-[#BEBCBD] rounded-md text-[#3C4242] text-[10px] sm:text-xs"
         >
-          {address.isDefault ? 'Default' : 'Other'}
+          {address.isDefault ? t('default') : t('other')}
         </span>
       </div>
 
       {/* Actions */}
       <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm">
         <button onClick={onDelete} className="text-[#807D7E] hover:text-red-500 transition-colors">
-          Remove
+          {t('remove')}
         </button>
         <Link href={`/account/addresses/${address._id}`} className="text-[#807D7E] hover:text-[#3C4242] transition-colors">
-          Edit
+          {t('edit')}
         </Link>
         {!hasDefaultTag && (
           <button onClick={onSetDefault} className="text-[#807D7E] hover:text-[#3C4242] transition-colors">
-            Set as default
+            {t('setAsDefault')}
           </button>
         )}
       </div>

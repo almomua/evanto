@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCartStore, CartItem } from '@/lib/store/cart-store';
 import { formatPrice } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface OrderReviewProps {
   onPlaceOrder: () => void;
@@ -12,14 +13,15 @@ interface OrderReviewProps {
 }
 
 export function OrderReview({ onPlaceOrder, isProcessing = false, discount = 0 }: OrderReviewProps) {
+  const t = useTranslations('checkout');
   const { items, getTotal } = useCartStore();
   const subtotal = getTotal();
-  const shipping: number = 0; // Free shipping
+  const shipping: number = 5000; // Fixed shipping cost
   const total = subtotal - discount + shipping;
 
   return (
     <div className="bg-[#F6F6F6] rounded-xl p-8 sticky top-8">
-      <h2 className="text-[#3C4242] text-2xl font-bold mb-6">Order Summary</h2>
+      <h2 className="text-[#3C4242] text-2xl font-bold mb-6">{t('orderSummary')}</h2>
 
       {/* Order Items */}
       <div className="space-y-4 pb-6 border-b border-[#BEBCBD]/50 max-h-[300px] overflow-y-auto">
@@ -31,18 +33,18 @@ export function OrderReview({ onPlaceOrder, isProcessing = false, discount = 0 }
       {/* Totals */}
       <div className="space-y-4 py-6 border-b border-[#BEBCBD]/50">
         <div className="flex items-center justify-between">
-          <span className="text-[#807D7E] text-base">Subtotal</span>
+          <span className="text-[#807D7E] text-base">{t('subtotal')}</span>
           <span className="text-[#3C4242] text-base font-medium">{formatPrice(subtotal)}</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-[#807D7E] text-base">Shipping</span>
+          <span className="text-[#807D7E] text-base">{t('shipping')}</span>
           <span className="text-[#3C4242] text-base font-medium">
-            {shipping === 0 ? 'Free' : formatPrice(shipping)}
+            {shipping === 0 ? t('free') : formatPrice(shipping)}
           </span>
         </div>
         {discount > 0 && (
           <div className="flex items-center justify-between text-green-600">
-            <span className="text-base">Discount</span>
+            <span className="text-base">{t('discount')}</span>
             <span className="text-base font-medium">-{formatPrice(discount)}</span>
           </div>
         )}
@@ -50,7 +52,7 @@ export function OrderReview({ onPlaceOrder, isProcessing = false, discount = 0 }
 
       {/* Total */}
       <div className="flex items-center justify-between py-6">
-        <span className="text-[#3C4242] text-xl font-bold">Total</span>
+        <span className="text-[#3C4242] text-xl font-bold">{t('total')}</span>
         <span className="text-[#3C4242] text-xl font-bold">{formatPrice(total)}</span>
       </div>
 
@@ -60,7 +62,7 @@ export function OrderReview({ onPlaceOrder, isProcessing = false, discount = 0 }
         disabled={isProcessing || items.length === 0}
         className="w-full py-4 bg-[#8A33FD] text-white text-lg font-medium rounded-lg hover:bg-[#7229D6] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isProcessing ? 'Processing...' : 'Place Order'}
+        {isProcessing ? t('processing') : t('placeOrder')}
       </button>
 
       {/* Back to Cart */}
@@ -68,12 +70,12 @@ export function OrderReview({ onPlaceOrder, isProcessing = false, discount = 0 }
         href="/cart"
         className="block w-full mt-4 py-4 border border-[#3C4242] text-[#3C4242] text-center text-base font-medium rounded-lg hover:bg-[#3C4242] hover:text-white transition-colors"
       >
-        Back to Cart
+        {t('backToCart')}
       </Link>
 
       {/* Security Note */}
       <p className="mt-6 text-center text-[#807D7E] text-sm">
-        🔒 Your payment information is secure and encrypted
+        🔒 {t('securityNote')}
       </p>
     </div>
   );

@@ -1,6 +1,7 @@
 import { SectionHeader } from '@/components/ui/section-header';
 import { MakeupCategoryCard } from '@/components/product/category-card';
 import { ASSETS } from '@/lib/assets';
+import { useTranslations } from 'next-intl';
 import { CategoryGridSection, CategoryItem } from '@/lib/api/home-settings';
 
 const defaultMakeupCategories: CategoryItem[] = [
@@ -19,7 +20,8 @@ interface MakeupProductsProps {
 }
 
 export function MakeupProducts({ data }: MakeupProductsProps) {
-  const title = data?.title || 'Makeup Products';
+  const t = useTranslations('home');
+  const title = data?.title || t('makeupProducts');
   const categories = data?.items && data.items.length > 0 ? data.items : defaultMakeupCategories;
 
   // Split into two rows

@@ -1,63 +1,22 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Facebook, Twitter, Instagram, Linkedin, Loader2 } from 'lucide-react';
 import { categoriesApi, Category } from '@/lib/api/products';
-
-const footerLinks = {
-  needHelp: {
-    title: 'Need Help',
-    links: [
-      { label: 'Contact Us', href: '/contact' },
-      { label: 'Track Order', href: '/track-order' },
-      { label: 'Returns & Refunds', href: '/returns' },
-      { label: "FAQ's", href: '/faq' },
-      { label: 'Career', href: '/career' },
-    ],
-  },
-  company: {
-    title: 'Company',
-    links: [
-      { label: 'About Us', href: '/about' },
-      { label: 'ProBerry Blog', href: '/blog' },
-      { label: 'Collaboration', href: '/collaboration' },
-      { label: 'Media', href: '/media' },
-    ],
-  },
-  moreInfo: {
-    title: 'More Info',
-    links: [
-      { label: 'Term and Conditions', href: '/terms' },
-      { label: 'Privacy Policy', href: '/privacy' },
-      { label: 'Shipping Policy', href: '/shipping' },
-      { label: 'Sitemap', href: '/sitemap' },
-    ],
-  },
-  location: {
-    title: 'Location',
-    links: [
-      { label: 'support@ProBerry.in', href: 'mailto:support@ProBerry.in' },
-      { label: 'Location', href: '#' },
-      { label: 'Address', href: '#' },
-    ],
-  },
-};
-
-const socialLinks = [
-  { icon: Facebook, href: '#', label: 'Facebook' },
-  { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Instagram, href: '#', label: 'Instagram' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
-];
+import { useLocale, useTranslations } from 'next-intl';
 
 export function Footer() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useTranslations('footer');
+  const locale = useLocale();
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await categoriesApi.getAll();
-        setCategories(data.slice(0, 8)); // Limit to first 8 for footer
+        setCategories(data.slice(0, 8));
       } catch (error) {
         console.error('Failed to load categories for footer', error);
       } finally {
@@ -66,6 +25,52 @@ export function Footer() {
     };
     fetchCategories();
   }, []);
+
+  const footerLinks = {
+    needHelp: {
+      title: t('needHelp'),
+      links: [
+        { label: t('contactUs'), href: '/contact' },
+        { label: t('trackOrder'), href: '/track-order' },
+        { label: t('returnsRefunds'), href: '/returns' },
+        { label: t('faq'), href: '/faq' },
+        { label: t('career'), href: '/career' },
+      ],
+    },
+    company: {
+      title: t('company'),
+      links: [
+        { label: t('aboutUs'), href: '/about' },
+        { label: t('blog'), href: '/blog' },
+        { label: t('collaboration'), href: '/collaboration' },
+        { label: t('media'), href: '/media' },
+      ],
+    },
+    moreInfo: {
+      title: t('moreInfo'),
+      links: [
+        { label: t('termsConditions'), href: '/terms' },
+        { label: t('privacyPolicy'), href: '/privacy' },
+        { label: t('shippingPolicy'), href: '/shipping' },
+        { label: t('sitemap'), href: '/sitemap' },
+      ],
+    },
+    location: {
+      title: t('location'),
+      links: [
+        { label: 'support@ProBerry.in', href: 'mailto:support@ProBerry.in' },
+        { label: t('location'), href: '#' },
+        { label: t('address'), href: '#' },
+      ],
+    },
+  };
+
+  const socialLinks = [
+    { icon: Facebook, href: '#', label: 'Facebook' },
+    { icon: Twitter, href: '#', label: 'Twitter' },
+    { icon: Instagram, href: '#', label: 'Instagram' },
+    { icon: Linkedin, href: '#', label: 'LinkedIn' },
+  ];
 
   return (
     <footer className="bg-[#3C4242] text-[#F6F6F6] pt-10 lg:pt-[60px] pb-8 lg:pb-10">
@@ -146,7 +151,7 @@ export function Footer() {
         {/* Divider */}
         <div className="border-t border-[#F6F6F6]/30 pt-6 lg:pt-8 pb-4 lg:pb-6">
           {/* Popular Categories */}
-          <h4 className="text-lg lg:text-[28px] mb-4">Popular Categories</h4>
+          <h4 className="text-lg lg:text-[28px] mb-4">{t('popularCategories')}</h4>
 
           {loading ? (
             <div className="flex justify-start py-2">
@@ -160,11 +165,11 @@ export function Footer() {
                   href={`/products?category=${cat.slug}`}
                   className="text-sm lg:text-lg text-[#F6F6F6]/80 hover:text-white transition-colors"
                 >
-                  {cat.name}
+                  {(locale === 'ar' && (cat as any).nameAr) ? (cat as any).nameAr : cat.name}
                 </Link>
               ))}
               {categories.length === 0 && (
-                <span className="text-sm text-[#F6F6F6]/50">No categories found</span>
+                <span className="text-sm text-[#F6F6F6]/50">{t('noCategories')}</span>
               )}
             </div>
           )}
@@ -174,7 +179,7 @@ export function Footer() {
         <div className="border-t border-[#F6F6F6]/30 pt-4 lg:pt-6">
           {/* Copyright */}
           <p className="text-sm lg:text-lg text-center">
-            Copyright © 2025 ProBerry. All rights reserved.
+            {t('copyright')}
           </p>
         </div>
       </div>

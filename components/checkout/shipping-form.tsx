@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface ShippingFormData {
   firstName: string;
@@ -21,6 +22,7 @@ interface ShippingFormProps {
 }
 
 export function ShippingForm({ onSubmit, initialData, showSubmit = true }: ShippingFormProps) {
+  const t = useTranslations('checkout');
   const [formData, setFormData] = useState<ShippingFormData>({
     firstName: initialData?.firstName || '',
     lastName: initialData?.lastName || '',
@@ -69,14 +71,14 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
 
   return (
     <div className="bg-white rounded-xl p-8 border border-[#BEBCBD]/30">
-      <h2 className="text-[#3C4242] text-2xl font-bold mb-6">Shipping Address</h2>
+      <h2 className="text-[#3C4242] text-2xl font-bold mb-6">{t('shippingAddress')}</h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name Row */}
         <div className="grid grid-cols-2 gap-6">
           <div>
             <label className="block text-[#3C4242] text-sm font-medium mb-2">
-              First Name *
+              {t('firstName')} *
             </label>
             <input
               type="text"
@@ -85,12 +87,12 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
               onChange={handleChange}
               required
               className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] placeholder:text-[#807D7E] focus:outline-none focus:border-[#8A33FD]"
-              placeholder="First Name"
+              placeholder={t('firstName')}
             />
           </div>
           <div>
             <label className="block text-[#3C4242] text-sm font-medium mb-2">
-              Last Name *
+              {t('lastName')} *
             </label>
             <input
               type="text"
@@ -99,7 +101,7 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
               onChange={handleChange}
               required
               className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] placeholder:text-[#807D7E] focus:outline-none focus:border-[#8A33FD]"
-              placeholder="Last Name"
+              placeholder={t('lastName')}
             />
           </div>
         </div>
@@ -108,7 +110,7 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
         <div className="grid grid-cols-2 gap-6">
           <div>
             <label className="block text-[#3C4242] text-sm font-medium mb-2">
-              Email Address *
+              {t('emailAddress')} *
             </label>
             <input
               type="email"
@@ -117,12 +119,12 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
               onChange={handleChange}
               required
               className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] placeholder:text-[#807D7E] focus:outline-none focus:border-[#8A33FD]"
-              placeholder="Email Address"
+              placeholder={t('emailAddress')}
             />
           </div>
           <div>
             <label className="block text-[#3C4242] text-sm font-medium mb-2">
-              Phone Number *
+              {t('phoneNumber')} *
             </label>
             <input
               type="tel"
@@ -131,7 +133,7 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
               onChange={handleChange}
               required
               className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] placeholder:text-[#807D7E] focus:outline-none focus:border-[#8A33FD]"
-              placeholder="Phone Number"
+              placeholder={t('phoneNumber')}
             />
           </div>
         </div>
@@ -139,7 +141,7 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
         {/* Address */}
         <div>
           <label className="block text-[#3C4242] text-sm font-medium mb-2">
-            Street Address *
+            {t('streetAddress')} *
           </label>
           <input
             type="text"
@@ -148,7 +150,7 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
             onChange={handleChange}
             required
             className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] placeholder:text-[#807D7E] focus:outline-none focus:border-[#8A33FD]"
-            placeholder="Street Address"
+            placeholder={t('streetAddress')}
           />
         </div>
 
@@ -156,7 +158,7 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
         <div className="grid grid-cols-2 gap-6">
           <div>
             <label className="block text-[#3C4242] text-sm font-medium mb-2">
-              City *
+              {t('city')} *
             </label>
             <input
               type="text"
@@ -165,12 +167,12 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
               onChange={handleChange}
               required
               className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] placeholder:text-[#807D7E] focus:outline-none focus:border-[#8A33FD]"
-              placeholder="City"
+              placeholder={t('city')}
             />
           </div>
           <div>
             <label className="block text-[#3C4242] text-sm font-medium mb-2">
-              State *
+              {t('state')} *
             </label>
             <input
               type="text"
@@ -179,7 +181,7 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
               onChange={handleChange}
               required
               className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] placeholder:text-[#807D7E] focus:outline-none focus:border-[#8A33FD]"
-              placeholder="State"
+              placeholder={t('state')}
             />
           </div>
         </div>
@@ -188,7 +190,7 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
         <div className="grid grid-cols-2 gap-6">
           <div>
             <label className="block text-[#3C4242] text-sm font-medium mb-2">
-              Zip Code *
+              {t('zipCode')} *
             </label>
             <input
               type="text"
@@ -197,12 +199,12 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
               onChange={handleChange}
               required
               className="w-full px-4 py-3 border border-[#BEBCBD] rounded-lg text-[#3C4242] placeholder:text-[#807D7E] focus:outline-none focus:border-[#8A33FD]"
-              placeholder="Zip Code"
+              placeholder={t('zipCode')}
             />
           </div>
           <div>
             <label className="block text-[#3C4242] text-sm font-medium mb-2">
-              Country *
+              {t('country')} *
             </label>
             <select
               name="country"
@@ -222,7 +224,7 @@ export function ShippingForm({ onSubmit, initialData, showSubmit = true }: Shipp
             type="submit"
             className="mt-4 lg:mt-6 w-full sm:w-auto px-6 lg:px-8 py-2.5 lg:py-3 bg-[#8A33FD] text-white rounded-lg hover:bg-[#7229D6] transition-colors text-sm lg:text-base font-medium"
           >
-            Continue to Payment
+            {t('continueToPayment')}
           </button>
         )}
       </form>

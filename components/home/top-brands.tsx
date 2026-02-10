@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { ASSETS } from '@/lib/assets';
+import { useTranslations } from 'next-intl';
 import { TopBrandsSection, BrandItem } from '@/lib/api/home-settings';
 
 const defaultBrands: BrandItem[] = [
@@ -15,9 +16,10 @@ interface TopBrandsProps {
 }
 
 export function TopBrands({ data }: TopBrandsProps) {
-  const title = data?.title || 'Top Brands Deal';
-  const subtitle = data?.subtitle || 'Up To {discount}% off on brands';
+  const t = useTranslations('home');
   const discountPercent = data?.discountPercent || 60;
+  const title = data?.title || t('topBrandsDeal');
+  const subtitle = data?.subtitle || t('topBrandsSubtitle', { discount: discountPercent });
   const brands = data?.brands && data.brands.length > 0 ? data.brands : defaultBrands;
 
   // Replace {discount} placeholder with actual value

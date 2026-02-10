@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter as useNextRouter } from 'next/navigation';
 import Flag from 'react-world-flags';
 import { Search, Heart, User, ShoppingCart, Menu, X, LogOut, Loader2, LayoutDashboard, ChevronDown } from 'lucide-react';
 import { useCartStore } from '@/lib/store/cart-store';
@@ -12,6 +12,8 @@ import { useAuth } from '@/lib/context/auth-context';
 import { useModal } from '@/components/ui/modal';
 import { productsApi, Product, categoriesApi, Category } from '@/lib/api/products';
 import { formatPrice } from '@/lib/utils';
+import { useLocale, useTranslations } from 'next-intl';
+import { useRouter, usePathname } from '@/i18n/navigation';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -23,6 +25,10 @@ export function Header() {
   const [lang, setLang] = useState<'EN' | 'AR'>('EN');
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const langDropdownRef = useRef<HTMLDivElement>(null);
+  const locale = useLocale();
+  const intlRouter = useRouter();
+  const intlPathname = usePathname();
+  const t = useTranslations('common');
 
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -33,7 +39,12 @@ export function Header() {
   const serverWishlistCount = useWishlistStore((state) => state.serverItems.length);
   const { user, logout } = useAuth();
   const modal = useModal();
-  const router = useRouter();
+  const nextRouter = useNextRouter();
+
+  // Sync lang display with actual locale
+  useEffect(() => {
+    setLang(locale === 'ar' ? 'AR' : 'EN');
+  }, [locale]);
 
   // Use server wishlist count for authenticated users, guest count otherwise
   const wishlistItemCount = user ? serverWishlistCount : guestWishlistCount;
@@ -53,9 +64,9 @@ export function Header() {
 
   // Build navigation links
   const navLinks = [
-    { href: '/products', label: 'Shop' },
-    ...categories.map(cat => ({ href: `/products?category=${cat.slug}`, label: cat.name })),
-    { href: '/brands', label: 'Brands' },
+    { href: '/products', label: t('shop') },
+    ...categories.map(cat => ({ href: `/products?category=${cat.slug}`, label: (locale === 'ar' && (cat as any).nameAr) ? (cat as any).nameAr : cat.name })),
+    { href: '/brands', label: t('brands') },
   ];
 
   // Debounced search effect
@@ -109,10 +120,17 @@ export function Header() {
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement> | React.MouseEvent) => {
     if ((e.type === 'keydown' && (e as React.KeyboardEvent).key === 'Enter') || e.type === 'click') {
       if (searchQuery.trim()) {
-        router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+        nextRouter.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
         setMobileMenuOpen(false);
       }
     }
+  };
+
+  const switchLocale = (newLocale: 'en' | 'ar') => {
+    document.documentElement.dir = newLocale === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLocale;
+    intlRouter.replace(intlPathname, { locale: newLocale });
+    setLangDropdownOpen(false);
   };
 
   return (
@@ -160,7 +178,7 @@ export function Header() {
                 <input
                   ref={inputRef}
                   type="text"
-                  placeholder="Search"
+                  placeholder={t('search')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={handleSearch}
@@ -205,12 +223,12 @@ export function Header() {
                         onClick={(e) => handleSearch(e as any)}
                         className="w-full text-center py-2 text-xs font-semibold text-[#8A33FD] border-t border-gray-100 hover:bg-gray-50 uppercase tracking-widest"
                       >
-                        View All Results
+                        {t('viewAllResults')}
                       </button>
                     </div>
                   ) : (
                     <div className="p-4 text-center text-sm text-[#807D7E]">
-                      No products found.
+                      {t('noProductsFound')}
                     </div>
                   )}
                 </div>
@@ -234,7 +252,7 @@ export function Header() {
             <Link
               href={user ? "/account" : "/auth/login"}
               className="flex items-center justify-center w-11 h-11 bg-[#F6F6F6] rounded-lg hover:bg-[#EBEBEB] transition-colors"
-              title={user ? "My Account" : "Sign In"}
+              title={user ? t('account') : t('signIn')}
             >
               <User className="w-5 h-5 text-[#807D7E]" />
             </Link>
@@ -244,7 +262,7 @@ export function Header() {
               <Link
                 href="/admin"
                 className="flex items-center justify-center w-11 h-11 bg-[#F6F6F6] rounded-lg hover:bg-purple-50 hover:text-[#8A33FD] transition-colors"
-                title="Admin Dashboard"
+                title={t('admin')}
               >
                 <LayoutDashboard className="w-5 h-5" />
               </Link>
@@ -254,13 +272,13 @@ export function Header() {
             {user && (
               <button
                 onClick={async () => {
-                  const confirmed = await modal.confirm('Are you sure you want to sign out?', 'Sign Out');
+                  const confirmed = await modal.confirm(t('signOutConfirm'), t('signOut'));
                   if (confirmed) {
                     logout();
                   }
                 }}
                 className="flex items-center justify-center w-11 h-11 bg-[#F6F6F6] rounded-lg hover:bg-red-50 hover:text-red-500 transition-colors"
-                title="Sign out"
+                title={t('signOut')}
               >
                 <LogOut className="w-5 h-5" />
               </button>
@@ -321,8 +339,8 @@ export function Header() {
             {langDropdownOpen && (
               <div className="absolute top-full right-0 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 w-32 z-[60] animate-in fade-in zoom-in duration-200">
                 <button
-                  onClick={() => { setLang('EN'); setLangDropdownOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-colors ${lang === 'EN' ? 'text-[#8A33FD] bg-purple-50' : 'text-[#3C4242] hover:bg-gray-50'}`}
+                  onClick={() => switchLocale('en')}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-colors ${locale === 'en' ? 'text-[#8A33FD] bg-purple-50' : 'text-[#3C4242] hover:bg-gray-50'}`}
                 >
                   <div className="w-5 h-3.5 flex-shrink-0 relative overflow-hidden rounded-sm">
                     <Flag code="US" className="w-full h-full object-cover" />
@@ -330,8 +348,8 @@ export function Header() {
                   <span>EN</span>
                 </button>
                 <button
-                  onClick={() => { setLang('AR'); setLangDropdownOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-colors ${lang === 'AR' ? 'text-[#8A33FD] bg-purple-50' : 'text-[#3C4242] hover:bg-gray-50'}`}
+                  onClick={() => switchLocale('ar')}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-colors ${locale === 'ar' ? 'text-[#8A33FD] bg-purple-50' : 'text-[#3C4242] hover:bg-gray-50'}`}
                 >
                   <div className="w-5 h-3.5 flex-shrink-0 relative overflow-hidden rounded-sm">
                     <Flag code="SA" className="w-full h-full object-cover" />
@@ -351,7 +369,7 @@ export function Header() {
               <button onClick={handleSearch}><Search className="w-5 h-5 text-[#807D7E]" /></button>
               <input
                 type="text"
-                placeholder="Search"
+                placeholder={t('search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleSearch}
@@ -383,7 +401,7 @@ export function Header() {
                   className="flex items-center gap-2 text-[#807D7E] hover:text-[#8A33FD] text-sm"
                 >
                   <LayoutDashboard className="w-5 h-5" />
-                  <span>Admin Dashboard</span>
+                  <span>{t('admin')}</span>
                 </Link>
               )}
               <Link
@@ -392,7 +410,7 @@ export function Header() {
                 className="flex items-center gap-2 text-[#807D7E] text-sm"
               >
                 <Heart className="w-5 h-5" />
-                <span>Wishlist ({wishlistItemCount})</span>
+                <span>{t('wishlist')} ({wishlistItemCount})</span>
               </Link>
               <Link
                 href="/account"
@@ -400,12 +418,12 @@ export function Header() {
                 className="flex items-center gap-2 text-[#807D7E] text-sm"
               >
                 <User className="w-5 h-5" />
-                <span>Account</span>
+                <span>{t('account')}</span>
               </Link>
               {user && (
                 <button
                   onClick={async () => {
-                    const confirmed = await modal.confirm('Are you sure you want to sign out?', 'Sign Out');
+                    const confirmed = await modal.confirm(t('signOutConfirm'), t('signOut'));
                     if (confirmed) {
                       logout();
                       setMobileMenuOpen(false);
@@ -414,7 +432,7 @@ export function Header() {
                   className="flex items-center gap-2 text-[#807D7E] hover:text-red-500 text-sm"
                 >
                   <LogOut className="w-5 h-5" />
-                  <span>Logout</span>
+                  <span>{t('signOut')}</span>
                 </button>
               )}
             </div>

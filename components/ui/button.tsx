@@ -2,7 +2,7 @@ import { clsx } from 'clsx';
 import { forwardRef } from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'white' | 'outline' | 'ghost';
+  variant?: 'primary' | 'white' | 'outline' | 'outline-light' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
 }
@@ -19,6 +19,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             'bg-[#8A33FD] text-white hover:bg-[#7229d6]': variant === 'primary',
             'bg-white text-[#3C4242] hover:bg-[#F6F6F6]': variant === 'white',
             'bg-transparent border border-white text-white hover:bg-white/10': variant === 'outline',
+            'bg-transparent border border-gray-300 text-[#3C4242] hover:bg-[#F6F6F6]': variant === 'outline-light',
             'bg-transparent text-[#3C4242] hover:bg-[#F6F6F6]': variant === 'ghost',
             // Sizes
             'px-4 py-2 text-sm': size === 'sm',
@@ -39,7 +40,7 @@ Button.displayName = 'Button';
 
 // Link-styled button for navigation
 interface LinkButtonProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  variant?: 'primary' | 'white' | 'outline' | 'ghost';
+  variant?: 'primary' | 'white' | 'outline' | 'outline-light' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
 }
@@ -56,6 +57,7 @@ export const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
             'bg-[#8A33FD] text-white hover:bg-[#7229d6]': variant === 'primary',
             'bg-white text-[#3C4242] hover:bg-[#F6F6F6]': variant === 'white',
             'bg-transparent border border-white text-white hover:bg-white/10': variant === 'outline',
+            'bg-transparent border border-gray-300 text-[#3C4242] hover:bg-[#F6F6F6]': variant === 'outline-light',
             'bg-transparent text-[#3C4242] hover:bg-[#F6F6F6]': variant === 'ghost',
             // Sizes
             'px-4 py-2 text-sm': size === 'sm',

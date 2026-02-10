@@ -123,4 +123,13 @@ export const homeSettingsApi = {
         const response = await api.post('/home-settings/seed');
         return response.data.data;
     },
+
+    uploadImage: async (file: File): Promise<{ url: string; publicId: string }> => {
+        const formData = new FormData();
+        formData.append('image', file);
+        const response = await api.post('/home-settings/upload-image', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        return response.data.data;
+    },
 };

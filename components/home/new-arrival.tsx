@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/section-header';
+import { useTranslations } from 'next-intl';
 import { ASSETS } from '@/lib/assets';
 import { NewArrivalsSection } from '@/lib/api/home-settings';
 
@@ -18,7 +19,8 @@ interface NewArrivalProps {
 }
 
 export function NewArrival({ data }: NewArrivalProps) {
-  const title = data?.title || 'New Arrival';
+  const t = useTranslations('home');
+  const title = data?.title || t('newArrivals');
   const items = data?.items && data.items.length > 0 ? data.items : defaultArrivals;
 
   return (

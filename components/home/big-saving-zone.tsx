@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { SectionHeader } from '@/components/ui/section-header';
 import { LinkButton } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
 import { ASSETS } from '@/lib/assets';
 import { BigSavingZoneSection, SavingCard } from '@/lib/api/home-settings';
 
@@ -17,7 +18,8 @@ interface BigSavingZoneProps {
 }
 
 export function BigSavingZone({ data }: BigSavingZoneProps) {
-  const title = data?.title || 'Big Saving Zone';
+  const t = useTranslations('home');
+  const title = data?.title || t('bigSavingZone');
   const cards = data?.cards && data.cards.length > 0 ? data.cards : defaultCards;
 
   const smallCards = cards.filter((card) => card.size === 'small');
@@ -44,7 +46,7 @@ export function BigSavingZone({ data }: BigSavingZoneProps) {
                 <p className="text-xs lg:text-sm mb-1 lg:mb-2">{card.subtitle}</p>
                 <p className="text-sm lg:text-lg font-medium mb-4 lg:mb-6">{card.discount}</p>
                 <LinkButton href={card.link || '/products'} variant="outline" size="sm" className="text-xs px-3 lg:px-4 py-2">
-                  SHOP NOW
+                  {t('shopNow')}
                 </LinkButton>
               </div>
             </div>
@@ -61,14 +63,14 @@ export function BigSavingZone({ data }: BigSavingZoneProps) {
               <Image src={card.image || ASSETS.saving4} alt={card.title} fill className="object-cover" unoptimized />
               <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent" />
               <div className="absolute left-4 sm:left-6 lg:left-8 top-1/2 -translate-y-1/2 text-white">
-                <p className="text-sm lg:text-lg font-bold mb-1 lg:mb-2">LOW PRICE</p>
+                <p className="text-sm lg:text-lg font-bold mb-1 lg:mb-2">{t('lowPrice')}</p>
                 <h3 className="text-2xl sm:text-[28px] lg:text-[34px] font-bold leading-tight mb-1 lg:mb-2">
                   {card.title.split(' ')[0]}<br />{card.title.split(' ').slice(1).join(' ')}
                 </h3>
                 <p className="text-xs lg:text-sm mb-1 lg:mb-2">{card.subtitle}</p>
                 <p className="text-sm lg:text-lg font-medium mb-4 lg:mb-6">{card.discount}</p>
                 <LinkButton href={card.link || '/products'} variant="outline" size="sm" className="text-xs px-3 lg:px-4 py-2">
-                  SHOP NOW
+                  {t('shopNow')}
                 </LinkButton>
               </div>
             </div>

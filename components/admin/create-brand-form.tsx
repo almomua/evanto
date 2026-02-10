@@ -14,7 +14,9 @@ export function CreateBrandForm() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState('');
+    const [nameAr, setNameAr] = useState('');
     const [description, setDescription] = useState('');
+    const [descriptionAr, setDescriptionAr] = useState('');
     const [image, setImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -43,7 +45,9 @@ export function CreateBrandForm() {
         try {
             const formData = new FormData();
             formData.append('name', name);
+            formData.append('nameAr', nameAr);
             formData.append('description', description);
+            formData.append('descriptionAr', descriptionAr);
             if (image) {
                 formData.append('image', image);
             }
@@ -77,13 +81,37 @@ export function CreateBrandForm() {
                 </div>
 
                 <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#807D7E]">اسم العلامة التجارية (Arabic)</label>
+                    <input
+                        type="text"
+                        dir="rtl"
+                        value={nameAr}
+                        onChange={(e) => setNameAr(e.target.value)}
+                        placeholder="مثال: نايكي"
+                        className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-arabic"
+                    />
+                </div>
+
+                <div className="space-y-2">
                     <label className="text-sm font-semibold text-[#807D7E]">Description (Optional)</label>
                     <textarea
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Brief description of the brand..."
-                        rows={4}
+                        rows={3}
                         className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-medium resize-none"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#807D7E]">وصف العلامة التجارية (Optional Arabic)</label>
+                    <textarea
+                        value={descriptionAr}
+                        dir="rtl"
+                        onChange={(e) => setDescriptionAr(e.target.value)}
+                        placeholder="وصف مختصر للعلامة التجارية..."
+                        rows={3}
+                        className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-arabic resize-none"
                     />
                 </div>
 

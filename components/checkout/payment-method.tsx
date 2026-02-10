@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { CreditCard, Wallet, Building2 } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useTranslations } from 'next-intl';
 
 type PaymentType = 'card' | 'paypal' | 'bank';
 
@@ -12,6 +13,7 @@ interface PaymentMethodProps {
 }
 
 export function PaymentMethod({ selectedMethod, onMethodChange }: PaymentMethodProps) {
+  const t = useTranslations('checkout');
   const [cardData, setCardData] = useState({
     cardNumber: '',
     cardHolder: '',
@@ -26,7 +28,7 @@ export function PaymentMethod({ selectedMethod, onMethodChange }: PaymentMethodP
 
   return (
     <div className="bg-white rounded-xl p-8 border border-[#BEBCBD]/30">
-      <h2 className="text-[#3C4242] text-2xl font-bold mb-6">Payment Method</h2>
+      <h2 className="text-[#3C4242] text-2xl font-bold mb-6">{t('paymentMethod')}</h2>
 
       {/* Payment Options */}
       <div className="space-y-4 mb-8">
@@ -52,13 +54,13 @@ export function PaymentMethod({ selectedMethod, onMethodChange }: PaymentMethodP
             )}
           </div>
           <Building2 className="w-6 h-6 text-[#3C4242]" />
-          <span className="text-[#3C4242] text-lg">Cash on Delivery</span>
+          <span className="text-[#3C4242] text-lg">{t('cashOnDelivery')}</span>
         </button>
       </div>
 
       <div className="pt-6 border-t border-[#BEBCBD]/30">
         <p className="text-[#807D7E]">
-          Pay with cash when your order is delivered.
+          {t('codDescription')}
         </p>
       </div>
 

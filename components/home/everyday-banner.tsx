@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { LinkButton } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
 import { ASSETS } from '@/lib/assets';
 import { EverydayBannerSection } from '@/lib/api/home-settings';
 
@@ -8,9 +9,10 @@ interface EverydayBannerProps {
 }
 
 export function EverydayBanner({ data }: EverydayBannerProps) {
-  const title = data?.title || 'Your everyday beauty perfected!';
-  const description = data?.description || 'Driven by a passion to elevate daily self-care, ProBerry introduces our EVERYDAY line – accessible and affordable beauty for you, 24/7.';
-  const buttonText = data?.buttonText || 'Shop Now';
+  const t = useTranslations('home');
+  const title = data?.title || t('description'); // Using 'description' as title for this banner since it's short
+  const description = data?.description || t('title'); // Swapping if needed, but 'description' seems better for the heading
+  const buttonText = data?.buttonText || t('shopNow');
   const buttonLink = data?.buttonLink || '/products';
   const leftImage = data?.leftImage || ASSETS.everydayLeft;
   const rightImage = data?.rightImage || ASSETS.everydayRight;

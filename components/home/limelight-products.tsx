@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { ProductCard } from '@/components/product/product-card';
+import { useTranslations } from 'next-intl';
 import { productsApi, Product } from '@/lib/api/products';
 import { Loader2 } from 'lucide-react';
 import { LimelightSection } from '@/lib/api/home-settings';
@@ -12,10 +13,11 @@ interface LimelightProductsProps {
 }
 
 export function LimelightProducts({ data }: LimelightProductsProps) {
+  const t = useTranslations('home');
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const title = data?.title || 'In The Limelight';
+  const title = data?.title || t('trendingProducts');
   const source = data?.source || 'featured';
 
   useEffect(() => {
@@ -68,7 +70,7 @@ export function LimelightProducts({ data }: LimelightProductsProps) {
       <SectionHeader title={title} className="mb-6 lg:mb-10" />
 
       {products.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">No products found</div>
+        <div className="text-center py-8 text-gray-500">{t('noResults')}</div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-9">
           {products.map((product) => (

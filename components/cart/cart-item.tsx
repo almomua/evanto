@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Minus, Plus, X } from 'lucide-react';
 import { useCartStore } from '@/lib/store/cart-store';
 import { formatPrice } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface CartItemProps {
   id: string;
@@ -27,6 +28,7 @@ export function CartItem({
   size = 'M',
   color = 'Black',
 }: CartItemProps) {
+  const t = useTranslations('cart');
   const { updateQuantity, removeItem } = useCartStore();
 
   const handleIncrease = () => {
@@ -72,11 +74,11 @@ export function CartItem({
         {/* Size & Color */}
         <div className="flex gap-6 text-sm">
           <div className="flex items-center gap-2">
-            <span className="text-[#807D7E]">Size:</span>
+            <span className="text-[#807D7E]">{t('size')}:</span>
             <span className="text-[#3C4242] font-medium">{size}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[#807D7E]">Color:</span>
+            <span className="text-[#807D7E]">{t('color')}:</span>
             <span className="text-[#3C4242] font-medium">{color}</span>
           </div>
         </div>

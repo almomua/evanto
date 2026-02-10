@@ -11,9 +11,12 @@ import { useAuth } from '@/lib/context/auth-context';
 import { Product } from '@/lib/api/products';
 import { formatPrice } from '@/lib/utils';
 import { GuestWishlistPrompt } from '@/components/auth';
+import { useTranslations } from 'next-intl';
 
 
 export function WishlistGrid() {
+  const t = useTranslations('account');
+  const commonT = useTranslations('common');
   const { user } = useAuth();
   const { addItem: addToCart } = useCartStore();
   const { items: guestItems, removeItem, serverItems, removeServerItem } = useWishlistStore();
@@ -87,18 +90,18 @@ export function WishlistGrid() {
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm mb-4 sm:mb-6 flex-wrap">
         <Link href="/" className="text-[#807D7E] hover:text-[#3C4242]">
-          Home
+          {commonT('home')}
         </Link>
-        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-[#807D7E]" />
+        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-[#807D7E] rtl:rotate-180" />
         <Link href="/account" className="text-[#807D7E] hover:text-[#3C4242]">
-          My Account
+          {t('title')}
         </Link>
-        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-[#807D7E]" />
-        <span className="text-[#3C4242]">Wishlist</span>
+        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-[#807D7E] rtl:rotate-180" />
+        <span className="text-[#3C4242]">{t('myWishlist')}</span>
       </nav>
 
       {/* Wishlist Heading */}
-      <h1 className="text-[#3C4242] text-xl sm:text-2xl font-semibold mb-6 sm:mb-8">Wishlist</h1>
+      <h1 className="text-[#3C4242] text-xl sm:text-2xl font-semibold mb-6 sm:mb-8">{t('myWishlist')}</h1>
 
       {/* Guest Prompt */}
       <GuestWishlistPrompt itemCount={displayItems.length} />
@@ -108,13 +111,13 @@ export function WishlistGrid() {
           <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F6F6F6] rounded-full flex items-center justify-center mb-4">
             <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-[#807D7E]" />
           </div>
-          <p className="text-[#3C4242] text-base sm:text-lg font-medium mb-2">Your wishlist is empty</p>
-          <p className="text-[#807D7E] text-sm mb-6 text-center">Save items you love to your wishlist</p>
+          <p className="text-[#3C4242] text-base sm:text-lg font-medium mb-2">{t('wishlistEmpty')}</p>
+          <p className="text-[#807D7E] text-sm mb-6 text-center">{t('saveItemsLove')}</p>
           <Link
             href="/products"
             className="px-6 sm:px-8 py-2.5 sm:py-3 bg-[#8A33FD] text-white rounded-lg hover:bg-[#7229D6] transition-colors text-sm sm:text-base"
           >
-            Explore Products
+            {t('exploreProducts')}
           </Link>
         </div>
       ) : (
@@ -155,10 +158,10 @@ export function WishlistGrid() {
                     </h3>
                   </Link>
                   <p className="text-[#807D7E] text-xs sm:text-sm mt-1">
-                    <span className="font-medium">Category</span> : {item.category?.name}
+                    <span className="font-medium">{commonT('category')}</span> : {item.category?.name}
                   </p>
                   <p className="text-[#807D7E] text-xs sm:text-sm mt-1">
-                    <span className="font-medium">Quantity</span> : 1
+                    <span className="font-medium">{t('qty')}</span> : 1
                   </p>
                 </div>
 
@@ -177,7 +180,7 @@ export function WishlistGrid() {
                   onClick={() => handleAddToCart(item)}
                   className="px-4 sm:px-6 py-2 sm:py-3 bg-[#8A33FD] text-white rounded-lg hover:bg-[#7229D6] transition-colors text-xs sm:text-sm"
                 >
-                  Add to cart
+                  {t('addToCart')}
                 </button>
               </div>
             </div>

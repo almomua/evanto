@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { useAuth } from '@/lib/context/auth-context';
 import { useModal } from '@/components/ui/modal';
+import { useLocale, useTranslations } from 'next-intl';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface AdminHeaderProps {
   title: string;
@@ -11,16 +13,51 @@ interface AdminHeaderProps {
 export function AdminHeader({ title }: AdminHeaderProps) {
   const { user, logout } = useAuth();
   const modal = useModal();
+  const locale = useLocale();
+  const t = useTranslations('admin');
+  const router = useRouter();
+  const pathname = usePathname();
 
   const getInitials = (name: string) => {
     return name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'AD';
+  };
+
+  const switchLocale = (newLocale: string) => {
+    // Update document direction and language immediately
+    document.documentElement.dir = newLocale === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLocale;
+    // Remove current locale prefix and add new one
+    const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
+    router.push(`/${newLocale}${pathWithoutLocale}`);
   };
 
   return (
     <header className="h-[62px] flex items-center justify-between px-6 bg-white border-b border-gray-100">
       <h1 className="text-xl font-semibold text-[#3C4242]">{title}</h1>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        {/* Language Switcher - Prominent */}
+        <div className="flex items-center bg-gray-100 rounded-lg overflow-hidden">
+          <button
+            onClick={() => switchLocale('en')}
+            className={`px-3 py-2 text-sm font-medium transition-colors ${locale === 'en'
+              ? 'bg-[#8B5CF6] text-white'
+              : 'text-gray-600 hover:bg-gray-200'
+              }`}
+          >
+            EN
+          </button>
+          <button
+            onClick={() => switchLocale('ar')}
+            className={`px-3 py-2 text-sm font-medium transition-colors ${locale === 'ar'
+              ? 'bg-[#8B5CF6] text-white'
+              : 'text-gray-600 hover:bg-gray-200'
+              }`}
+          >
+            عربي
+          </button>
+        </div>
+
         {/* Notification Bell */}
         <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
           <svg
@@ -44,13 +81,13 @@ export function AdminHeader({ title }: AdminHeaderProps) {
         {/* Logout Button */}
         <button
           onClick={async () => {
-            const confirmed = await modal.confirm('Are you sure you want to sign out?', 'Sign Out');
+            const confirmed = await modal.confirm(t('signOutConfirm'), t('signOut'));
             if (confirmed) {
               logout();
             }
           }}
           className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-          title="Sign out"
+          title={t('signOut')}
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />

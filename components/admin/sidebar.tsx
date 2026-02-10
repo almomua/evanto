@@ -4,33 +4,38 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
-const menuItems = [
+interface MenuItem {
+  nameKey: string;
+  href: string;
+  icon: string;
+}
+
+interface MenuSection {
+  sectionKey: string;
+  items: MenuItem[];
+}
+
+const menuSections: MenuSection[] = [
   {
-    section: 'MAIN MENU',
+    sectionKey: 'mainMenu',
     items: [
-      { name: 'Dashboard', href: '/admin', icon: 'smart-home' },
-      { name: 'Order Management', href: '/admin/orders', icon: 'shopping-cart' },
-      { name: 'Customers', href: '/admin/customers', icon: 'users' },
-      { name: 'Coupon Code', href: '/admin/coupons', icon: 'ticket' },
-      { name: 'Categories', href: '/admin/categories', icon: 'circle-square' },
-      { name: 'Transaction', href: '/admin/transactions', icon: 'file-text' },
-      { name: 'Brand', href: '/admin/brands', icon: 'star' },
-      { name: 'Layout Settings', href: '/admin/layout-settings', icon: 'layout' },
+      { nameKey: 'dashboard', href: '/admin', icon: 'smart-home' },
+      { nameKey: 'orderManagement', href: '/admin/orders', icon: 'shopping-cart' },
+      { nameKey: 'customers', href: '/admin/customers', icon: 'users' },
+      { nameKey: 'couponCode', href: '/admin/coupons', icon: 'ticket' },
+      { nameKey: 'categories', href: '/admin/categories', icon: 'circle-square' },
+      { nameKey: 'transaction', href: '/admin/transactions', icon: 'file-text' },
+      { nameKey: 'brand', href: '/admin/brands', icon: 'star' },
+      { nameKey: 'layoutSettings', href: '/admin/layout-settings', icon: 'layout' },
     ],
   },
   {
-    section: 'PRODUCTS',
+    sectionKey: 'productsSection',
     items: [
-      { name: 'Add Products', href: '/admin/products/new', icon: 'circle-plus' },
-      { name: 'Product List', href: '/admin/products', icon: 'box' },
-    ],
-  },
-  {
-    section: 'ADMIN',
-    items: [
-      { name: 'Manage Admins', href: '/admin/admins', icon: 'user-circle' },
-      { name: 'Admin Roles', href: '/admin/roles', icon: 'settings' },
+      { nameKey: 'addProducts', href: '/admin/products/new', icon: 'circle-plus' },
+      { nameKey: 'productList', href: '/admin/products', icon: 'box' },
     ],
   },
 ];
@@ -99,19 +104,6 @@ const iconMap: Record<string, React.ReactNode> = {
       <line x1="12" y1="22.08" x2="12" y2="12" />
     </svg>
   ),
-  'user-circle': (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="10" r="3" />
-      <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" />
-    </svg>
-  ),
-  'settings': (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </svg>
-  ),
   'layout': (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
@@ -130,6 +122,9 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClose }: AdminSidebarProps) {
   const pathname = usePathname();
+  const locale = useLocale();
+  const t = useTranslations('admin');
+  const isRTL = locale === 'ar';
 
   return (
     <>
@@ -142,9 +137,10 @@ export function AdminSidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClos
       )}
 
       <aside
-        className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-100 transition-all duration-300 z-50 
+        className={`fixed top-0 h-screen bg-white transition-all duration-300 z-50 
+          ${isRTL ? 'right-0 border-l border-gray-100' : 'left-0 border-r border-gray-100'}
           ${isCollapsed ? 'lg:w-[70px]' : 'lg:w-[260px]'}
-          ${isMobileOpen ? 'translate-x-0 w-[260px]' : '-translate-x-full lg:translate-x-0'}
+          ${isMobileOpen ? 'translate-x-0 w-[260px]' : isRTL ? 'translate-x-full lg:translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
         {/* Logo */}
@@ -171,28 +167,28 @@ export function AdminSidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClos
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className={`transition-transform ${isCollapsed ? 'rotate-180' : ''}`}
+              className={`transition-transform ${isCollapsed ? (isRTL ? '' : 'rotate-180') : (isRTL ? 'rotate-180' : '')}`}
             >
-              <polyline points="11 17 6 12 11 7" />
-              <polyline points="18 17 13 12 18 7" />
+              <polyline points={isRTL ? '13 17 18 12 13 7' : '11 17 6 12 11 7'} />
+              <polyline points={isRTL ? '6 17 11 12 6 7' : '18 17 13 12 18 7'} />
             </svg>
           </button>
         </div>
 
         {/* Navigation */}
         <nav className="py-4 overflow-y-auto h-[calc(100vh-96px)]">
-          {menuItems.map((section) => (
-            <div key={section.section} className="mb-4">
+          {menuSections.map((section) => (
+            <div key={section.sectionKey} className="mb-4">
               {(!isCollapsed || isMobileOpen) && (
                 <h3 className="px-7 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {section.section}
+                  {t(section.sectionKey)}
                 </h3>
               )}
               <ul className="space-y-1 px-3">
                 {section.items.map((item) => {
                   const isActive = pathname === item.href;
                   return (
-                    <li key={item.name}>
+                    <li key={item.nameKey}>
                       <Link
                         href={item.href}
                         onClick={onMobileClose}
@@ -200,11 +196,11 @@ export function AdminSidebar({ isCollapsed, onToggle, isMobileOpen, onMobileClos
                           ? 'bg-[#8B5CF6] text-white'
                           : 'text-gray-600 hover:bg-gray-100'
                           }`}
-                        title={isCollapsed && !isMobileOpen ? item.name : undefined}
+                        title={isCollapsed && !isMobileOpen ? t(item.nameKey) : undefined}
                       >
                         <span className="flex-shrink-0">{iconMap[item.icon]}</span>
                         {(!isCollapsed || isMobileOpen) && (
-                          <span className="text-base font-medium">{item.name}</span>
+                          <span className="text-base font-medium">{t(item.nameKey)}</span>
                         )}
                       </Link>
                     </li>

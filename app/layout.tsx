@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Tajawal, Cairo, Anton, Anton_SC } from "next/font/google";
-import { Providers } from "./providers";
-import { AuthProvider } from "@/lib/context/auth-context";
-import { PostHogProvider } from "@/lib/posthog";
-import { FloatingChat } from "@/components/layout/floating-chat";
+import { getLocale } from 'next-intl/server';
 import "./globals.css";
 
 const tajawal = Tajawal({
@@ -35,22 +32,18 @@ export const metadata: Metadata = {
   description: "Luxury Beauty at Smart Prices - Shop skincare, makeup, perfumes and more",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const dir = locale === 'ar' ? 'rtl' : 'ltr';
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} dir={dir} suppressHydrationWarning>
       <body className={`${tajawal.variable} ${cairo.variable} ${anton.variable} ${antonSC.variable} font-sans antialiased`} suppressHydrationWarning>
-        <PostHogProvider>
-          <Providers>
-            <AuthProvider>
-              {children}
-              <FloatingChat />
-            </AuthProvider>
-          </Providers>
-        </PostHogProvider>
+        {children}
       </body>
     </html>
   );

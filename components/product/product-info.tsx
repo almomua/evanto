@@ -5,6 +5,7 @@ import { ShoppingCart, Star, ArrowRight } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useCartStore } from '@/lib/store/cart-store';
 import { formatPrice } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface ProductInfoProps {
   id: string;
@@ -21,6 +22,8 @@ export function ProductInfo({ id, name, brand, price, rating, image, variants }:
   const [sizes, setSizes] = useState<string[]>([]);
   const [currentPrice, setCurrentPrice] = useState(price);
   const addItem = useCartStore((state) => state.addItem);
+  const t = useTranslations('products');
+  const commonT = useTranslations('common');
 
   useEffect(() => {
     // Extract unique sizes from variants
@@ -66,11 +69,11 @@ export function ProductInfo({ id, name, brand, price, rating, image, variants }:
     <div className="flex flex-col gap-4 lg:gap-6">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 lg:gap-4 text-[#807D7E] text-sm lg:text-lg flex-wrap">
-        <span>Shop</span>
-        <ArrowRight className="w-2 h-2 lg:w-3 lg:h-3" />
+        <span>{commonT('shop')}</span>
+        <ArrowRight className="w-2 h-2 lg:w-3 lg:h-3 rtl:rotate-180" />
         <span>{brand}</span>
-        <ArrowRight className="w-2 h-2 lg:w-3 lg:h-3" />
-        <span>Products</span>
+        <ArrowRight className="w-2 h-2 lg:w-3 lg:h-3 rtl:rotate-180" />
+        <span>{commonT('brands')}</span>
       </nav>
 
       {/* Product Title */}
@@ -98,7 +101,7 @@ export function ProductInfo({ id, name, brand, price, rating, image, variants }:
       {sizes.length > 0 && (
         <div className="flex flex-col gap-3 lg:gap-6">
           <div className="flex items-center gap-3 lg:gap-5 flex-wrap">
-            <span className="text-[#3F4646] text-sm lg:text-lg">Select Size</span>
+            <span className="text-[#3F4646] text-sm lg:text-lg">{t('selectSize')}</span>
           </div>
 
           <div className="flex gap-3 lg:gap-5 flex-wrap">
@@ -127,7 +130,7 @@ export function ProductInfo({ id, name, brand, price, rating, image, variants }:
           className="flex items-center justify-center gap-2 lg:gap-3 bg-[#8A33FD] text-white px-6 lg:px-10 py-3 rounded-lg hover:bg-[#7229D6] transition-colors"
         >
           <ShoppingCart className="w-4 h-4 lg:w-5 lg:h-5" />
-          <span className="text-sm lg:text-lg">Add to cart</span>
+          <span className="text-sm lg:text-lg">{t('addToCart')}</span>
         </button>
         <div className="flex items-center justify-center border border-[#3C4242] px-6 lg:px-10 py-3 rounded-lg">
           <span className="text-[#3C4242] text-sm lg:text-lg font-medium">{formatPrice(currentPrice)}</span>

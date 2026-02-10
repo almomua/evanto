@@ -11,6 +11,9 @@
     "download-all-figma-assets": "node scripts/download-all-figma-assets.js"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@tanstack/react-query": "^5.90.11",
     "@types/country-list": "^2.1.4",
     "axios": "^1.13.2",
@@ -19,6 +22,7 @@
     "date-fns": "^4.1.0",
     "lucide-react": "^0.555.0",
     "next": "16.0.7",
+    "next-intl": "^4.8.2",
     "posthog-js": "^1.335.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",
