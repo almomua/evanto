@@ -1,16 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { brandsApi, Brand } from '@/lib/api/products';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
 
 export default function BrandsPage() {
     const [brands, setBrands] = useState<Brand[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const fetchBrands = async () => {
@@ -26,6 +27,15 @@ export default function BrandsPage() {
         fetchBrands();
     }, []);
 
+    const filteredBrands = useMemo(() => {
+        if (!searchQuery.trim()) return brands;
+        const query = searchQuery.toLowerCase();
+        return brands.filter(brand =>
+            brand.name.toLowerCase().includes(query) ||
+            brand.description?.toLowerCase().includes(query)
+        );
+    }, [brands, searchQuery]);
+
     return (
         <div className="min-h-screen bg-white">
             <Header />
@@ -37,17 +47,33 @@ export default function BrandsPage() {
                     <p className="text-[#807D7E] text-lg">Explore products from our trusted brand partners</p>
                 </div>
 
+                {/* Search Bar */}
+                <div className="max-w-md mx-auto mb-10">
+                    <div className="relative">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#807D7E]" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search brands..."
+                            className="w-full pl-12 pr-4 py-3 bg-[#F6F6F6] border border-gray-200 rounded-xl text-[#3C4242] placeholder-[#807D7E] focus:outline-none focus:ring-2 focus:ring-[#8A33FD]/20 focus:border-[#8A33FD]/30 transition-all"
+                        />
+                    </div>
+                </div>
+
                 {loading ? (
                     <div className="flex justify-center items-center py-20">
                         <Loader2 className="w-10 h-10 animate-spin text-[#8A33FD]" />
                     </div>
-                ) : brands.length === 0 ? (
+                ) : filteredBrands.length === 0 ? (
                     <div className="text-center py-20">
-                        <p className="text-[#807D7E] text-lg">No brands available yet.</p>
+                        <p className="text-[#807D7E] text-lg">
+                            {searchQuery ? 'No brands match your search.' : 'No brands available yet.'}
+                        </p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                        {brands.map((brand) => (
+                        {filteredBrands.map((brand) => (
                             <Link
                                 key={brand._id}
                                 href={`/products?brand=${brand.slug}`}

@@ -63,7 +63,7 @@ export function Header() {
   // Build navigation links
   const navLinks = [
     { href: '/products', label: t('shop') },
-    ...categories.map(cat => ({ href: `/products?category=${cat.slug}`, label: cat.name })),
+    ...categories.map(cat => ({ href: `/products?category=${cat.slug}`, label: (locale === 'ar' && (cat as any).nameAr) ? (cat as any).nameAr : cat.name })),
     { href: '/brands', label: t('brands') },
   ];
 

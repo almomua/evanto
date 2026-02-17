@@ -22,9 +22,11 @@ export interface Product {
 export interface Category {
   _id: string;
   name: string;
+  nameAr?: string;
   slug: string;
   image: { secure_url: string };
   description?: string;
+  descriptionAr?: string;
   isActive?: boolean;
   parentCategory?: string;
 }
@@ -32,7 +34,7 @@ export interface Category {
 export const productsApi = {
   // Get all products with optional filtering
   getAll: async (params?: Record<string, any>): Promise<Product[]> => {
-    const response = await api.get('/products', { params });
+    const response = await api.get('/products', { params: { limit: 1000, ...params } });
     return response.data.data.docs;
   },
 
@@ -70,9 +72,9 @@ export const productsApi = {
 };
 
 export const categoriesApi = {
-  // Get all categories
+  // Get all categories (no pagination limit)
   getAll: async (): Promise<Category[]> => {
-    const response = await api.get('/categories');
+    const response = await api.get('/categories', { params: { limit: 1000 } });
     return response.data.data.docs;
   },
 
@@ -108,9 +110,9 @@ export interface Brand {
 }
 
 export const brandsApi = {
-  // Get all brands
+  // Get all brands (no pagination limit)
   getAll: async (): Promise<Brand[]> => {
-    const response = await api.get('/brands');
+    const response = await api.get('/brands', { params: { limit: 1000 } });
     return response.data.data.docs;
   },
 

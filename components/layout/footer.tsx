@@ -165,7 +165,7 @@ export function Footer() {
                   href={`/products?category=${cat.slug}`}
                   className="text-sm lg:text-lg text-[#F6F6F6]/80 hover:text-white transition-colors"
                 >
-                  {cat.name}
+                  {(locale === 'ar' && (cat as any).nameAr) ? (cat as any).nameAr : cat.name}
                 </Link>
               ))}
               {categories.length === 0 && (

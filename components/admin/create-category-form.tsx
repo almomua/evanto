@@ -11,7 +11,9 @@ export function CreateCategoryForm() {
     const router = useRouter();
     const [isVisible, setIsVisible] = useState(true);
     const [name, setName] = useState('');
+    const [nameAr, setNameAr] = useState('');
     const [description, setDescription] = useState('');
+    const [descriptionAr, setDescriptionAr] = useState('');
     const [image, setImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -36,7 +38,9 @@ export function CreateCategoryForm() {
             setLoading(true);
             const formData = new FormData();
             formData.append('name', name);
+            formData.append('nameAr', nameAr);
             formData.append('description', description);
+            formData.append('descriptionAr', descriptionAr);
             formData.append('isActive', String(isVisible));
             formData.append('image', image);
 
@@ -70,6 +74,19 @@ export function CreateCategoryForm() {
                     />
                 </div>
 
+                {/* Category Name (Arabic) */}
+                <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#807D7E]">Category Name (Arabic)</label>
+                    <input
+                        type="text"
+                        value={nameAr}
+                        onChange={(e) => setNameAr(e.target.value)}
+                        placeholder="اسم الفئة بالعربية"
+                        dir="rtl"
+                        className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-medium"
+                    />
+                </div>
+
                 {/* Category Description */}
                 <div className="space-y-2">
                     <label className="text-sm font-semibold text-[#807D7E]">Category Description</label>
@@ -77,6 +94,19 @@ export function CreateCategoryForm() {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Enter a brief description for this category"
+                        rows={4}
+                        className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-medium resize-none"
+                    />
+                </div>
+
+                {/* Category Description (Arabic) */}
+                <div className="space-y-2">
+                    <label className="text-sm font-semibold text-[#807D7E]">Category Description (Arabic)</label>
+                    <textarea
+                        value={descriptionAr}
+                        onChange={(e) => setDescriptionAr(e.target.value)}
+                        placeholder="وصف الفئة بالعربية"
+                        dir="rtl"
                         rows={4}
                         className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-xl text-[#3C4242] placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 transition-all font-medium resize-none"
                     />
