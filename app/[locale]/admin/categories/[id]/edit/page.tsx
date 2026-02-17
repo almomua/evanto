@@ -23,10 +23,8 @@ export default function EditCategoryPage() {
 
     const [formData, setFormData] = useState({
         name: '',
-        nameAr: '',
         slug: '',
         description: '',
-        descriptionAr: '',
     });
     const [isVisible, setIsVisible] = useState(true);
     const [image, setImage] = useState<File | null>(null);
@@ -42,10 +40,8 @@ export default function EditCategoryPage() {
             setCategory(data);
             setFormData({
                 name: data.name || '',
-                nameAr: (data as any).nameAr || '',
                 slug: data.slug || '',
                 description: data.description || '',
-                descriptionAr: (data as any).descriptionAr || '',
             });
             setIsVisible(data.isActive !== false);
             if (data.image?.secure_url && !data.image.secure_url.includes('placehold.co')) {
@@ -87,10 +83,8 @@ export default function EditCategoryPage() {
             setSaving(true);
             const data = new FormData();
             data.append('name', formData.name);
-            data.append('nameAr', formData.nameAr);
             data.append('slug', formData.slug);
             data.append('description', formData.description);
-            data.append('descriptionAr', formData.descriptionAr);
             data.append('isActive', String(isVisible));
             if (image) {
                 data.append('image', image);
@@ -150,18 +144,6 @@ export default function EditCategoryPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">اسم الفئة (Arabic Name)</label>
-                            <input
-                                type="text"
-                                dir="rtl"
-                                value={formData.nameAr}
-                                onChange={(e) => setFormData({ ...formData, nameAr: e.target.value })}
-                                placeholder="مثال: عطور، مكياج"
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-arabic"
-                            />
-                        </div>
-
-                        <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Slug</label>
                             <input
                                 type="text"
@@ -179,18 +161,6 @@ export default function EditCategoryPage() {
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 rows={3}
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">الوصف بالعربية (Arabic Description)</label>
-                            <textarea
-                                dir="rtl"
-                                value={formData.descriptionAr}
-                                onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
-                                rows={3}
-                                placeholder="أدخل وصف الفئة بالعربية"
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-arabic"
                             />
                         </div>
 

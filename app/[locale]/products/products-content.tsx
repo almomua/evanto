@@ -11,7 +11,6 @@ import { Pagination } from '@/components/product/pagination';
 import { productsApi, Product, brandsApi, Brand } from '@/lib/api/products';
 import { Loader2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { getLocalizedField } from '@/lib/utils/localization';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -277,11 +276,11 @@ export function ProductsPageContent() {
                   products={paginatedProducts.map(p => ({
                     id: p._id,
                     slug: p.slug,
-                    name: getLocalizedField(p, 'name', locale),
-                    brand: getLocalizedField(p.brand || {}, 'name', locale) || getLocalizedField(p.category || {}, 'name', locale) || 'ProBerry',
+                    name: p.name,
+                    brand: p.brand?.name || p.category?.name || 'ProBerry',
                     price: p.price,
                     image: p.images?.[0]?.secure_url || '',
-                    shortDesc: getLocalizedField(p, 'shortDesc', locale),
+                    shortDesc: p.shortDesc,
                     discount: p.discount
                   }))}
                   columns={3}

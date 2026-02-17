@@ -73,7 +73,7 @@ export function CategoryFilter({ selectedCategories, onCategoryChange }: Categor
                   : 'text-[#8A8989] hover:text-[#3C4242]'
               )}
             >
-              <span>{locale === 'ar' && (category as any).nameAr ? (category as any).nameAr : category.name}</span>
+              <span>{category.name}</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </li>

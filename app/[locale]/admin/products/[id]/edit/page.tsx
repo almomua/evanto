@@ -41,20 +41,15 @@ export default function EditProductPage() {
 
     const [formData, setFormData] = useState({
         name: '',
-        nameAr: '',
         description: '',
-        descriptionAr: '',
         shortDesc: '',
-        shortDescAr: '',
         price: 0,
         discount: 0,
         category: '',
         brand: '',
         isFeatured: false,
         ingredients: '',
-        ingredientsAr: '',
         howToUse: '',
-        howToUseAr: '',
         stock_quantity: 0,
     });
 
@@ -77,20 +72,15 @@ export default function EditProductPage() {
             setBrands(brandsData);
             setFormData({
                 name: productData.name || '',
-                nameAr: (productData as any).nameAr || '',
                 description: productData.description || '',
-                descriptionAr: (productData as any).descriptionAr || '',
                 shortDesc: productData.shortDesc || '',
-                shortDescAr: (productData as any).shortDescAr || '',
                 price: productData.price || 0,
                 discount: productData.discount || 0,
                 category: productData.category?._id || '',
                 brand: (productData as any).brand?._id || '',
                 isFeatured: productData.isFeatured || false,
                 ingredients: productData.ingredients || '',
-                ingredientsAr: (productData as any).ingredientsAr || '',
                 howToUse: productData.howToUse || '',
-                howToUseAr: (productData as any).howToUseAr || '',
                 stock_quantity: (productData as any).stock_quantity || 0,
             });
             // Load existing variants
@@ -230,16 +220,6 @@ export default function EditProductPage() {
                                 required
                             />
                         </div>
-                        <div className="md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">اسم المنتج (AR)</label>
-                            <input
-                                type="text"
-                                dir="rtl"
-                                value={formData.nameAr}
-                                onChange={(e) => setFormData({ ...formData, nameAr: e.target.value })}
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-arabic"
-                            />
-                        </div>
 
                         <div className="md:col-span-1">
                             <label className="block text-sm font-medium text-gray-700 mb-2">Description (EN)</label>
@@ -250,16 +230,6 @@ export default function EditProductPage() {
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             />
                         </div>
-                        <div className="md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">الوصف (AR)</label>
-                            <textarea
-                                dir="rtl"
-                                value={formData.descriptionAr}
-                                onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
-                                rows={4}
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-arabic"
-                            />
-                        </div>
 
                         <div className="md:col-span-1">
                             <label className="block text-sm font-medium text-gray-700 mb-2">Short Description (EN)</label>
@@ -268,16 +238,6 @@ export default function EditProductPage() {
                                 value={formData.shortDesc}
                                 onChange={(e) => setFormData({ ...formData, shortDesc: e.target.value })}
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            />
-                        </div>
-                        <div className="md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">وصف قصير (AR)</label>
-                            <input
-                                type="text"
-                                dir="rtl"
-                                value={formData.shortDescAr}
-                                onChange={(e) => setFormData({ ...formData, shortDescAr: e.target.value })}
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-arabic"
                             />
                         </div>
 
@@ -353,16 +313,6 @@ export default function EditProductPage() {
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             />
                         </div>
-                        <div className="md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">المكونات (AR)</label>
-                            <textarea
-                                dir="rtl"
-                                value={formData.ingredientsAr}
-                                onChange={(e) => setFormData({ ...formData, ingredientsAr: e.target.value })}
-                                rows={3}
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-arabic"
-                            />
-                        </div>
 
                         <div className="md:col-span-1">
                             <label className="block text-sm font-medium text-gray-700 mb-2">How to Use (EN)</label>
@@ -371,16 +321,6 @@ export default function EditProductPage() {
                                 onChange={(e) => setFormData({ ...formData, howToUse: e.target.value })}
                                 rows={3}
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            />
-                        </div>
-                        <div className="md:col-span-1">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">طريقة الاستخدام (AR)</label>
-                            <textarea
-                                dir="rtl"
-                                value={formData.howToUseAr}
-                                onChange={(e) => setFormData({ ...formData, howToUseAr: e.target.value })}
-                                rows={3}
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-arabic"
                             />
                         </div>
 

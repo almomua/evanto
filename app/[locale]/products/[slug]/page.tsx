@@ -12,7 +12,6 @@ import { SimilarProducts } from '@/components/product/similar-products';
 import { productsApi } from '@/lib/api/products';
 import { Loader2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { getLocalizedField } from '@/lib/utils/localization';
 
 interface ProductDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -74,12 +73,12 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
 
   // Map backend data to component props
   const images = product.images?.map((img: any) => img.secure_url) || [];
-  const brandName = getLocalizedField(product.brand || {}, 'name', locale) || getLocalizedField(product.category || {}, 'name', locale) || 'ProBerry';
-  const productName = getLocalizedField(product, 'name', locale);
-  const productDescription = getLocalizedField(product, 'description', locale);
-  const productIngredients = getLocalizedField(product, 'ingredients', locale);
-  const productHowToUse = getLocalizedField(product, 'howToUse', locale);
-  const productShortDesc = getLocalizedField(product, 'shortDesc', locale);
+  const brandName = product.brand?.name || product.category?.name || 'ProBerry';
+  const productName = product.name;
+  const productDescription = product.description;
+  const productIngredients = product.ingredients;
+  const productHowToUse = product.howToUse;
+  const productShortDesc = product.shortDesc;
   // Details comes as a plain object from the API (JSON serialization converts Map to object)
   const details = product.details || {};
 
@@ -141,8 +140,8 @@ export default function ProductDetailPage({ params }: ProductDetailPageProps) {
           <SimilarProducts products={similarProductsList.map(p => ({
             id: p._id,
             slug: p.slug,
-            name: getLocalizedField(p, 'name', locale),
-            brand: getLocalizedField(p.brand || {}, 'name', locale) || getLocalizedField(p.category || {}, 'name', locale) || 'ProBerry',
+            name: p.name,
+            brand: p.brand?.name || p.category?.name || 'ProBerry',
             price: p.price,
             image: p.images?.[0]?.secure_url || ''
           }))} />

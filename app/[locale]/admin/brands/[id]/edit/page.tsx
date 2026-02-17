@@ -22,10 +22,8 @@ export default function EditBrandPage() {
 
     const [formData, setFormData] = useState({
         name: '',
-        nameAr: '',
         slug: '',
         description: '',
-        descriptionAr: '',
     });
     const [image, setImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -40,10 +38,8 @@ export default function EditBrandPage() {
             setBrand(data);
             setFormData({
                 name: data.name || '',
-                nameAr: (data as any).nameAr || '',
                 slug: data.slug || '',
                 description: data.description || '',
-                descriptionAr: (data as any).descriptionAr || '',
             });
             if (data.image?.secure_url) {
                 setPreviewUrl(data.image.secure_url);
@@ -76,10 +72,8 @@ export default function EditBrandPage() {
             setSaving(true);
             const data = new FormData();
             data.append('name', formData.name);
-            data.append('nameAr', formData.nameAr);
             data.append('slug', formData.slug);
             data.append('description', formData.description);
-            data.append('descriptionAr', formData.descriptionAr);
             if (image) {
                 data.append('image', image);
             }
@@ -138,18 +132,6 @@ export default function EditBrandPage() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">اسم العلامة التجارية (Arabic Name)</label>
-                            <input
-                                type="text"
-                                dir="rtl"
-                                value={formData.nameAr}
-                                onChange={(e) => setFormData({ ...formData, nameAr: e.target.value })}
-                                placeholder="مثال: نايكي"
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-arabic"
-                            />
-                        </div>
-
-                        <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Slug</label>
                             <input
                                 type="text"
@@ -167,18 +149,6 @@ export default function EditBrandPage() {
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 rows={3}
                                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">الوصف بالعربية (Arabic Description)</label>
-                            <textarea
-                                dir="rtl"
-                                value={formData.descriptionAr}
-                                onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
-                                rows={3}
-                                placeholder="أدخل وصف العلامة التجارية بالعربية"
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-arabic"
                             />
                         </div>
 
